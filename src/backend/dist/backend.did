@@ -1,0 +1,932 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type VoicePrintData = 
+ record {
+   enrollmentDate: int;
+   lastVerified: opt int;
+   voicePrintHash: text;
+ };
+type VaultStatus = 
+ record {
+   hoursRemaining: opt float64;
+   locked: bool;
+   shouldShowAlert: bool;
+   unlockPending: bool;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserProfile = 
+ record {
+   bio: text;
+   currentStatus: opt Status;
+   email: text;
+   isFirstWalletConnection: bool;
+   isVerified: bool;
+   kycProviderReference: opt text;
+   kycStatus: KYCStatus;
+   kycSubmissionTimestamp: opt int;
+   phoneNumber: opt text;
+   photo: opt ExternalBlob;
+   username: text;
+   walletAddress: opt text;
+ };
+type TwoFactorSettings = 
+ record {
+   backupCodes: vec text;
+   enabled: bool;
+   method: opt text;
+ };
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type TipPoolMode = 
+ variant {
+   custom;
+   equal;
+ };
+type TipPoolConfig = 
+ record {
+   customSplits: vec record {
+                       principal;
+                       nat;
+                     };
+   enabled: bool;
+   mode: TipPoolMode;
+ };
+type Tip = 
+ record {
+   amount: nat;
+   currencyType: variant {
+                   crypto;
+                   fiat;
+                 };
+   fromUser: principal;
+   message: text;
+   professional: bool;
+   timestamp: int;
+   toUser: principal;
+ };
+type Time = int;
+type SupportStatus = 
+ variant {
+   open;
+   resolved;
+   waitingForUser;
+ };
+type SupportMessage = 
+ record {
+   conversationId: nat;
+   id: nat;
+   message: text;
+   read: bool;
+   senderIsAdmin: bool;
+   senderPrincipal: principal;
+   timestamp: int;
+ };
+type SupportConversation = 
+ record {
+   createdAt: int;
+   id: nat;
+   lastMessageAt: int;
+   status: SupportStatus;
+   subject: text;
+   userPrincipal: principal;
+ };
+type StripeSessionStatus = 
+ variant {
+   completed: record {
+                response: text;
+                userPrincipal: opt text;
+              };
+   failed: record {error: text;};
+ };
+type StripeConfiguration = 
+ record {
+   allowedCountries: vec text;
+   secretKey: text;
+ };
+type Status = 
+ record {
+   createdAt: int;
+   customStatus: opt text;
+   isActive: bool;
+   statusType: text;
+   tableNumber: opt nat;
+ };
+type StaffMemberStatus = 
+ variant {
+   active;
+   removed;
+ };
+type StaffMember = 
+ record {
+   joinedAt: int;
+   "principal": principal;
+   status: StaffMemberStatus;
+ };
+type StaffInviteStatus = 
+ variant {
+   accepted;
+   declined;
+   pending;
+ };
+type StaffInviteMethod = 
+ variant {
+   link;
+   phone;
+ };
+type StaffInvite = 
+ record {
+   createdAt: int;
+   expiresAt: int;
+   inviteCode: text;
+   inviteePrincipal: opt principal;
+   managerPrincipal: principal;
+   method: StaffInviteMethod;
+   status: StaffInviteStatus;
+ };
+type SplitPaymentStatus = 
+ variant {
+   Active;
+   Cancelled;
+   Settled;
+ };
+type SplitPayment = 
+ record {
+   createdAt: int;
+   description: text;
+   id: text;
+   initiator: principal;
+   participants: vec SplitParticipant;
+   settledAt: opt int;
+   status: SplitPaymentStatus;
+   totalAmount: nat;
+ };
+type SplitParticipantStatus = 
+ variant {
+   Accepted;
+   Declined;
+   Paid;
+   Pending;
+ };
+type SplitParticipant = 
+ record {
+   amount: nat;
+   nickname: text;
+   "principal": principal;
+   status: SplitParticipantStatus;
+ };
+type SpendingLimitView = 
+ record {
+   dailyLimit: opt nat;
+   dailySpent: nat;
+   lastDayReset: int;
+   lastMonthReset: int;
+   lastWeekReset: int;
+   monthlyLimit: opt nat;
+   monthlySpent: nat;
+   weeklyLimit: opt nat;
+   weeklySpent: nat;
+ };
+type SmartReceipt = 
+ record {
+   generatedAt: int;
+   month: nat;
+   professionalTips: vec Tip;
+   totalAmount: nat;
+   userId: principal;
+   year: nat;
+ };
+type ShoppingItem = 
+ record {
+   currency: text;
+   priceInCents: nat;
+   productDescription: text;
+   productName: text;
+   quantity: nat;
+ };
+type SecurityEvent = 
+ record {
+   details: text;
+   eventType: text;
+   timestamp: int;
+   userId: principal;
+ };
+type SearchResult = 
+ record {
+   bio: text;
+   isVerified: bool;
+   photo: opt ExternalBlob;
+   username: text;
+ };
+type SavingsTransaction = 
+ record {
+   amount: nat;
+   direction: SavingsDirection;
+   id: nat;
+   owner: principal;
+   timestamp: int;
+ };
+type SavingsDirection = 
+ variant {
+   fromSavings;
+   toSavings;
+ };
+type RequestStatus = 
+ variant {
+   cancelled;
+   declined;
+   paid;
+   pending;
+ };
+type RecurringPayment = 
+ record {
+   amount: nat;
+   createdAt: int;
+   enabled: bool;
+   frequency: RecurringFrequency;
+   id: nat;
+   lastRunAt: opt int;
+   message: text;
+   nextRunTime: int;
+   owner: principal;
+   toUser: principal;
+   totalRuns: nat;
+ };
+type RecurringFrequency = 
+ variant {
+   daily;
+   monthly;
+   weekly;
+ };
+type RSVP = 
+ record {
+   attending: bool;
+   inviteCode: text;
+   name: text;
+   timestamp: Time;
+ };
+type PinCheckResult = 
+ variant {
+   blocked: nat;
+   incorrect: nat;
+   verified;
+ };
+type PayoutRecord = 
+ record {
+   distributions: vec record {
+                        principal;
+                        nat;
+                      };
+   id: text;
+   managerPrincipal: principal;
+   notes: text;
+   timestamp: int;
+ };
+type PaymentMethodType = 
+ variant {
+   bankAccount;
+   card;
+ };
+type PaymentMethod = 
+ record {
+   accountType: opt text;
+   addedAt: int;
+   bankName: opt text;
+   brand: opt text;
+   id: text;
+   last4: text;
+   methodType: PaymentMethodType;
+   stripeVerificationStatus: text;
+ };
+type MoneyRequest = 
+ record {
+   amount: nat;
+   fromUser: principal;
+   id: nat;
+   message: text;
+   paidTipId: opt nat;
+   status: RequestStatus;
+   timestamp: int;
+   toUser: principal;
+ };
+type KYCStatus = 
+ variant {
+   failed;
+   notSubmitted;
+   pending;
+   verified;
+ };
+type InviteCode = 
+ record {
+   code: text;
+   created: Time;
+   used: bool;
+ };
+type GDPRAuditEventType = 
+ variant {
+   deletion_cancelled;
+   deletion_finalized;
+   deletion_requested;
+   export_requested;
+ };
+type GDPRAuditEvent = 
+ record {
+   eventType: GDPRAuditEventType;
+   "principal": principal;
+   timestamp: int;
+ };
+type FraudAlert = 
+ record {
+   reason: text;
+   resolved: bool;
+   severity: variant {
+               high;
+               low;
+               medium;
+             };
+   timestamp: int;
+   userId: principal;
+ };
+type ExternalBlob = blob;
+type EncryptionEvent = 
+ record {
+   dataType: text;
+   eventType: text;
+   timestamp: int;
+ };
+type DisputeStatus = 
+ variant {
+   open;
+   rejected;
+   resolved;
+ };
+type Dispute = 
+ record {
+   counterpartyPrincipal: principal;
+   createdAt: int;
+   id: text;
+   reason: text;
+   resolution: opt text;
+   status: DisputeStatus;
+   submitterPrincipal: principal;
+   transactionTimestamp: int;
+   updatedAt: int;
+ };
+type DirectDepositAccount = 
+ record {
+   accountNumber: text;
+   createdAt: int;
+   routingNumber: text;
+   status: text;
+ };
+type DirectDeposit = 
+ record {
+   amount: nat;
+   clearAt: int;
+   createdAt: int;
+   description: text;
+   id: text;
+   isTest: bool;
+   status: text;
+   userPrincipal: principal;
+ };
+type DeletionStatus = 
+ variant {
+   finalized;
+   not_requested;
+   pending: record {scheduledDeletionTime: int;};
+ };
+type CompilationStatus = 
+ record {
+   obfuscationLayer: text;
+   tooltipNote: text;
+   verificationTimestamp: int;
+ };
+type BusinessApplicationStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type BusinessApplication = 
+ record {
+   businessName: text;
+   businessType: text;
+   createdAt: int;
+   description: text;
+   rejectionReason: opt text;
+   status: BusinessApplicationStatus;
+   termsAccepted: bool;
+   updatedAt: int;
+ };
+type BiometricSettings = 
+ record {
+   biometricType: opt text;
+   enabled: bool;
+ };
+type ActiveSession = 
+ record {
+   deviceName: text;
+   location: text;
+   loginTimestamp: int;
+   sessionId: text;
+ };
+type AIQuery = 
+ record {
+   queryText: text;
+   response: text;
+   timestamp: int;
+   userId: principal;
+ };
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControl: () -> ();
+  /// Staff: accept a roster invite (link-based or phone-based)
+  acceptStaffInvite: (inviteCode: text) -> (variant {
+                                              err: text;
+                                              ok;
+                                            });
+  acknowledgeVaultAlert: () -> ();
+  addActiveSession: (session: ActiveSession) -> ();
+  addPaymentMethod: (method: PaymentMethod) -> ();
+  addStatus: (status: Status) -> ();
+  adminCloseSupportTicket: (userPrincipal: principal) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  adminGetAllSupportConversations: () ->
+   (vec record {
+          principal;
+          SupportConversation;
+        }) query;
+  adminGetSupportMessages: (userPrincipal: principal) ->
+   (vec SupportMessage) query;
+  adminReplySupportMessage: (userPrincipal: principal, message: text) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  approveBusinessApplication: (applicant: principal) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  assignUserRole: (user: principal, role: variant {
+                                            admin;
+                                            guest;
+                                            user;
+                                          }) -> ();
+  calculateFee: (feeType:
+   variant {
+     atm;
+     businessReceive;
+     creditCard;
+     foreign;
+     instantDeposit;
+   }, amount: nat) -> (nat) query;
+  cancelAccountDeletion: () -> (variant {
+                                  err: text;
+                                  ok;
+                                });
+  /// Cancel a money request as the sender (fromUser).
+  /// Only pending requests can be cancelled.
+  cancelMoneyRequest: (requestId: nat) -> (variant {
+                                             err: text;
+                                             ok: text;
+                                           });
+  cancelRecurringPayment: (id: nat) -> (variant {
+                                          err: text;
+                                          ok;
+                                        });
+  /// Initiator cancels an active split payment.
+  cancelSplitPayment: (splitId: text) -> (variant {
+                                            err: text;
+                                            ok: text;
+                                          });
+  cancelVaultUnlock: () -> (variant {
+                              err: text;
+                              ok: text;
+                            });
+  clearSpendingLimits: () -> (variant {ok;});
+  /// Admin-only: immediately complete a pending deposit and credit the user's balance.
+  completeDirectDeposit: (depositId: text) -> (variant {
+                                                 err: text;
+                                                 ok;
+                                               });
+  createCheckoutSession: (items: vec ShoppingItem, successUrl: text,
+   cancelUrl: text) -> (text);
+  createRecurringPayment: (toUser: principal, amount: nat, message: text,
+   frequency: RecurringFrequency) -> (variant {
+                                        err: text;
+                                        ok: nat;
+                                      });
+  /// Manager: create a roster invite link (expires 72h, good for up to 50 accepts)
+  createRosterInviteLink: () -> (variant {
+                                   err: text;
+                                   ok: text;
+                                 });
+  /// Create a split-payment session.
+  /// participantShares: list of (principal, amountInCents) — amounts must sum to totalAmount.
+  createSplitPayment: (totalAmount: nat, description: text,
+   participantShares: vec record {
+                            principal;
+                            nat;
+                          }) -> (variant {
+                                   err: text;
+                                   ok: text;
+                                 });
+  createStripeCheckoutSession: (items: vec ShoppingItem, successUrl: 
+   text, cancelUrl: text) -> (text);
+  deactivateStatus: () -> ();
+  /// Staff: decline a roster invite
+  declineStaffInvite: (inviteCode: text) -> (variant {
+                                               err: text;
+                                               ok;
+                                             });
+  deleteUserData: () -> (variant {
+                           err: text;
+                           ok;
+                         });
+  deleteVoicePrint: () -> ();
+  deposit: (amount: nat) -> ();
+  depositToSavings: (amount: nat) -> (variant {
+                                        err: text;
+                                        ok;
+                                      });
+  exportUserData: () -> (text) query;
+  finalizeAccountDeletion: () -> (variant {
+                                    err: text;
+                                    ok;
+                                  });
+  finalizeVaultUnlock: () -> (variant {
+                                err: text;
+                                ok: text;
+                              });
+  /// Query: find a user by their registered phone number (privacy-protected)
+  findUserByPhone: (phone: text) -> (opt UserProfile) query;
+  generateInviteCode: () -> (text);
+  generateSmartReceipt: (month: nat, year: nat) -> (SmartReceipt);
+  getAIQueryHistory: (user: principal) -> (vec AIQuery) query;
+  getAccountDeletionStatus: () -> (DeletionStatus) query;
+  getActiveSessions: (user: principal) -> (vec ActiveSession) query;
+  getAllBusinessApplications: () ->
+   (vec record {
+          principal;
+          BusinessApplication;
+        }) query;
+  getAllFraudAlerts: () -> (vec FraudAlert) query;
+  getAllRSVPs: () -> (vec RSVP) query;
+  getAllSecurityEvents: () -> (vec SecurityEvent) query;
+  getAllTips: () -> (vec Tip) query;
+  /// Returns whether the App Lock PIN feature is enabled for the caller.
+  /// Defaults to false if no preference has been stored (feature is OFF by default).
+  getAppLockEnabled: () -> (bool) query;
+  getBalance: (user: principal) -> (nat) query;
+  getBiometricSettings: (user: principal) -> (opt BiometricSettings) query;
+  getCallerBusinessApplicationStatus: () ->
+   (opt BusinessApplicationStatus) query;
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getCompilationStatus: () -> (CompilationStatus) query;
+  getCurrentStatus: (user: principal) -> (opt Status) query;
+  /// Returns all direct deposits (pending + completed + failed) for the caller.
+  /// Lazy evaluation: any pending deposit whose clearAt <= now is auto-completed first.
+  getDirectDepositHistory: () -> (vec DirectDeposit);
+  getEncryptionLog: (user: principal) -> (vec EncryptionEvent) query;
+  getFraudAlerts: (user: principal) -> (vec FraudAlert) query;
+  getGDPRAuditLog: () -> (vec GDPRAuditEvent) query;
+  getInviteCodes: () -> (vec InviteCode) query;
+  getKYCConfigurationStatus: () ->
+   (record {
+      configured: bool;
+      provider: text;
+    }) query;
+  getLegalAndPrivacy: () -> (record {
+                               privacy: text;
+                               terms: text;
+                             }) query;
+  getManageMyDataAuditLog: () -> (vec GDPRAuditEvent) query;
+  /// Manager: get the full roster for the calling manager
+  getManagerRoster: () -> (vec StaffMember) query;
+  getMyBusinessApplication: () -> (opt BusinessApplication) query;
+  getMyDisputes: () -> (vec Dispute) query;
+  getMyRecurringPayments: () -> (vec RecurringPayment) query;
+  /// Staff: get all pending invites sent TO the caller
+  getMyRosterInvites: () -> (vec StaffInvite) query;
+  /// Get or create the caller's virtual direct deposit account.
+  /// Routing and account numbers are derived deterministically from the caller's
+  /// Principal, so they are stable across calls and canister upgrades.
+  getOrCreateDirectDepositAccount: () -> (DirectDepositAccount);
+  getPaymentMethods: (user: principal) -> (vec PaymentMethod) query;
+  /// Manager: get full payout history
+  getPayoutHistory: () -> (vec PayoutRecord) query;
+  getPendingBusinessApplications: () ->
+   (vec record {
+          principal;
+          BusinessApplication;
+        }) query;
+  /// Returns all pending direct deposits for the caller.
+  getPendingDirectDeposits: () -> (vec DirectDeposit) query;
+  /// Returns only PENDING money requests addressed to the caller, newest first.
+  getPendingRequestsReceived: () -> (vec MoneyRequest) query;
+  getProfessionalTips: (user: principal) -> (vec Tip) query;
+  getPublicCurrentStatus: (user: principal) -> (opt Status) query;
+  getPublicProfile: (username: text) ->
+   (opt
+     record {
+       bio: text;
+       currentStatus: opt Status;
+       isVerified: bool;
+       photo: opt ExternalBlob;
+       username: text;
+     }) query;
+  getPublicProfileByPrincipal: (user: principal) ->
+   (opt
+     record {
+       bio: text;
+       currentStatus: opt Status;
+       isVerified: bool;
+       photo: opt ExternalBlob;
+       username: text;
+     }) query;
+  /// Returns all money requests sent TO the caller, newest first.
+  getRequestsReceived: () -> (vec MoneyRequest) query;
+  /// Returns all money requests sent BY the caller, newest first.
+  getRequestsSent: () -> (vec MoneyRequest) query;
+  getSMSConfigurationStatus: () -> (bool) query;
+  getSavingsBalance: () -> (nat) query;
+  getSavingsHistory: () -> (vec SavingsTransaction) query;
+  getSecurityEvents: (user: principal) -> (vec SecurityEvent) query;
+  getSmartReceipt: (user: principal, month: nat, year: nat) ->
+   (opt SmartReceipt) query;
+  getSpendingLimits: () -> (opt SpendingLimitView) query;
+  /// Returns a single split payment by ID (only if caller is initiator or participant).
+  getSplitById: (splitId: text) -> (opt SplitPayment) query;
+  /// Returns all split payments where caller is the initiator or a participant.
+  getSplitPayments: () -> (vec SplitPayment) query;
+  /// Manager: get summed tips received per staff member since an optional timestamp, sorted descending
+  getStaffTipTotals: (since: opt int) -> (vec record {
+                                                principal;
+                                                nat;
+                                              }) query;
+  getStatuses: (user: principal) -> (vec Status) query;
+  getStripeSessionStatus: (sessionId: text) -> (StripeSessionStatus);
+  getSupportConversation: () -> (opt SupportConversation) query;
+  getSupportMessages: () -> (vec SupportMessage) query;
+  /// Manager: get current tip pool settings
+  getTipPoolSettings: () -> (TipPoolConfig) query;
+  getTips: () -> (vec Tip) query;
+  getTipsReceived: (user: principal) -> (vec Tip) query;
+  getTipsSent: (user: principal) -> (vec Tip) query;
+  getTwoFactorSettings: (user: principal) -> (opt TwoFactorSettings) query;
+  getUnreadSupportCount: () -> (nat) query;
+  getUserProfile: (user: principal) -> (opt UserProfile) query;
+  getVaultStatus: () -> (VaultStatus) query;
+  getVoicePrint: (user: principal) -> (opt VoicePrintData) query;
+  hasExistingPin: () -> (bool) query;
+  /// Manager: invite a staff member by their phone number
+  inviteStaffByPhone: (phone: text) -> (variant {
+                                          err: text;
+                                          ok;
+                                        });
+  isCallerAdmin: () -> (bool) query;
+  isKYCConfigured: () -> (bool) query;
+  isStripeConfigured: () -> (bool) query;
+  lockVault: () -> (variant {
+                      err: text;
+                      ok: text;
+                    });
+  logAIQuery: (queryText: text, response: text) -> ();
+  logEncryptionEvent: (event: EncryptionEvent) -> ();
+  logSecurityEvent: (event: SecurityEvent) -> ();
+  logoutSession: (sessionId: text) -> ();
+  markSupportMessagesRead: () -> ();
+  markTutorialCompleted: () -> ();
+  openSupportTicket: (subject: text, firstMessage: text) ->
+   (variant {
+      err: text;
+      ok: nat;
+    });
+  /// Admin-only: execute all due recurring payments.
+  processRecurringPayments: () -> ();
+  recordDisputeRequest: (transactionTimestamp: int, counterpartyPrincipal:
+   principal, reason: text) -> (variant {
+                                  err: text;
+                                  ok: text;
+                                });
+  recordExportRequest: () -> (variant {
+                                err: text;
+                                ok;
+                              });
+  /// Manager: record a payout distribution (does NOT move funds — manager controls external settlement)
+  recordPayout: (distributions: vec record {
+                                      principal;
+                                      nat;
+                                    }, notes: text) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  rejectBusinessApplication: (applicant: principal, reason: opt text) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  removeActiveSession: (sessionId: text) -> ();
+  removePaymentMethod: (methodId: text) -> ();
+  /// Manager: remove a staff member from the roster
+  removeStaffMember: (staffPrincipal: principal) -> (variant {
+                                                       err: text;
+                                                       ok;
+                                                     });
+  removeStatus: (index: nat) -> ();
+  removeWalletAddress: () -> ();
+  reportFraudAlert: (alert: FraudAlert) -> ();
+  requestAccountDeletion: () ->
+   (variant {
+      err: text;
+      ok: record {
+            confirmationToken: text;
+            scheduledDeletionTime: int;
+          };
+    });
+  /// Create a money request to another user.
+  /// A message is REQUIRED — callers cannot request money without explaining what it's for.
+  requestMoney: (toUser: principal, amount: nat, message: text, currencyType:
+   text) -> (variant {
+               err: text;
+               ok: nat;
+             });
+  requestVaultUnlock: () -> (variant {
+                               err: text;
+                               ok: text;
+                             });
+  resolveDispute: (disputeId: text, resolution: text) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  resolveFraudAlert: (userId: principal, timestamp: int) -> ();
+  /// Resolve a user Principal by their username or phone number.
+  /// Returns the Principal of the matching user, or null if not found.
+  /// Used by the split-payment UI to look up real Principals during participant search.
+  resolveUserByUsername: (usernameOrPhone: text) -> (opt principal) query;
+  /// Respond to a money request as the recipient (toUser).
+  /// accept=true: deducts from caller's balance, credits requester, creates a tip record.
+  /// accept=false: marks the request as declined.
+  respondToMoneyRequest: (requestId: nat, accept: bool) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  /// Respond to a split payment — participant accepts or declines their share.
+  /// On decline: participant's status → #Declined, whole split → #Cancelled, initiator notified.
+  /// On accept: participant's status → #Accepted; if ALL accepted, payments are settled immediately.
+  respondToSplitPayment: (splitId: text, accept: bool) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  saveCallerUserProfile: (profile: UserProfile) -> ();
+  saveVoicePrint: (voicePrint: VoicePrintData) -> ();
+  saveWalletAddress: (walletAddress: text) ->
+   (variant {
+      error: text;
+      success: bool;
+    });
+  searchUsers: (searchTerm: text) -> (vec SearchResult) query;
+  sendSupportMessage: (message: text) -> (variant {
+                                            err: text;
+                                            ok: nat;
+                                          });
+  sendTip: (toUser: principal, amount: nat, message: text, professional:
+   bool, currencyType: variant {
+                         crypto;
+                         fiat;
+                       }) -> ();
+  sendTipWithFee: (toUser: principal, amount: nat, message: text,
+   professional: bool, currencyType: variant {
+                                       crypto;
+                                       fiat;
+                                     }, paymentMethod: text) ->
+   (variant {
+      err: text;
+      ok: nat;
+    });
+  /// Enables or disables the App Lock PIN feature for the caller.
+  /// When disabling, the stored PIN data is cleared so a fresh PIN must be
+  /// set if the feature is re-enabled later.
+  setAppLockEnabled: (enabled: bool) -> ();
+  setBiometricSettings: (settings: BiometricSettings) -> ();
+  setKYCConfiguration: (apiKey: text, provider: text) -> ();
+  setKYCStatus: (user: principal, status: KYCStatus, providerReference:
+   opt text) -> ();
+  setPinHash: (salt: blob, hash: blob) -> ();
+  setSMSConfiguration: (accountSid: text, authToken: text, fromPhone:
+   text) -> ();
+  setSpendingLimits: (daily: opt nat, weekly: opt nat, monthly: opt nat) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  setStripeConfiguration: (config: StripeConfiguration) -> ();
+  /// Manager: enable/disable tip pooling and set distribution mode
+  setTipPoolMode: (enabled: bool, mode: TipPoolMode) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  setTwoFactorSettings: (settings: TwoFactorSettings) -> ();
+  setUserVerificationStatus: (user: principal, isVerified: bool) -> ();
+  /// Admin-only: simulate an incoming direct deposit for a target user.
+  /// Creates a pending deposit with clearAt set ~2 business days (48h) in the future.
+  simulateDirectDeposit: (targetUser: principal, amount: nat, description:
+   text, isTest: bool) -> (variant {
+                             err: text;
+                             ok: text;
+                           });
+  startWithdrawalOTPChallenge: (amount: nat) ->
+   (variant {
+      err: text;
+      ok: record {
+            challengeId: text;
+            expiresIn: nat;
+            phoneSuffix: text;
+          };
+    });
+  submitBusinessApplication: (businessName: text, businessType: text,
+   description: text, termsAccepted: bool) -> (variant {
+                                                 err: text;
+                                                 ok;
+                                               });
+  submitKYC: () -> ();
+  submitRSVP: (name: text, attending: bool, inviteCode: text) -> ();
+  toggleRecurringPayment: (id: nat, enabled: bool) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+  updatePaymentMethodVerificationStatus: (methodId: text, status: text) -> ();
+  verifyPinHash: (salt: blob, hash: blob) -> (PinCheckResult);
+  verifyWithdrawalOTP: (challengeId: text, otp: text) ->
+   (variant {
+      err: text;
+      ok: bool;
+    });
+  withdraw: (amount: nat, verifiedOtpId: opt text) -> ();
+  withdrawFromSavings: (amount: nat) -> (variant {
+                                           err: text;
+                                           ok;
+                                         });
+  withdrawWithFee: (amount: nat, verifiedOtpId: opt text, withdrawalType:
+   text) -> (variant {
+               err: text;
+               ok: nat;
+             });
+}

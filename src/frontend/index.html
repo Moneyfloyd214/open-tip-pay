@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preload" href="/env.json" as="fetch" crossorigin="anonymous" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open Tip Pay</title>
+    <meta name="description" content="Open Tip Pay — Send money, pay friends, split bills — instantly and securely." />
+    <meta property="og:title" content="Open Tip Pay" />
+    <meta property="og:description" content="Send money, pay friends, split bills — instantly and securely." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Open Tip Pay" />
+    <meta name="twitter:description" content="Send money, pay friends, split bills — instantly and securely." />
+    <meta name="theme-color" content="#0f1e2d" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <!-- Inline loading fallback — visible before JS bundle downloads.
+         React hides this on mount so users never see a blank page. -->
+    <div
+      id="loading-fallback"
+      style="
+        display:flex;flex-direction:column;align-items:center;justify-content:center;
+        min-height:100vh;background:#0d1b2a;color:#fff;
+        padding:2rem;text-align:center;gap:1.25rem;font-family:system-ui,sans-serif;
+      "
+    >
+      <div style="font-size:1.875rem;font-weight:800;letter-spacing:-0.02em;">Open Tip Pay</div>
+      <div style="color:#2dd4bf;font-size:0.85rem;">Loading app…</div>
+      <div style="
+        width:36px;height:36px;
+        border:3px solid rgba(45,212,191,0.2);
+        border-top-color:#2dd4bf;
+        border-radius:50%;
+        animation:lf-spin 1s linear infinite;
+      "></div>
+      <style>@keyframes lf-spin{to{transform:rotate(360deg)}}</style>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
+</html>

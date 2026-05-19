@@ -1,0 +1,27 @@
+{
+  "overview": "Open Tip Pay is a mobile-first P2P tipping and payment platform where anyone can send and receive tips and payments using cards, bank accounts, or crypto wallets. It features advanced 2FA security, a Vault Lock freeze, business tip-pooling tools, GDPR data controls, and now split-payment for groups dividing bills.",
+  "features": [
+    "Send & receive money/tips instantly",
+    "Split bills among multiple people with equal, percentage, or exact-amount modes",
+    "Request money with required note",
+    "Direct deposit with unique routing & account numbers",
+    "Vault Lock to freeze all outgoing transactions",
+    "2FA withdrawal security (PIN + SMS)",
+    "Manager Portal with tip pooling for businesses",
+    "Savings pocket and spending limits",
+    "Recurring/scheduled payments",
+    "GDPR/CCPA data export & deletion",
+    "Admin Panel for platform management"
+  ],
+  "category": "finance",
+  "tags": [
+    "payments",
+    "tipping",
+    "split-bill",
+    "p2p",
+    "fintech",
+    "pwa",
+    "manager-portal"
+  ],
+  "last_updated": "2026-04-25T02:33:56.182Z"
+}

@@ -1,0 +1,360 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+
+    /* Deep Navy (#1A2B3C) - Primary brand color */
+    --navy: 0.205 0.08 240;
+    --navy-light: 0.25 0.06 240;
+    --navy-dark: 0.16 0.1 240;
+
+    /* Vibrant Teal (#20C997) - Accent color */
+    --teal: 0.72 0.12 165;
+    --teal-light: 0.78 0.1 165;
+    --teal-dark: 0.65 0.14 165;
+
+    /* Base colors */
+    --background: 0.98 0 0;
+    --foreground: 0.145 0.08 240;
+
+    --card: 1 0 0;
+    --card-foreground: 0.145 0.08 240;
+
+    --popover: 1 0 0;
+    --popover-foreground: 0.145 0.08 240;
+
+    --primary: 0.205 0.08 240;
+    --primary-foreground: 0.985 0 0;
+
+    --secondary: 0.72 0.12 165;
+    --secondary-foreground: 0.985 0 0;
+
+    --muted: 0.95 0 0;
+    --muted-foreground: 0.5 0.04 240;
+
+    --accent: 0.72 0.12 165;
+    --accent-foreground: 0.985 0 0;
+
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 0.985 0 0;
+
+    --border: 0.9 0 0;
+    --input: 0.9 0 0;
+    --ring: 0.72 0.12 165;
+
+    --chart-1: 0.72 0.12 165;
+    --chart-2: 0.205 0.08 240;
+    --chart-3: 0.65 0.14 165;
+    --chart-4: 0.25 0.06 240;
+    --chart-5: 0.78 0.1 165;
+  }
+
+  .dark {
+    --background: 0.145 0.08 240;
+    --foreground: 0.985 0 0;
+
+    --card: 0.205 0.08 240;
+    --card-foreground: 0.985 0 0;
+
+    --popover: 0.25 0.06 240;
+    --popover-foreground: 0.985 0 0;
+
+    --primary: 0.72 0.12 165;
+    --primary-foreground: 0.145 0.08 240;
+
+    --secondary: 0.25 0.06 240;
+    --secondary-foreground: 0.985 0 0;
+
+    --muted: 0.25 0.06 240;
+    --muted-foreground: 0.7 0.04 240;
+
+    --accent: 0.72 0.12 165;
+    --accent-foreground: 0.985 0 0;
+
+    --destructive: 0.704 0.191 22.216;
+    --destructive-foreground: 0.985 0 0;
+
+    --border: 1 0 0 / 10%;
+    --input: 1 0 0 / 15%;
+    --ring: 0.72 0.12 165;
+
+    --chart-1: 0.72 0.12 165;
+    --chart-2: 0.78 0.1 165;
+    --chart-3: 0.205 0.08 240;
+    --chart-4: 0.65 0.14 165;
+    --chart-5: 0.25 0.06 240;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom utility classes for brand colors */
+@layer utilities {
+  .bg-navy {
+    background-color: oklch(var(--navy));
+  }
+
+  .bg-navy-light {
+    background-color: oklch(var(--navy-light));
+  }
+
+  .bg-navy-dark {
+    background-color: oklch(var(--navy-dark));
+  }
+
+  .bg-teal {
+    background-color: oklch(var(--teal));
+  }
+
+  .bg-teal-light {
+    background-color: oklch(var(--teal-light));
+  }
+
+  .bg-teal-dark {
+    background-color: oklch(var(--teal-dark));
+  }
+
+  .text-navy {
+    color: oklch(var(--navy));
+  }
+
+  .text-teal {
+    color: oklch(var(--teal));
+  }
+
+  .text-teal-light {
+    color: oklch(var(--teal-light));
+  }
+
+  .border-teal {
+    border-color: oklch(var(--teal));
+  }
+
+  .border-navy-light {
+    border-color: oklch(var(--navy-light));
+  }
+
+  /* Enhanced Glassmorphism effect */
+  .glassmorphism {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(32, 201, 151, 0.1);
+  }
+
+  /* Glow effect for teal elements */
+  .glow-teal {
+    box-shadow: 0 0 20px rgba(32, 201, 151, 0.4), 0 0 40px
+      rgba(32, 201, 151, 0.2);
+  }
+
+  /* Hero button glow */
+  .glow-teal-hero {
+    box-shadow: 0 0 0 0 rgba(32, 201, 151, 0.4), 0 4px 20px
+      rgba(32, 201, 151, 0.35), 0 8px 40px rgba(32, 201, 151, 0.15);
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Frosted glass effect */
+  .frosted-glass {
+    background: rgba(26, 43, 60, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(32, 201, 151, 0.2);
+  }
+
+  /* Dashboard content fade-in */
+  .fade-in-up {
+    animation: fadeInUp 0.4s ease-out forwards;
+  }
+
+  /* Section header accent style */
+  .section-header {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: oklch(var(--teal));
+    opacity: 0.85;
+  }
+}
+
+/* Keyframe animations */
+@layer utilities {
+  /* Neon glow pulse */
+  @keyframes neon-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 10px rgba(32, 201, 151, 0.5), 0 0 20px
+        rgba(32, 201, 151, 0.3), 0 0 30px rgba(32, 201, 151, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(32, 201, 151, 0.7), 0 0 40px
+        rgba(32, 201, 151, 0.5), 0 0 60px rgba(32, 201, 151, 0.3);
+    }
+  }
+
+  .neon-glow {
+    animation: neon-glow 2s ease-in-out infinite;
+  }
+
+  /* CTA button idle pulse */
+  @keyframes cta-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(32, 201, 151, 0), 0 4px 24px
+        rgba(32, 201, 151, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(32, 201, 151, 0.08), 0 4px 32px
+        rgba(32, 201, 151, 0.5);
+    }
+  }
+
+  .cta-pulse {
+    animation: cta-pulse 2.4s ease-in-out infinite;
+  }
+
+  /* Ambient orb float — very slow, CSS-only for performance */
+  @keyframes orb-drift-1 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(20px, -30px) scale(1.04);
+    }
+    66% {
+      transform: translate(-15px, 20px) scale(0.97);
+    }
+  }
+
+  @keyframes orb-drift-2 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    40% {
+      transform: translate(-25px, 15px) scale(1.03);
+    }
+    75% {
+      transform: translate(10px, -20px) scale(0.98);
+    }
+  }
+
+  @keyframes orb-drift-3 {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(12px, 18px);
+    }
+  }
+
+  .orb-1 {
+    animation: orb-drift-1 18s ease-in-out infinite;
+  }
+  .orb-2 {
+    animation: orb-drift-2 24s ease-in-out infinite;
+  }
+  .orb-3 {
+    animation: orb-drift-3 30s ease-in-out infinite;
+  }
+
+  /* Spinner ring */
+  @keyframes spin-ring {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .spin-ring {
+    animation: spin-ring 1s linear infinite;
+  }
+
+  /* Content fade-in */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Shake for wrong PIN */
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+      transform: translateX(-10px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+      transform: translateX(10px);
+    }
+  }
+
+  .animate-shake {
+    animation: shake 0.5s ease-in-out;
+  }
+
+  /* Login hero ring pulse */
+  @keyframes ring-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.06);
+    }
+  }
+
+  .ring-pulse {
+    animation: ring-pulse 3s ease-in-out infinite;
+  }
+
+  /* Animation delays */
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+  .delay-1000 {
+    animation-delay: 1000ms;
+  }
+  .delay-1500 {
+    animation-delay: 1500ms;
+  }
+  .delay-2000 {
+    animation-delay: 2000ms;
+  }
+  .delay-3000 {
+    animation-delay: 3000ms;
+  }
+}

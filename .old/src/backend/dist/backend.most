@@ -1,0 +1,566 @@
+// Version: 1.0.0
+type AIQuery__724467772 =
+  {queryText : Text; response : Text; timestamp : Int; userId : Principal};
+type AccountDeletionRecord__836587387 =
+  {finalized : Bool; scheduledDeletionTime : Int};
+type ActiveSession__992529221 =
+  {
+    deviceName : Text;
+    location : Text;
+    loginTimestamp : Int;
+    sessionId : Text
+  };
+type AppLockPinData__925472262 =
+  {
+    consecutiveFailures : Nat;
+    hash : Blob;
+    lastFailureTimestamp : Time__900049286;
+    salt : Blob
+  };
+type BiometricSettings__670803084 = {biometricType : ?Text; enabled : Bool};
+type BusinessApplicationStatus__648461585 = {#approved; #pending; #rejected};
+type BusinessApplication__24395841 =
+  {
+    businessName : Text;
+    businessType : Text;
+    createdAt : Int;
+    description : Text;
+    rejectionReason : ?Text;
+    status : BusinessApplicationStatus__648461585;
+    termsAccepted : Bool;
+    updatedAt : Int
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type DirectDepositAccount__229701885 =
+  {
+    accountNumber : Text;
+    createdAt : Int;
+    routingNumber : Text;
+    status : Text
+  };
+type DirectDeposit__454068149 =
+  {
+    amount : Nat;
+    clearAt : Int;
+    createdAt : Int;
+    description : Text;
+    id : Text;
+    isTest : Bool;
+    status : Text;
+    userPrincipal : Principal
+  };
+type DisputeStatus__700194661 = {#open; #rejected; #resolved};
+type Dispute__575102370 =
+  {
+    counterpartyPrincipal : Principal;
+    createdAt : Int;
+    id : Text;
+    reason : Text;
+    resolution : ?Text;
+    status : DisputeStatus__700194661;
+    submitterPrincipal : Principal;
+    transactionTimestamp : Int;
+    updatedAt : Int
+  };
+type EncryptionEvent__509133420 =
+  {dataType : Text; eventType : Text; timestamp : Int};
+type ExternalBlob__246066408 = Blob;
+type FraudAlert__836844897 =
+  {
+    reason : Text;
+    resolved : Bool;
+    severity : {#high; #low; #medium};
+    timestamp : Int;
+    userId : Principal
+  };
+type GDPRAuditEventType__906644721 =
+  {
+    #deletion_cancelled;
+    #deletion_finalized;
+    #deletion_requested;
+    #export_requested
+  };
+type GDPRAuditEvent__716755970 =
+  {
+    eventType : GDPRAuditEventType__906644721;
+    principal : Principal;
+    timestamp : Int
+  };
+type Int__270357528 = Int__616954475;
+type Int__616954475 = Int;
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type InviteCode__761281821 =
+  {code : Text; created : Time__900049286; used : Bool};
+type KYCStatus__461054468 = {#failed; #notSubmitted; #pending; #verified};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type List__415060402<T> = List__790383201<T>;
+type List__790383201<T> =
+  {
+    var blockIndex : Nat__490723111;
+    var blocks : [var [var ?T]];
+    var elementIndex : Nat__490723111
+  };
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type MoneyRequest__894587261 =
+  {
+    amount : Nat;
+    fromUser : Principal;
+    id : Nat;
+    message : Text;
+    paidTipId : ?Nat;
+    status : RequestStatus__1046322842;
+    timestamp : Int;
+    toUser : Principal
+  };
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type OTPChallenge__283514945 =
+  {
+    amount : Nat;
+    expiresAt : Int;
+    var failedAttempts : Nat;
+    otp : Text;
+    var used : Bool;
+    userPrincipal : Principal
+  };
+type PaymentMethodType__714138347 = {#bankAccount; #card};
+type PaymentMethod__68978920 =
+  {
+    accountType : ?Text;
+    addedAt : Int;
+    bankName : ?Text;
+    brand : ?Text;
+    id : Text;
+    last4 : Text;
+    methodType : PaymentMethodType__714138347;
+    stripeVerificationStatus : Text
+  };
+type PayoutRecord__169083594 =
+  {
+    distributions : [(Principal, Nat)];
+    id : Text;
+    managerPrincipal : Principal;
+    notes : Text;
+    timestamp : Int
+  };
+type RSVP__815186634 =
+  {
+    attending : Bool;
+    inviteCode : Text;
+    name : Text;
+    timestamp : Time__900049286
+  };
+type RecurringFrequency__350987962 = {#daily; #monthly; #weekly};
+type RecurringPayment__69347714 =
+  {
+    amount : Nat;
+    createdAt : Int;
+    enabled : Bool;
+    frequency : RecurringFrequency__350987962;
+    id : Nat;
+    lastRunAt : ?Int;
+    message : Text;
+    nextRunTime : Int;
+    owner : Principal;
+    toUser : Principal;
+    totalRuns : Nat
+  };
+type RequestStatus__1046322842 = {#cancelled; #declined; #paid; #pending};
+type SavingsDirection__554606990 = {#fromSavings; #toSavings};
+type SavingsTransaction__766235723 =
+  {
+    amount : Nat;
+    direction : SavingsDirection__554606990;
+    id : Nat;
+    owner : Principal;
+    timestamp : Int
+  };
+type SecurityEvent__338469793 =
+  {details : Text; eventType : Text; timestamp : Int; userId : Principal};
+type SmartReceipt__779801335 =
+  {
+    generatedAt : Int;
+    month : Nat;
+    professionalTips : [Tip__571002024];
+    totalAmount : Nat;
+    userId : Principal;
+    year : Nat
+  };
+type SpendingLimit__318526228 =
+  {
+    dailyLimit : ?Nat;
+    var dailySpent : Nat;
+    var lastDayReset : Int;
+    var lastMonthReset : Int;
+    var lastWeekReset : Int;
+    monthlyLimit : ?Nat;
+    var monthlySpent : Nat;
+    weeklyLimit : ?Nat;
+    var weeklySpent : Nat
+  };
+type SplitParticipantStatus__1007336696 =
+  {#Accepted; #Declined; #Paid; #Pending};
+type SplitParticipant__719299311 =
+  {
+    amount : Nat;
+    nickname : Text;
+    principal : Principal;
+    status : SplitParticipantStatus__1007336696
+  };
+type SplitPaymentStatus__307076164 = {#Active; #Cancelled; #Settled};
+type SplitPayment__302156093 =
+  {
+    createdAt : Int;
+    description : Text;
+    id : Text;
+    initiator : Principal;
+    participants : [SplitParticipant__719299311];
+    settledAt : ?Int;
+    status : SplitPaymentStatus__307076164;
+    totalAmount : Nat
+  };
+type StaffInviteMethod__201275929 = {#link; #phone};
+type StaffInviteStatus__432685160 = {#accepted; #declined; #pending};
+type StaffInvite__972112728 =
+  {
+    createdAt : Int;
+    expiresAt : Int;
+    inviteCode : Text;
+    inviteePrincipal : ?Principal;
+    managerPrincipal : Principal;
+    method : StaffInviteMethod__201275929;
+    status : StaffInviteStatus__432685160
+  };
+type StaffMemberStatus__222984788 = {#active; #removed};
+type StaffMember__985834694 =
+  {
+    joinedAt : Int;
+    principal : Principal;
+    status : StaffMemberStatus__222984788
+  };
+type Status__1000080315 =
+  {
+    createdAt : Int;
+    customStatus : ?Text;
+    isActive : Bool;
+    statusType : Text;
+    tableNumber : ?Nat
+  };
+type StripeConfiguration__96897619 =
+  {allowedCountries : [Text]; secretKey : Text};
+type SupportConversation__672269763 =
+  {
+    createdAt : Int;
+    id : Nat;
+    lastMessageAt : Int;
+    status : SupportStatus__393732494;
+    subject : Text;
+    userPrincipal : Principal
+  };
+type SupportMessage__347385535 =
+  {
+    conversationId : Nat;
+    id : Nat;
+    message : Text;
+    read : Bool;
+    senderIsAdmin : Bool;
+    senderPrincipal : Principal;
+    timestamp : Int
+  };
+type SupportStatus__393732494 = {#open; #resolved; #waitingForUser};
+type Time__796480547 = Int__270357528;
+type Time__900049286 = Time__796480547;
+type TipPoolConfig__1059125421 =
+  {
+    customSplits : [(Principal, Nat)];
+    enabled : Bool;
+    mode : TipPoolMode__49526000
+  };
+type TipPoolMode__49526000 = {#custom; #equal};
+type Tip__571002024 =
+  {
+    amount : Nat;
+    currencyType : {#crypto; #fiat};
+    fromUser : Principal;
+    message : Text;
+    professional : Bool;
+    timestamp : Int;
+    toUser : Principal
+  };
+type TwoFactorSettings__11872040 =
+  {backupCodes : [Text]; enabled : Bool; method : ?Text};
+type UserProfile__491224006 =
+  {
+    bio : Text;
+    currentStatus : ?Status__1000080315;
+    email : Text;
+    isFirstWalletConnection : Bool;
+    isVerified : Bool;
+    kycProviderReference : ?Text;
+    kycStatus : KYCStatus__461054468;
+    kycSubmissionTimestamp : ?Int;
+    phoneNumber : ?Text;
+    photo : ?ExternalBlob__246066408;
+    username : Text;
+    walletAddress : ?Text
+  };
+type UserRole__1054455867 = {#admin; #guest; #user};
+type VaultLockState__13121970 =
+  {lastAlertSentAt : ?Int; locked : Bool; unlockRequestedAt : ?Int};
+type VoicePrintData__222712332 =
+  {enrollmentDate : Int; lastVerified : ?Int; voicePrintHash : Text};
+actor {
+  stable ATM_WITHDRAWAL_FEE_CENTS : Nat;
+  stable BUSINESS_RECEIVE_FEE_FLAT : Nat;
+  stable BUSINESS_RECEIVE_FEE_PCT : Nat;
+  stable CREDIT_CARD_FEE_PCT : Nat;
+  stable FOREIGN_TRANSACTION_FEE_PCT : Nat;
+  stable INSTANT_DEPOSIT_FEE_MAX_NUM : Nat;
+  stable INSTANT_DEPOSIT_FEE_MIDPOINT : Nat;
+  stable INSTANT_DEPOSIT_FEE_MIN_CENTS : Nat;
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1054455867>
+    };
+  stable activeSessions :
+    {
+      var root : Node__46230540<Principal, [ActiveSession__992529221]>;
+      var size : Nat__490723111
+    };
+  stable var aiQueryLog :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?AIQuery__724467772]];
+      var elementIndex : Nat__490723111
+    };
+  stable appLockEnabled :
+    {var root : Node__46230540<Principal, Bool>; var size : Nat__490723111};
+  stable balances :
+    {var root : Node__46230540<Principal, Nat>; var size : Nat__490723111};
+  stable biometricSettings :
+    {
+      var root : Node__46230540<Principal, BiometricSettings__670803084>;
+      var size : Nat__490723111
+    };
+  stable businessApplications :
+    {
+      var root : Node__46230540<Principal, BusinessApplication__24395841>;
+      var size : Nat__490723111
+    };
+  stable compilationStatus :
+    {
+      obfuscationLayer : Text;
+      tooltipNote : Text;
+      verificationTimestamp : Time__900049286
+    };
+  stable dayNanos : Int;
+  stable deletionGracePeriodNanos : Int;
+  stable deletionRequests :
+    {
+      var root : Node__46230540<Principal, AccountDeletionRecord__836587387>;
+      var size : Nat__490723111
+    };
+  stable directDepositAccounts :
+    {
+      var root : Node__46230540<Principal, DirectDepositAccount__229701885>;
+      var size : Nat__490723111
+    };
+  stable directDeposits :
+    {
+      var root : Node__46230540<Text, DirectDeposit__454068149>;
+      var size : Nat__490723111
+    };
+  stable disputes :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Dispute__575102370]];
+      var elementIndex : Nat__490723111
+    };
+  stable encryptionLogs :
+    {
+      var root : Node__46230540<Principal, [EncryptionEvent__509133420]>;
+      var size : Nat__490723111
+    };
+  stable exportRateLimitMap :
+    {
+      var root : Node__46230540<Principal, List__415060402<Int>>;
+      var size : Nat__490723111
+    };
+  stable exportRateLimitWindowNanos : Int;
+  stable var fraudAlerts :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?FraudAlert__836844897]];
+      var elementIndex : Nat__490723111
+    };
+  stable gdprAuditLog :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?GDPRAuditEvent__716755970]];
+      var elementIndex : Nat__490723111
+    };
+  stable inviteLinksState :
+    {
+      var inviteCodes : Map__605269027<Text, InviteCode__761281821>;
+      var rsvps : Map__605269027<Text, RSVP__815186634>
+    };
+  stable kycConfig : {var apiKey : Text; var provider : Text};
+  stable kycSubmissionAttempts :
+    {
+      var root : Node__46230540<Principal, List__415060402<Int>>;
+      var size : Nat__490723111
+    };
+  stable lockoutDurationNanos : Nat;
+  stable var moneyRequests :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?MoneyRequest__894587261]];
+      var elementIndex : Nat__490723111
+    };
+  stable monthNanos : Int;
+  stable var nextRecurringPaymentId : Nat;
+  stable var nextSavingsTxId : Nat;
+  stable var nextSupportConversationId : Nat;
+  stable var nextSupportMessageId : Nat;
+  stable otpChallenges :
+    {
+      var root : Node__46230540<Text, OTPChallenge__283514945>;
+      var size : Nat__490723111
+    };
+  stable otpLockouts :
+    {var root : Node__46230540<Text, Int>; var size : Nat__490723111};
+  stable paymentMethods :
+    {
+      var root : Node__46230540<Principal, [PaymentMethod__68978920]>;
+      var size : Nat__490723111
+    };
+  stable payoutRecords :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<PayoutRecord__169083594>>;
+      var size : Nat__490723111
+    };
+  stable pinData :
+    {
+      var root : Node__46230540<Principal, AppLockPinData__925472262>;
+      var size : Nat__490723111
+    };
+  stable rateLimitMap :
+    {
+      var root : Node__46230540<Principal, List__415060402<Int>>;
+      var size : Nat__490723111
+    };
+  stable var recurringPayments :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?RecurringPayment__69347714]];
+      var elementIndex : Nat__490723111
+    };
+  stable var requestCounter : Nat;
+  stable savingsBalances :
+    {var root : Node__46230540<Principal, Nat>; var size : Nat__490723111};
+  stable var savingsHistory :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?SavingsTransaction__766235723]];
+      var elementIndex : Nat__490723111
+    };
+  stable var securityEvents :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?SecurityEvent__338469793]];
+      var elementIndex : Nat__490723111
+    };
+  stable smartReceipts :
+    {
+      var root : Node__46230540<Text, SmartReceipt__779801335>;
+      var size : Nat__490723111
+    };
+  stable smsConfig :
+    {var accountSid : Text; var authToken : Text; var fromPhone : Text};
+  stable spendingLimits :
+    {
+      var root : Node__46230540<Principal, SpendingLimit__318526228>;
+      var size : Nat__490723111
+    };
+  stable var splitCounter : Nat;
+  stable splitPayments :
+    {
+      var root : Node__46230540<Text, SplitPayment__302156093>;
+      var size : Nat__490723111
+    };
+  stable staffInvites :
+    {
+      var root : Node__46230540<Text, StaffInvite__972112728>;
+      var size : Nat__490723111
+    };
+  stable staffRosters :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<StaffMember__985834694>>;
+      var size : Nat__490723111
+    };
+  stable statuses :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<Status__1000080315>>;
+      var size : Nat__490723111
+    };
+  stable var stripeConfiguration : ?StripeConfiguration__96897619;
+  stable stripeSessions :
+    {var root : Node__46230540<Text, Principal>; var size : Nat__490723111};
+  stable supportConversations :
+    {
+      var root : Node__46230540<Principal, SupportConversation__672269763>;
+      var size : Nat__490723111
+    };
+  stable var supportMessages :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?SupportMessage__347385535]];
+      var elementIndex : Nat__490723111
+    };
+  stable tipPoolConfigs :
+    {
+      var root : Node__46230540<Principal, TipPoolConfig__1059125421>;
+      var size : Nat__490723111
+    };
+  stable var tips :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Tip__571002024]];
+      var elementIndex : Nat__490723111
+    };
+  stable twoDaysNanos : Int;
+  stable twoFactorSettings :
+    {
+      var root : Node__46230540<Principal, TwoFactorSettings__11872040>;
+      var size : Nat__490723111
+    };
+  stable userProfiles :
+    {
+      var root : Node__46230540<Principal, UserProfile__491224006>;
+      var size : Nat__490723111
+    };
+  stable vaultAlertIntervalNanos : Int;
+  stable vaultCooldownNanos : Int;
+  stable vaultLocks :
+    {
+      var root : Node__46230540<Principal, VaultLockState__13121970>;
+      var size : Nat__490723111
+    };
+  stable voicePrints :
+    {
+      var root : Node__46230540<Principal, VoicePrintData__222712332>;
+      var size : Nat__490723111
+    };
+  stable weekNanos : Int
+};
