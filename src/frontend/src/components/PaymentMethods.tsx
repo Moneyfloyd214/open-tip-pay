@@ -219,11 +219,11 @@ export default function PaymentMethods() {
               alt="Payment Methods"
               className="h-6 w-6"
             />
-            <h3 className="text-sm font-semibold text-white">
+            <h3 className="text-sm font-semibold text-foreground">
               Payment Methods
             </h3>
           </div>
-          <p className="text-xs text-white/60">
+          <p className="text-xs text-muted-foreground">
             Manage your cards and bank accounts for sending tips and receiving
             funds
           </p>
@@ -240,7 +240,7 @@ export default function PaymentMethods() {
                 alt="Cards"
                 className="h-5 w-5"
               />
-              <h4 className="text-sm font-medium text-white">
+              <h4 className="text-sm font-medium text-foreground">
                 Debit & Credit Cards
               </h4>
             </div>
@@ -257,7 +257,9 @@ export default function PaymentMethods() {
           {cards.length === 0 ? (
             <div className="glassmorphism p-6 rounded-lg text-center">
               <CreditCard className="h-8 w-8 text-white/40 mx-auto mb-2" />
-              <p className="text-sm text-white/60">No cards added yet</p>
+              <p className="text-sm text-muted-foreground">
+                No cards added yet
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -272,7 +274,7 @@ export default function PaymentMethods() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           {card.brand?.toUpperCase()} •••• {card.last4}
                         </p>
                         {card.stripeVerificationStatus === "verified" ? (
@@ -320,7 +322,9 @@ export default function PaymentMethods() {
                 alt="Bank Accounts"
                 className="h-5 w-5"
               />
-              <h4 className="text-sm font-medium text-white">Bank Accounts</h4>
+              <h4 className="text-sm font-medium text-foreground">
+                Bank Accounts
+              </h4>
             </div>
             <Button
               onClick={() => setAddBankDialogOpen(true)}
@@ -335,7 +339,7 @@ export default function PaymentMethods() {
           {banks.length === 0 ? (
             <div className="glassmorphism p-6 rounded-lg text-center">
               <Building2 className="h-8 w-8 text-white/40 mx-auto mb-2" />
-              <p className="text-sm text-white/60">
+              <p className="text-sm text-muted-foreground">
                 No bank accounts added yet
               </p>
             </div>
@@ -352,7 +356,7 @@ export default function PaymentMethods() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           {bank.bankName} •••• {bank.last4}
                         </p>
                         {bank.stripeVerificationStatus === "verified" ? (
@@ -416,7 +420,7 @@ export default function PaymentMethods() {
 
       {/* Add Card Dialog */}
       <Dialog open={addCardDialogOpen} onOpenChange={setAddCardDialogOpen}>
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-teal/20 text-white">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-teal/20 text-foreground">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <CreditCard className="h-5 w-5 text-teal" />
@@ -433,10 +437,10 @@ export default function PaymentMethods() {
                 Card Type
               </Label>
               <Select value={cardBrand} onValueChange={setCardBrand}>
-                <SelectTrigger className="bg-navy-dark/50 border-teal/30 text-white">
+                <SelectTrigger className="bg-muted/50 border-teal/30 text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-navy-dark border-teal/30">
+                <SelectContent className="bg-background border-teal/30">
                   <SelectItem value="visa">Visa</SelectItem>
                   <SelectItem value="mastercard">Mastercard</SelectItem>
                   <SelectItem value="amex">American Express</SelectItem>
@@ -457,7 +461,7 @@ export default function PaymentMethods() {
                   setCardNumber(e.target.value.replace(/\s/g, ""))
                 }
                 maxLength={19}
-                className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
               />
             </div>
 
@@ -474,7 +478,7 @@ export default function PaymentMethods() {
                     setCardExpiry(e.target.value.replace(/\D/g, ""))
                   }
                   maxLength={5}
-                  className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                  className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
                 />
               </div>
               <div className="space-y-2">
@@ -489,7 +493,7 @@ export default function PaymentMethods() {
                     setCardCVC(e.target.value.replace(/\D/g, ""))
                   }
                   maxLength={4}
-                  className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                  className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
                 />
               </div>
             </div>
@@ -524,7 +528,7 @@ export default function PaymentMethods() {
 
       {/* Add Bank Dialog */}
       <Dialog open={addBankDialogOpen} onOpenChange={setAddBankDialogOpen}>
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-teal/20 text-white">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-teal/20 text-foreground">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Building2 className="h-5 w-5 text-teal" />
@@ -546,7 +550,7 @@ export default function PaymentMethods() {
                 placeholder="Chase Bank"
                 value={bankName}
                 onChange={(e) => setBankName(e.target.value)}
-                className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
               />
             </div>
 
@@ -555,10 +559,10 @@ export default function PaymentMethods() {
                 Account Type
               </Label>
               <Select value={accountType} onValueChange={setAccountType}>
-                <SelectTrigger className="bg-navy-dark/50 border-teal/30 text-white">
+                <SelectTrigger className="bg-muted/50 border-teal/30 text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-navy-dark border-teal/30">
+                <SelectContent className="bg-background border-teal/30">
                   <SelectItem value="checking">Checking</SelectItem>
                   <SelectItem value="savings">Savings</SelectItem>
                 </SelectContent>
@@ -577,7 +581,7 @@ export default function PaymentMethods() {
                   setRoutingNumber(e.target.value.replace(/\D/g, ""))
                 }
                 maxLength={9}
-                className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
               />
             </div>
 
@@ -593,7 +597,7 @@ export default function PaymentMethods() {
                   setAccountNumber(e.target.value.replace(/\D/g, ""))
                 }
                 maxLength={17}
-                className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
               />
             </div>
           </div>

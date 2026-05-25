@@ -89,15 +89,15 @@ export default function TransactionHistory({
 
   return (
     <>
-      <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
+      <Card className="border-border bg-muted/30 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg text-white">
+          <CardTitle className="text-lg text-foreground">
             Transaction History
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="received" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 bg-navy-dark/50">
+            <TabsList className="grid w-full grid-cols-5 bg-muted/50">
               <TabsTrigger
                 value="received"
                 data-ocid="transaction_history.received_tab"
@@ -198,7 +198,7 @@ export default function TransactionHistory({
                 <>
                   {requestsReceived && requestsReceived.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold text-white/50 uppercase tracking-wider px-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
                         Requests from Others
                       </p>
                       {requestsReceived
@@ -217,7 +217,7 @@ export default function TransactionHistory({
 
                   {requestsSent && requestsSent.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold text-white/50 uppercase tracking-wider px-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
                         Your Requests
                       </p>
                       {requestsSent
@@ -256,7 +256,7 @@ export default function TransactionHistory({
                   {/* Active splits */}
                   {activeSplits.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold text-white/50 uppercase tracking-wider px-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
                         Active
                       </p>
                       {activeSplits.map((split, index) => (
@@ -273,7 +273,7 @@ export default function TransactionHistory({
                   {/* Completed splits */}
                   {completedSplits.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold text-white/50 uppercase tracking-wider px-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
                         Completed
                       </p>
                       {completedSplits.map((split, index) => (
@@ -343,13 +343,13 @@ function MoneyRequestItem({
     },
     cancelled: {
       label: "Cancelled",
-      className: "bg-white/10 text-white/50 border-white/20",
+      className: "bg-muted/50 text-muted-foreground border-border",
     },
   };
 
   const { label, className } = statusConfig[status] ?? {
     label: status,
-    className: "bg-white/10 text-white/50 border-white/20",
+    className: "bg-muted/50 text-muted-foreground border-border",
   };
 
   const handleAccept = async () => {
@@ -394,24 +394,24 @@ function MoneyRequestItem({
   return (
     <div
       data-ocid={`${perspective === "received" ? "requests_received" : "requests_sent"}.item.${index}`}
-      className="flex items-start gap-3 rounded-lg bg-navy-dark/30 p-3"
+      className="flex items-start gap-3 rounded-lg bg-muted/30 p-3"
     >
       <div
         className={`flex h-10 w-10 items-center justify-center rounded-full flex-shrink-0 ${
-          perspective === "received" ? "bg-teal/20" : "bg-navy-light/50"
+          perspective === "received" ? "bg-teal/20" : "bg-card/50"
         }`}
       >
         {perspective === "received" ? (
           <ArrowUpRight className="h-5 w-5 text-teal" />
         ) : (
-          <ArrowDownLeft className="h-5 w-5 text-white/70" />
+          <ArrowDownLeft className="h-5 w-5 text-muted-foreground" />
         )}
       </div>
 
       <div className="flex-1 space-y-1.5 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="text-sm font-medium text-white">
+            <p className="text-sm font-medium text-foreground">
               {perspective === "received" ? "Request from" : "Request to"}{" "}
               <span className="text-teal">
                 {perspective === "received"
@@ -419,7 +419,7 @@ function MoneyRequestItem({
                   : `${String(request.toUser).substring(0, 12)}…`}
               </span>
             </p>
-            <p className="text-xs text-white/60">
+            <p className="text-xs text-muted-foreground">
               ${amount.toFixed(2)} · {date.toLocaleDateString()} at{" "}
               {date.getHours().toString().padStart(2, "0")}:
               {date.getMinutes().toString().padStart(2, "0")}
@@ -434,7 +434,9 @@ function MoneyRequestItem({
         </div>
 
         {request.message && (
-          <p className="text-xs text-white/70 italic">"{request.message}"</p>
+          <p className="text-xs text-muted-foreground italic">
+            "{request.message}"
+          </p>
         )}
 
         {/* Actions */}
@@ -481,7 +483,7 @@ function MoneyRequestItem({
               data-ocid={`requests_sent.cancel_button.${index}`}
               onClick={handleCancel}
               disabled={isActing}
-              className="h-7 text-xs border-white/20 text-white/60 hover:bg-white/5 hover:text-white/80"
+              className="h-7 text-xs border-border text-muted-foreground hover:bg-muted/30 hover:text-foreground/80"
             >
               {cancelMutation.isPending ? (
                 <Loader2 className="mr-1 h-3 w-3 animate-spin" />
@@ -532,10 +534,10 @@ function TransactionItem({
   const approximateUSD = getApproximateUSD();
 
   return (
-    <div className="flex items-start gap-3 rounded-lg bg-navy-dark/30 p-3">
+    <div className="flex items-start gap-3 rounded-lg bg-muted/30 p-3">
       <div
         className={`flex h-10 w-10 items-center justify-center rounded-full ${
-          type === "received" ? "bg-teal/20" : "bg-navy-light/50"
+          type === "received" ? "bg-teal/20" : "bg-card/50"
         }`}
       >
         {tip.professional ? (
@@ -543,7 +545,7 @@ function TransactionItem({
         ) : type === "received" ? (
           <ArrowDownLeft className="h-5 w-5 text-teal" />
         ) : (
-          <ArrowUpRight className="h-5 w-5 text-white/70" />
+          <ArrowUpRight className="h-5 w-5 text-muted-foreground" />
         )}
       </div>
 
@@ -551,21 +553,21 @@ function TransactionItem({
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-white">
+              <p className="text-sm font-medium text-foreground">
                 {type === "received" ? "Received" : "Sent"} ${amount.toFixed(2)}
               </p>
               {isCrypto ? (
                 <Wallet className="h-3.5 w-3.5 text-teal" />
               ) : (
-                <DollarSign className="h-3.5 w-3.5 text-white/60" />
+                <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
               )}
             </div>
             {isCrypto && approximateUSD && (
-              <p className="text-xs text-white/50 italic mt-0.5">
+              <p className="text-xs text-muted-foreground italic mt-0.5">
                 ≈ ${approximateUSD} USD
               </p>
             )}
-            <p className="text-xs text-white/60">
+            <p className="text-xs text-muted-foreground">
               {date.toLocaleDateString()} at {formattedTime}
             </p>
           </div>
@@ -576,10 +578,12 @@ function TransactionItem({
           )}
         </div>
         {tip.message && (
-          <p className="text-xs text-white/70 italic">"{tip.message}"</p>
+          <p className="text-xs text-muted-foreground italic">
+            "{tip.message}"
+          </p>
         )}
         {isCrypto && approximateUSD && (
-          <p className="text-[10px] text-white/40 italic mt-1">
+          <p className="text-[10px] text-muted-foreground/50 italic mt-1">
             Approximate value based on current market rates. Showing the USD
             equivalent.
           </p>
@@ -644,7 +648,7 @@ function SplitPaymentItem({
     },
     [SplitPaymentStatus.Cancelled]: {
       label: "Cancelled",
-      className: "bg-white/10 text-white/50 border-white/20",
+      className: "bg-muted/50 text-muted-foreground border-border",
     },
   };
 
@@ -672,7 +676,10 @@ function SplitPaymentItem({
 
   const { label: statusLabel, className: statusClass } = statusConfig[
     split.status as string
-  ] ?? { label: String(split.status), className: "bg-white/10 text-white/50" };
+  ] ?? {
+    label: String(split.status),
+    className: "bg-muted/50 text-muted-foreground",
+  };
 
   const handleAccept = async () => {
     try {
@@ -712,13 +719,13 @@ function SplitPaymentItem({
   return (
     <div
       data-ocid={`splits.item.${index}`}
-      className="rounded-xl bg-navy-dark/30 border border-white/5 overflow-hidden"
+      className="rounded-xl bg-muted/30 border border-border/50 overflow-hidden"
     >
       {/* Header row */}
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="w-full flex items-start gap-3 p-3 text-left hover:bg-white/5 transition-colors duration-150"
+        className="w-full flex items-start gap-3 p-3 text-left hover:bg-muted/30 transition-colors duration-150"
         aria-expanded={expanded}
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal/20 flex-shrink-0">
@@ -731,7 +738,7 @@ function SplitPaymentItem({
               <p className="text-sm font-medium text-white truncate">
                 {split.description}
               </p>
-              <p className="text-xs text-white/60 flex items-center gap-1">
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
                 <Users className="h-3 w-3" />
                 {split.participants.length} participant
                 {split.participants.length !== 1 ? "s" : ""} ·{" "}
@@ -763,24 +770,24 @@ function SplitPaymentItem({
 
       {/* Expanded participant breakdown */}
       {expanded && (
-        <div className="px-3 pb-3 space-y-2 border-t border-white/5 pt-3">
+        <div className="px-3 pb-3 space-y-2 border-t border-border/50 pt-3">
           {split.participants.map((p, pi) => {
             const pStatus = participantStatusConfig[p.status as string] ?? {
               label: String(p.status),
-              className: "bg-white/10 text-white/50",
+              className: "bg-muted/50 text-muted-foreground",
             };
             return (
               <div
                 key={`${split.id}-p-${pi}`}
                 className="flex items-center gap-2 text-sm"
               >
-                <div className="h-7 w-7 rounded-full bg-teal/10 border border-teal/30 flex items-center justify-center flex-shrink-0 text-[10px] text-white/70 font-semibold">
+                <div className="h-7 w-7 rounded-full bg-teal/10 border border-teal/30 flex items-center justify-center flex-shrink-0 text-[10px] text-muted-foreground font-semibold">
                   {p.nickname.substring(0, 2).toUpperCase()}
                 </div>
-                <span className="flex-1 text-white/80 truncate min-w-0">
+                <span className="flex-1 text-foreground/80 truncate min-w-0">
                   {p.nickname || `${p.principal.toString().substring(0, 8)}…`}
                 </span>
-                <span className="text-white/60 text-xs">
+                <span className="text-muted-foreground text-xs">
                   ${(Number(p.amount) / 100).toFixed(2)}
                 </span>
                 <Badge
@@ -864,7 +871,7 @@ function TransactionSkeleton() {
       {[1, 2, 3].map((i) => (
         <div
           key={i}
-          className="flex items-start gap-3 rounded-lg bg-navy-dark/30 p-3"
+          className="flex items-start gap-3 rounded-lg bg-muted/30 p-3"
         >
           <Skeleton className="h-10 w-10 rounded-full" />
           <div className="flex-1 space-y-2">
@@ -880,7 +887,7 @@ function TransactionSkeleton() {
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="py-8 text-center">
-      <p className="text-sm text-white/50">{message}</p>
+      <p className="text-sm text-muted-foreground">{message}</p>
     </div>
   );
 }

@@ -136,9 +136,9 @@ For tax purposes, please consult with a tax professional.
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg bg-navy-light/95 backdrop-blur-xl border-teal/30">
+      <DialogContent className="sm:max-w-lg bg-card/95 backdrop-blur-xl border-teal/30">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-white">
+          <DialogTitle className="flex items-center gap-2 text-foreground">
             <FileText className="h-5 w-5 text-teal" />
             Smart Receipt Export
           </DialogTitle>
@@ -156,11 +156,11 @@ For tax purposes, please consult with a tax professional.
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                 <SelectTrigger
                   id="month"
-                  className="bg-navy-dark/50 border-teal/30 text-white"
+                  className="bg-muted/50 border-teal/30 text-foreground"
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-navy-dark border-teal/30">
+                <SelectContent className="bg-background border-teal/30">
                   {months.map((month) => (
                     <SelectItem
                       key={month.value}
@@ -181,11 +181,11 @@ For tax purposes, please consult with a tax professional.
               <Select value={selectedYear} onValueChange={setSelectedYear}>
                 <SelectTrigger
                   id="year"
-                  className="bg-navy-dark/50 border-teal/30 text-white"
+                  className="bg-muted/50 border-teal/30 text-foreground"
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-navy-dark border-teal/30">
+                <SelectContent className="bg-background border-teal/30">
                   {years.map((year) => (
                     <SelectItem
                       key={year}
@@ -207,7 +207,7 @@ For tax purposes, please consult with a tax professional.
                 <p className="font-medium">Receipt Generated</p>
               </div>
 
-              <div className="space-y-2 text-sm text-white">
+              <div className="space-y-2 text-sm text-foreground">
                 <div className="flex justify-between">
                   <span className="text-white/70">Period:</span>
                   <span className="font-medium">
@@ -264,7 +264,7 @@ For tax purposes, please consult with a tax professional.
               <Button
                 onClick={handleDownloadPDF}
                 variant="outline"
-                className="w-full border-teal/30 bg-navy-dark/50 text-white hover:bg-teal/20"
+                className="w-full border-teal/30 bg-muted/50 text-white hover:bg-teal/20"
                 size="lg"
               >
                 <Download className="mr-2 h-5 w-5" />

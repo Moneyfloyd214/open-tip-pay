@@ -156,9 +156,9 @@ export default function WalletCard({ onOpenSecurityFAQ }: WalletCardProps) {
 
   if (!isMetaMaskAvailable) {
     return (
-      <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
+      <Card className="border-border bg-card/50 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg text-white flex items-center gap-2">
+          <CardTitle className="text-lg text-foreground flex items-center gap-2">
             <img
               src="/assets/generated/crypto-wallet-icon.dim_32x32.png"
               alt=""
@@ -168,8 +168,8 @@ export default function WalletCard({ onOpenSecurityFAQ }: WalletCardProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg bg-navy-dark/50 p-4 text-center">
-            <p className="text-sm text-white/70 mb-3">
+          <div className="rounded-lg bg-muted/50 p-4 text-center">
+            <p className="text-sm text-muted-foreground mb-3">
               MetaMask is required to connect a crypto wallet
             </p>
             <Button
@@ -189,10 +189,10 @@ export default function WalletCard({ onOpenSecurityFAQ }: WalletCardProps) {
 
   return (
     <>
-      <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
+      <Card className="border-border bg-card/50 backdrop-blur-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg text-white flex items-center gap-2">
+            <CardTitle className="text-lg text-foreground flex items-center gap-2">
               <img
                 src="/assets/generated/crypto-wallet-icon.dim_32x32.png"
                 alt=""
@@ -220,11 +220,11 @@ export default function WalletCard({ onOpenSecurityFAQ }: WalletCardProps) {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent
-                  className="max-w-xs glassmorphism border-teal/50 shadow-lg shadow-teal/30 bg-navy-dark/95 backdrop-blur-xl"
+                  className="max-w-xs glassmorphism border-teal/50 shadow-lg shadow-teal/30 bg-card/95 backdrop-blur-xl"
                   side="top"
                 >
                   <div className="space-y-2">
-                    <p className="text-xs text-white leading-relaxed">
+                    <p className="text-xs text-foreground leading-relaxed">
                       <span className="font-semibold text-teal">
                         🔒 Non-Custodial Security:
                       </span>{" "}
@@ -247,16 +247,16 @@ export default function WalletCard({ onOpenSecurityFAQ }: WalletCardProps) {
         <CardContent className="space-y-4">
           {isConnected ? (
             <>
-              <div className="flex items-center gap-2 rounded-lg bg-navy-dark/50 p-3">
+              <div className="flex items-center gap-2 rounded-lg bg-muted/50 p-3">
                 <Wallet className="h-4 w-4 text-teal" />
-                <p className="flex-1 text-sm text-white/80 font-mono">
+                <p className="flex-1 text-sm text-foreground/80 font-mono">
                   {formatAddress(walletAddress)}
                 </p>
                 <Button
                   onClick={handleCopyAddress}
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 text-white/70 hover:text-white"
+                  className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
@@ -319,7 +319,7 @@ export default function WalletCard({ onOpenSecurityFAQ }: WalletCardProps) {
 
       {/* Success Summary Modal */}
       <Dialog open={showSuccessModal} onOpenChange={handleSuccessModalClose}>
-        <DialogContent className="glassmorphism border-teal/50 bg-navy-dark/95 backdrop-blur-xl">
+        <DialogContent className="glassmorphism border-teal/50 bg-card/95 backdrop-blur-xl">
           <DialogHeader>
             <div className="flex items-center justify-center mb-4">
               <div className="relative">
@@ -327,17 +327,19 @@ export default function WalletCard({ onOpenSecurityFAQ }: WalletCardProps) {
                 <div className="absolute inset-0 bg-teal/30 rounded-full blur-lg" />
               </div>
             </div>
-            <DialogTitle className="text-center text-white text-xl">
+            <DialogTitle className="text-center text-foreground text-xl">
               MetaMask Connected
             </DialogTitle>
-            <DialogDescription className="text-center text-white/70">
+            <DialogDescription className="text-center text-muted-foreground">
               Your wallet has been successfully connected to Open Tip Pay
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-4">
-            <div className="rounded-lg bg-navy-light/50 p-4 border border-teal/30">
-              <p className="text-xs text-white/60 mb-2">Wallet Address</p>
-              <p className="text-sm text-white font-mono break-all">
+            <div className="rounded-lg bg-card/50 p-4 border border-teal/30">
+              <p className="text-xs text-muted-foreground mb-2">
+                Wallet Address
+              </p>
+              <p className="text-sm text-foreground font-mono break-all">
                 {connectedAddress || walletAddress}
               </p>
             </div>

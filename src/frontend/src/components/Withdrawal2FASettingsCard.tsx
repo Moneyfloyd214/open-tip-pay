@@ -131,7 +131,7 @@ export default function Withdrawal2FASettingsCard() {
   return (
     <Card className="glassmorphism border-teal/20">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm flex items-center gap-2 text-white">
+        <CardTitle className="text-sm flex items-center gap-2 text-foreground">
           <Shield className="h-5 w-5 text-teal" />
           Withdrawal 2FA Security (PIN + OTP)
         </CardTitle>
@@ -161,7 +161,7 @@ export default function Withdrawal2FASettingsCard() {
         </div>
 
         {/* Enable/Disable Toggle */}
-        <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
           <div className="flex items-center gap-3">
             <Lock className="h-5 w-5 text-teal" />
             <div>
@@ -182,10 +182,10 @@ export default function Withdrawal2FASettingsCard() {
 
         {/* PIN Setup Section */}
         {!hasPIN && showPINSetup && (
-          <div className="space-y-3 p-4 rounded-lg bg-navy-dark/50 border border-teal/30">
+          <div className="space-y-3 p-4 rounded-lg bg-muted/50 border border-teal/30">
             <div className="flex items-center gap-2">
               <Lock className="h-4 w-4 text-teal" />
-              <h4 className="text-sm font-semibold text-white">
+              <h4 className="text-sm font-semibold text-foreground">
                 Set Your 4-Digit Security PIN
               </h4>
             </div>
@@ -195,7 +195,7 @@ export default function Withdrawal2FASettingsCard() {
             </p>
 
             <div className="space-y-2">
-              <Label htmlFor="pin" className="text-xs text-white">
+              <Label htmlFor="pin" className="text-xs text-foreground">
                 Enter PIN (4 digits)
               </Label>
               <Input
@@ -206,12 +206,12 @@ export default function Withdrawal2FASettingsCard() {
                 value={pin}
                 onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
                 placeholder="••••"
-                className="bg-navy-dark/50 border-white/10 text-white text-center text-lg tracking-widest"
+                className="bg-muted/50 border-border text-white text-center text-lg tracking-widest"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPin" className="text-xs text-white">
+              <Label htmlFor="confirmPin" className="text-xs text-foreground">
                 Confirm PIN
               </Label>
               <Input
@@ -224,7 +224,7 @@ export default function Withdrawal2FASettingsCard() {
                   setConfirmPin(e.target.value.replace(/\D/g, ""))
                 }
                 placeholder="••••"
-                className="bg-navy-dark/50 border-white/10 text-white text-center text-lg tracking-widest"
+                className="bg-muted/50 border-border text-white text-center text-lg tracking-widest"
               />
             </div>
 
@@ -236,7 +236,7 @@ export default function Withdrawal2FASettingsCard() {
                   pin.length !== 4 ||
                   confirmPin.length !== 4
                 }
-                className="flex-1 bg-teal hover:bg-teal-dark text-white"
+                className="flex-1 bg-teal hover:bg-teal-dark text-foreground"
               >
                 {setWithdrawalPIN.isPending
                   ? "Setting PIN..."
@@ -249,7 +249,7 @@ export default function Withdrawal2FASettingsCard() {
                   setConfirmPin("");
                 }}
                 variant="outline"
-                className="border-white/10 text-white hover:bg-white/5"
+                className="border-border text-white hover:bg-white/5"
               >
                 Cancel
               </Button>
@@ -262,7 +262,7 @@ export default function Withdrawal2FASettingsCard() {
           <div className="space-y-3">
             <Separator className="bg-white/10" />
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-3">
                 <CheckCircle className="h-5 w-5 text-teal" />
                 <div>
@@ -291,16 +291,19 @@ export default function Withdrawal2FASettingsCard() {
                 Change PIN
               </Button>
             ) : (
-              <div className="space-y-3 p-4 rounded-lg bg-navy-dark/50 border border-teal/30">
+              <div className="space-y-3 p-4 rounded-lg bg-muted/50 border border-teal/30">
                 <div className="flex items-center gap-2">
                   <Lock className="h-4 w-4 text-teal" />
-                  <h4 className="text-sm font-semibold text-white">
+                  <h4 className="text-sm font-semibold text-foreground">
                     Change Your Security PIN
                   </h4>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="currentPin" className="text-xs text-white">
+                  <Label
+                    htmlFor="currentPin"
+                    className="text-xs text-foreground"
+                  >
                     Current PIN
                   </Label>
                   <Input
@@ -313,12 +316,12 @@ export default function Withdrawal2FASettingsCard() {
                       setCurrentPin(e.target.value.replace(/\D/g, ""))
                     }
                     placeholder="••••"
-                    className="bg-navy-dark/50 border-white/10 text-white text-center text-lg tracking-widest"
+                    className="bg-muted/50 border-border text-white text-center text-lg tracking-widest"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="newPin" className="text-xs text-white">
+                  <Label htmlFor="newPin" className="text-xs text-foreground">
                     New PIN (4 digits)
                   </Label>
                   <Input
@@ -331,12 +334,15 @@ export default function Withdrawal2FASettingsCard() {
                       setNewPin(e.target.value.replace(/\D/g, ""))
                     }
                     placeholder="••••"
-                    className="bg-navy-dark/50 border-white/10 text-white text-center text-lg tracking-widest"
+                    className="bg-muted/50 border-border text-white text-center text-lg tracking-widest"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmNewPin" className="text-xs text-white">
+                  <Label
+                    htmlFor="confirmNewPin"
+                    className="text-xs text-foreground"
+                  >
                     Confirm New PIN
                   </Label>
                   <Input
@@ -349,7 +355,7 @@ export default function Withdrawal2FASettingsCard() {
                       setConfirmNewPin(e.target.value.replace(/\D/g, ""))
                     }
                     placeholder="••••"
-                    className="bg-navy-dark/50 border-white/10 text-white text-center text-lg tracking-widest"
+                    className="bg-muted/50 border-border text-white text-center text-lg tracking-widest"
                   />
                 </div>
 
@@ -362,7 +368,7 @@ export default function Withdrawal2FASettingsCard() {
                       newPin.length !== 4 ||
                       confirmNewPin.length !== 4
                     }
-                    className="flex-1 bg-teal hover:bg-teal-dark text-white"
+                    className="flex-1 bg-teal hover:bg-teal-dark text-foreground"
                   >
                     {changeWithdrawalPIN.isPending
                       ? "Changing PIN..."
@@ -376,7 +382,7 @@ export default function Withdrawal2FASettingsCard() {
                       setConfirmNewPin("");
                     }}
                     variant="outline"
-                    className="border-white/10 text-white hover:bg-white/5"
+                    className="border-border text-white hover:bg-white/5"
                   >
                     Cancel
                   </Button>

@@ -36,12 +36,12 @@ function CopyField({
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 bg-white/5 rounded-xl px-4 py-3 border border-white/10">
+    <div className="flex items-center justify-between gap-3 bg-muted/30 rounded-xl px-4 py-3 border border-border">
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-semibold text-white/40 uppercase tracking-widest mb-0.5">
+        <p className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-widest mb-0.5">
           {label}
         </p>
-        <p className="text-sm font-mono font-semibold text-white tracking-wider truncate">
+        <p className="text-sm font-mono font-semibold text-foreground tracking-wider truncate">
           {value}
         </p>
       </div>
@@ -66,19 +66,19 @@ function CopyField({
 
 function DirectDepositCardSkeleton() {
   return (
-    <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
+    <Card className="border-border bg-muted/30 backdrop-blur-sm">
       <CardContent className="p-5">
         <div className="animate-pulse space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="h-5 w-5 rounded bg-white/10" />
-              <div className="h-4 w-28 rounded bg-white/10" />
+              <div className="h-5 w-5 rounded bg-muted/50" />
+              <div className="h-4 w-28 rounded bg-muted/50" />
             </div>
-            <div className="h-5 w-12 rounded-full bg-white/10" />
+            <div className="h-5 w-12 rounded-full bg-muted/50" />
           </div>
-          <div className="h-14 rounded-xl bg-white/10" />
-          <div className="h-14 rounded-xl bg-white/10" />
-          <div className="h-4 rounded bg-white/10 w-3/4" />
+          <div className="h-14 rounded-xl bg-muted/50" />
+          <div className="h-14 rounded-xl bg-muted/50" />
+          <div className="h-4 rounded bg-muted/50 w-3/4" />
         </div>
       </CardContent>
     </Card>
@@ -112,7 +112,9 @@ export default function DirectDepositCard() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-teal" />
-            <span className="font-semibold text-white">Direct Deposit</span>
+            <span className="font-semibold text-foreground">
+              Direct Deposit
+            </span>
           </div>
           <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-teal/20 text-teal border border-teal/30">
             <span className="h-1.5 w-1.5 rounded-full bg-teal animate-pulse" />
@@ -160,14 +162,14 @@ export default function DirectDepositCard() {
           </>
         ) : (
           <div className="text-center py-4">
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-muted-foreground">
               Unable to load account details
             </p>
           </div>
         )}
 
         {/* ── Helper Text ── */}
-        <p className="text-[11px] text-white/40 leading-relaxed">
+        <p className="text-[11px] text-muted-foreground/50 leading-relaxed">
           Share these with your employer to receive payroll directly in Open Tip
           Pay. Deposits typically arrive within 1–2 business days.
         </p>

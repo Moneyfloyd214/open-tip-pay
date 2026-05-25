@@ -39,16 +39,26 @@ export interface BusinessApplication {
 export type BusinessApplicationStatus = { 'pending' : null } |
   { 'approved' : null } |
   { 'rejected' : null };
+export type CentAmount = bigint;
 export interface CompilationStatus {
   'obfuscationLayer' : string,
   'verificationTimestamp' : bigint,
   'tooltipNote' : string,
+}
+export interface ConcessionStand {
+  'id' : string,
+  'name' : string,
+  'createdAt' : Timestamp,
+  'section' : string,
+  'description' : string,
 }
 export type DeletionStatus = {
     'pending' : { 'scheduledDeletionTime' : bigint }
   } |
   { 'not_requested' : null } |
   { 'finalized' : null };
+export type DeliveryMethod = { 'Delivery' : null } |
+  { 'Pickup' : null };
 export interface DirectDeposit {
   'id' : string,
   'status' : string,
@@ -84,7 +94,42 @@ export interface EncryptionEvent {
   'timestamp' : bigint,
   'eventType' : string,
 }
+export interface ExtendedStaffMember {
+  'id' : string,
+  'hireDate' : bigint,
+  'name' : string,
+  'section' : string,
+  'email' : string,
+  'employmentType' : { 'partTime' : null } |
+    { 'fullTime' : null } |
+    { 'contractor' : null },
+  'notes' : string,
+  'customRole' : string,
+  'phone' : string,
+  'employmentStatus' : { 'active' : null } |
+    { 'inactive' : null } |
+    { 'suspended' : null },
+}
 export type ExternalBlob = Uint8Array;
+export interface FanPoints {
+  'userId' : Principal,
+  'totalEarned' : number,
+  'totalRedeemed' : number,
+  'guestContact' : [] | [string],
+  'points' : number,
+}
+export interface FoodOrder {
+  'id' : string,
+  'status' : OrderStatus,
+  'standId' : string,
+  'createdAt' : Timestamp,
+  'deliveryMethod' : DeliveryMethod,
+  'updatedAt' : Timestamp,
+  'totalInCents' : CentAmount,
+  'customerId' : UserId,
+  'items' : Array<OrderItem>,
+  'seatNumber' : string,
+}
 export interface FraudAlert {
   'resolved' : boolean,
   'userId' : Principal,
@@ -103,6 +148,15 @@ export type GDPRAuditEventType = { 'deletion_finalized' : null } |
   { 'deletion_requested' : null } |
   { 'deletion_cancelled' : null } |
   { 'export_requested' : null };
+export interface GameStandAssignment {
+  'id' : string,
+  'gameStandId' : string,
+  'staffName' : string,
+  'staffId' : string,
+  'defaultStandId' : string,
+  'gameStandName' : string,
+  'gameDate' : string,
+}
 export interface InviteCode {
   'created' : Time,
   'code' : string,
@@ -112,6 +166,15 @@ export type KYCStatus = { 'notSubmitted' : null } |
   { 'verified' : null } |
   { 'pending' : null } |
   { 'failed' : null };
+export interface MenuItem {
+  'id' : string,
+  'standId' : string,
+  'name' : string,
+  'description' : string,
+  'available' : boolean,
+  'category' : string,
+  'priceInCents' : CentAmount,
+}
 export interface MoneyRequest {
   'id' : bigint,
   'status' : RequestStatus,
@@ -121,6 +184,26 @@ export interface MoneyRequest {
   'timestamp' : bigint,
   'fromUser' : Principal,
   'amount' : bigint,
+}
+export interface OrderItem {
+  'itemId' : string,
+  'itemName' : string,
+  'quantity' : bigint,
+  'priceInCents' : CentAmount,
+}
+export interface OrderItemInput { 'itemId' : string, 'quantity' : bigint }
+export type OrderStatus = { 'OnTheWay' : null } |
+  { 'Placed' : null } |
+  { 'ReadyForPickup' : null } |
+  { 'Preparing' : null } |
+  { 'Cancelled' : null } |
+  { 'Completed' : null };
+export interface PartnerBrandingConfig {
+  'partnerName' : string,
+  'primaryColor' : string,
+  'isActive' : boolean,
+  'secondaryColor' : string,
+  'partnerLogoUrl' : string,
 }
 export interface PaymentMethod {
   'id' : string,
@@ -144,6 +227,29 @@ export interface PayoutRecord {
 export type PinCheckResult = { 'verified' : null } |
   { 'blocked' : bigint } |
   { 'incorrect' : bigint };
+export interface PointsBreakdown {
+  'transactionType' : string,
+  'finalPoints' : number,
+  'amountCents' : bigint,
+  'appliedRules' : Array<[string, number, [] | [string]]>,
+  'basePoints' : number,
+}
+export interface PointsRule {
+  'id' : string,
+  'multiplier' : number,
+  'ruleType' : PointsRuleType,
+  'sectionName' : [] | [string],
+  'name' : string,
+  'createdAt' : bigint,
+  'description' : string,
+  'isActive' : boolean,
+}
+export type PointsRuleType = { 'paymentMultiplier' : null } |
+  { 'firstPaymentBonus' : null } |
+  { 'foodMultiplier' : null } |
+  { 'sectionMultiplier' : null } |
+  { 'tipMultiplier' : null } |
+  { 'gameDayBonus' : null };
 export interface RSVP {
   'name' : string,
   'inviteCode' : string,
@@ -166,10 +272,38 @@ export interface RecurringPayment {
   'frequency' : RecurringFrequency,
   'amount' : bigint,
 }
+export interface RedeemedReward {
+  'id' : string,
+  'redeemedAt' : bigint,
+  'rewardTitle' : string,
+  'userId' : Principal,
+  'codeOrValue' : string,
+  'rewardId' : string,
+  'contactEmail' : [] | [string],
+  'emailSent' : boolean,
+}
 export type RequestStatus = { 'cancelled' : null } |
   { 'pending' : null } |
   { 'paid' : null } |
   { 'declined' : null };
+export interface Reward {
+  'id' : string,
+  'title' : string,
+  'active' : boolean,
+  'expiresAt' : [] | [bigint],
+  'quantityRemaining' : [] | [bigint],
+  'createdBy' : Principal,
+  'codeOrValue' : string,
+  'description' : string,
+  'rewardType' : RewardType,
+  'quantity' : [] | [bigint],
+  'pointsCost' : bigint,
+  'teamId' : [] | [string],
+}
+export type RewardType = { 'other' : null } |
+  { 'discountCode' : null } |
+  { 'concessionCredit' : null } |
+  { 'ticketEntry' : null };
 export type SavingsDirection = { 'fromSavings' : null } |
   { 'toSavings' : null };
 export interface SavingsTransaction {
@@ -184,6 +318,14 @@ export interface SearchResult {
   'username' : string,
   'isVerified' : boolean,
   'photo' : [] | [ExternalBlob],
+}
+export interface SectionAnalytics {
+  'sectionName' : string,
+  'totalTips' : bigint,
+  'topStaffId' : [] | [Principal],
+  'totalAmount' : bigint,
+  'sectionLabel' : string,
+  'staffCount' : bigint,
 }
 export interface SecurityEvent {
   'userId' : Principal,
@@ -240,6 +382,20 @@ export interface SplitPayment {
 export type SplitPaymentStatus = { 'Active' : null } |
   { 'Cancelled' : null } |
   { 'Settled' : null };
+export interface StaffCheckIn {
+  'id' : string,
+  'staffName' : string,
+  'staffId' : string,
+  'standName' : string,
+  'standId' : string,
+  'hoursWorked' : [] | [number],
+  'role' : string,
+  'checkInTime' : bigint,
+  'manualOverride' : boolean,
+  'gameDate' : string,
+  'checkOutTime' : [] | [bigint],
+  'overrideBy' : [] | [string],
+}
 export interface StaffInvite {
   'status' : StaffInviteStatus,
   'method' : StaffInviteMethod,
@@ -261,6 +417,13 @@ export interface StaffMember {
 }
 export type StaffMemberStatus = { 'active' : null } |
   { 'removed' : null };
+export interface StaffSection {
+  'assignedAt' : bigint,
+  'staffId' : Principal,
+  'sectionName' : string,
+  'managerId' : Principal,
+  'sectionLabel' : string,
+}
 export interface Status {
   'customStatus' : [] | [string],
   'createdAt' : bigint,
@@ -297,6 +460,7 @@ export type SupportStatus = { 'resolved' : null } |
   { 'open' : null } |
   { 'waitingForUser' : null };
 export type Time = bigint;
+export type Timestamp = bigint;
 export interface Tip {
   'toUser' : Principal,
   'professional' : boolean,
@@ -314,6 +478,33 @@ export interface TipPoolConfig {
 }
 export type TipPoolMode = { 'custom' : null } |
   { 'equal' : null };
+export interface TipSplitCalculation {
+  'staffName' : string,
+  'staffId' : string,
+  'hoursWorked' : number,
+  'role' : string,
+  'sharePercent' : number,
+  'weightedScore' : number,
+  'rolePoints' : number,
+  'payoutAmount' : number,
+}
+export interface TipSplitPayout {
+  'id' : string,
+  'status' : string,
+  'standName' : string,
+  'standId' : string,
+  'approvedAt' : [] | [bigint],
+  'approvedBy' : [] | [string],
+  'totalPool' : number,
+  'calculations' : Array<TipSplitCalculation>,
+  'gameDate' : string,
+}
+export interface TipSplitRole {
+  'id' : string,
+  'roleName' : string,
+  'pointValue' : number,
+  'isCustom' : boolean,
+}
 export interface TransformationInput {
   'context' : Uint8Array,
   'response' : http_request_result,
@@ -328,6 +519,16 @@ export interface TwoFactorSettings {
   'backupCodes' : Array<string>,
   'enabled' : boolean,
 }
+export interface UpdateRewardParams {
+  'title' : [] | [string],
+  'active' : [] | [boolean],
+  'codeOrValue' : [] | [string],
+  'description' : [] | [string],
+  'quantity' : [] | [bigint],
+  'pointsCost' : [] | [bigint],
+  'teamId' : [] | [string],
+}
+export type UserId = Principal;
 export interface UserProfile {
   'bio' : string,
   'kycProviderReference' : [] | [string],
@@ -403,6 +604,11 @@ export interface _SERVICE {
   >,
   'acknowledgeVaultAlert' : ActorMethod<[], undefined>,
   'addActiveSession' : ActorMethod<[ActiveSession], undefined>,
+  'addMenuItem' : ActorMethod<
+    [string, string, string, bigint, string, boolean],
+    { 'ok' : MenuItem } |
+      { 'err' : string }
+  >,
   'addPaymentMethod' : ActorMethod<[PaymentMethod], undefined>,
   'addStatus' : ActorMethod<[Status], undefined>,
   'adminCloseSupportTicket' : ActorMethod<
@@ -425,7 +631,20 @@ export interface _SERVICE {
     { 'ok' : null } |
       { 'err' : string }
   >,
+  'approveTipSplitPayout' : ActorMethod<
+    [string, string, bigint],
+    { 'ok' : TipSplitPayout } |
+      { 'err' : string }
+  >,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  /**
+   * / Manager-only: assign a staff member to a stadium section.
+   */
+  'assignStaffSection' : ActorMethod<
+    [Principal, string, string],
+    { 'ok' : StaffSection } |
+      { 'err' : string }
+  >,
   'assignUserRole' : ActorMethod<
     [Principal, { 'admin' : null } | { 'user' : null } | { 'guest' : null }],
     undefined
@@ -441,6 +660,11 @@ export interface _SERVICE {
     ],
     bigint
   >,
+  'calculateTipSplit' : ActorMethod<
+    [string, string, number],
+    { 'ok' : TipSplitPayout } |
+      { 'err' : string }
+  >,
   'cancelAccountDeletion' : ActorMethod<
     [],
     { 'ok' : null } |
@@ -455,6 +679,7 @@ export interface _SERVICE {
     { 'ok' : string } |
       { 'err' : string }
   >,
+  'cancelOrder' : ActorMethod<[string], { 'ok' : null } | { 'err' : string }>,
   'cancelRecurringPayment' : ActorMethod<
     [bigint],
     { 'ok' : null } |
@@ -469,6 +694,10 @@ export interface _SERVICE {
       { 'err' : string }
   >,
   'cancelVaultUnlock' : ActorMethod<[], { 'ok' : string } | { 'err' : string }>,
+  /**
+   * / Admin-only: clear partner branding and revert to default Open Tip Pay branding.
+   */
+  'clearPartnerBranding' : ActorMethod<[], undefined>,
   'clearSpendingLimits' : ActorMethod<[], { 'ok' : null }>,
   /**
    * / Admin-only: immediately complete a pending deposit and credit the user's balance.
@@ -482,9 +711,31 @@ export interface _SERVICE {
     [Array<ShoppingItem>, string, string],
     string
   >,
+  'createPointsRule' : ActorMethod<
+    [PointsRule],
+    { 'ok' : PointsRule } |
+      { 'err' : string }
+  >,
   'createRecurringPayment' : ActorMethod<
     [Principal, bigint, string, RecurringFrequency],
     { 'ok' : bigint } |
+      { 'err' : string }
+  >,
+  /**
+   * / Admin-only: create a reward fans can redeem with Fan Points.
+   */
+  'createReward' : ActorMethod<
+    [
+      string,
+      string,
+      bigint,
+      RewardType,
+      string,
+      [] | [bigint],
+      [] | [bigint],
+      [] | [string],
+    ],
+    { 'ok' : Reward } |
       { 'err' : string }
   >,
   /**
@@ -504,6 +755,11 @@ export interface _SERVICE {
     { 'ok' : string } |
       { 'err' : string }
   >,
+  'createStand' : ActorMethod<
+    [string, string, string],
+    { 'ok' : ConcessionStand } |
+      { 'err' : string }
+  >,
   'createStripeCheckoutSession' : ActorMethod<
     [Array<ShoppingItem>, string, string],
     string
@@ -517,6 +773,20 @@ export interface _SERVICE {
     { 'ok' : null } |
       { 'err' : string }
   >,
+  'deleteMenuItem' : ActorMethod<
+    [string],
+    { 'ok' : null } |
+      { 'err' : string }
+  >,
+  /**
+   * / Admin-only: permanently delete a reward.
+   */
+  'deleteReward' : ActorMethod<
+    [string],
+    { 'ok' : boolean } |
+      { 'err' : string }
+  >,
+  'deleteStand' : ActorMethod<[string], { 'ok' : null } | { 'err' : string }>,
   'deleteUserData' : ActorMethod<[], { 'ok' : null } | { 'err' : string }>,
   'deleteVoicePrint' : ActorMethod<[], undefined>,
   'deposit' : ActorMethod<[bigint], undefined>,
@@ -544,6 +814,7 @@ export interface _SERVICE {
   'generateSmartReceipt' : ActorMethod<[bigint, bigint], SmartReceipt>,
   'getAIQueryHistory' : ActorMethod<[Principal], Array<AIQuery>>,
   'getAccountDeletionStatus' : ActorMethod<[], DeletionStatus>,
+  'getActiveOrdersForManager' : ActorMethod<[], Array<FoodOrder>>,
   'getActiveSessions' : ActorMethod<[Principal], Array<ActiveSession>>,
   'getAllBusinessApplications' : ActorMethod<
     [],
@@ -566,6 +837,7 @@ export interface _SERVICE {
   >,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getCheckInsForGame' : ActorMethod<[string], Array<StaffCheckIn>>,
   'getCompilationStatus' : ActorMethod<[], CompilationStatus>,
   'getCurrentStatus' : ActorMethod<[Principal], [] | [Status]>,
   /**
@@ -574,8 +846,17 @@ export interface _SERVICE {
    */
   'getDirectDepositHistory' : ActorMethod<[], Array<DirectDeposit>>,
   'getEncryptionLog' : ActorMethod<[Principal], Array<EncryptionEvent>>,
+  'getExtendedStaff' : ActorMethod<[string], [] | [ExtendedStaffMember]>,
+  /**
+   * / Return the Fan Points balance for any user (public).
+   */
+  'getFanPoints' : ActorMethod<[Principal], [] | [FanPoints]>,
   'getFraudAlerts' : ActorMethod<[Principal], Array<FraudAlert>>,
   'getGDPRAuditLog' : ActorMethod<[], Array<GDPRAuditEvent>>,
+  'getGameStandAssignment' : ActorMethod<
+    [string, string],
+    [] | [GameStandAssignment]
+  >,
   'getInviteCodes' : ActorMethod<[], Array<InviteCode>>,
   'getKYCConfigurationStatus' : ActorMethod<
     [],
@@ -592,7 +873,16 @@ export interface _SERVICE {
   'getManagerRoster' : ActorMethod<[], Array<StaffMember>>,
   'getMyBusinessApplication' : ActorMethod<[], [] | [BusinessApplication]>,
   'getMyDisputes' : ActorMethod<[], Array<Dispute>>,
+  /**
+   * / Return the calling user's Fan Points balance.
+   */
+  'getMyFanPoints' : ActorMethod<[], [] | [FanPoints]>,
+  'getMyOrders' : ActorMethod<[], Array<FoodOrder>>,
   'getMyRecurringPayments' : ActorMethod<[], Array<RecurringPayment>>,
+  /**
+   * / Return all rewards the caller has redeemed.
+   */
+  'getMyRedeemedRewards' : ActorMethod<[], Array<RedeemedReward>>,
   /**
    * / Staff: get all pending invites sent TO the caller
    */
@@ -603,6 +893,11 @@ export interface _SERVICE {
    * / Principal, so they are stable across calls and canister upgrades.
    */
   'getOrCreateDirectDepositAccount' : ActorMethod<[], DirectDepositAccount>,
+  'getOrder' : ActorMethod<[string], [] | [FoodOrder]>,
+  /**
+   * / Public query: returns the stored partner branding config, or null if not set.
+   */
+  'getPartnerBranding' : ActorMethod<[], [] | [PartnerBrandingConfig]>,
   'getPaymentMethods' : ActorMethod<[Principal], Array<PaymentMethod>>,
   /**
    * / Manager: get full payout history
@@ -620,6 +915,10 @@ export interface _SERVICE {
    * / Returns only PENDING money requests addressed to the caller, newest first.
    */
   'getPendingRequestsReceived' : ActorMethod<[], Array<MoneyRequest>>,
+  'getPointsBreakdown' : ActorMethod<
+    [bigint, string, boolean, boolean, [] | [string]],
+    PointsBreakdown
+  >,
   'getProfessionalTips' : ActorMethod<[Principal], Array<Tip>>,
   'getPublicCurrentStatus' : ActorMethod<[Principal], [] | [Status]>,
   'getPublicProfile' : ActorMethod<
@@ -654,9 +953,24 @@ export interface _SERVICE {
    * / Returns all money requests sent BY the caller, newest first.
    */
   'getRequestsSent' : ActorMethod<[], Array<MoneyRequest>>,
+  /**
+   * / Return a single reward by ID.
+   */
+  'getReward' : ActorMethod<[string], [] | [Reward]>,
   'getSMSConfigurationStatus' : ActorMethod<[], boolean>,
   'getSavingsBalance' : ActorMethod<[], bigint>,
   'getSavingsHistory' : ActorMethod<[], Array<SavingsTransaction>>,
+  /**
+   * / Return tip volume aggregated by stadium section for a manager.
+   */
+  'getSectionAnalytics' : ActorMethod<
+    [Principal, [] | [bigint]],
+    Array<SectionAnalytics>
+  >,
+  /**
+   * / Return all section assignments for a manager.
+   */
+  'getSectionAssignments' : ActorMethod<[Principal], Array<StaffSection>>,
   'getSecurityEvents' : ActorMethod<[Principal], Array<SecurityEvent>>,
   'getSmartReceipt' : ActorMethod<
     [Principal, bigint, bigint],
@@ -672,6 +986,24 @@ export interface _SERVICE {
    */
   'getSplitPayments' : ActorMethod<[], Array<SplitPayment>>,
   /**
+   * / Return per-staff tip summary for a manager's roster.
+   */
+  'getStaffAnalytics' : ActorMethod<
+    [Principal, [] | [bigint]],
+    Array<
+      {
+        'staffId' : Principal,
+        'sectionName' : [] | [string],
+        'totalTips' : bigint,
+        'totalAmount' : bigint,
+      }
+    >
+  >,
+  /**
+   * / Return the section assignment for a staff member.
+   */
+  'getStaffSection' : ActorMethod<[Principal], [] | [StaffSection]>,
+  /**
    * / Manager: get summed tips received per staff member since an optional timestamp, sorted descending
    */
   'getStaffTipTotals' : ActorMethod<
@@ -686,6 +1018,11 @@ export interface _SERVICE {
    * / Manager: get current tip pool settings
    */
   'getTipPoolSettings' : ActorMethod<[], TipPoolConfig>,
+  'getTipSplitPayouts' : ActorMethod<
+    [[] | [string], [] | [string]],
+    Array<TipSplitPayout>
+  >,
+  'getTipSplitRoles' : ActorMethod<[], Array<TipSplitRole>>,
   'getTips' : ActorMethod<[], Array<Tip>>,
   'getTipsReceived' : ActorMethod<[Principal], Array<Tip>>,
   'getTipsSent' : ActorMethod<[Principal], Array<Tip>>,
@@ -706,11 +1043,32 @@ export interface _SERVICE {
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'isKYCConfigured' : ActorMethod<[], boolean>,
   'isStripeConfigured' : ActorMethod<[], boolean>,
+  /**
+   * / Link prior guest payment points to the caller's account by matching contactInfo.
+   */
+  'linkGuestPaymentsToUser' : ActorMethod<
+    [string],
+    { 'ok' : bigint } |
+      { 'err' : string }
+  >,
+  'listExtendedStaff' : ActorMethod<[], Array<ExtendedStaffMember>>,
+  'listMenuItems' : ActorMethod<[string], Array<MenuItem>>,
+  'listPointsRules' : ActorMethod<[], Array<PointsRule>>,
+  /**
+   * / List all active rewards, optionally filtered by teamId.
+   */
+  'listRewards' : ActorMethod<[[] | [string]], Array<Reward>>,
+  'listStands' : ActorMethod<[], Array<ConcessionStand>>,
   'lockVault' : ActorMethod<[], { 'ok' : string } | { 'err' : string }>,
   'logAIQuery' : ActorMethod<[string, string], undefined>,
   'logEncryptionEvent' : ActorMethod<[EncryptionEvent], undefined>,
   'logSecurityEvent' : ActorMethod<[SecurityEvent], undefined>,
   'logoutSession' : ActorMethod<[string], undefined>,
+  'manualSetHours' : ActorMethod<
+    [string, number, string],
+    { 'ok' : StaffCheckIn } |
+      { 'err' : string }
+  >,
   'markSupportMessagesRead' : ActorMethod<[], undefined>,
   'markTutorialCompleted' : ActorMethod<[], undefined>,
   'openSupportTicket' : ActorMethod<
@@ -718,16 +1076,48 @@ export interface _SERVICE {
     { 'ok' : bigint } |
       { 'err' : string }
   >,
+  'placeOrder' : ActorMethod<
+    [string, Array<OrderItemInput>, string, DeliveryMethod],
+    { 'ok' : FoodOrder } |
+      { 'err' : string }
+  >,
   /**
    * / Admin-only: execute all due recurring payments.
    */
   'processRecurringPayments' : ActorMethod<[], undefined>,
+  'recordCheckIn' : ActorMethod<
+    [string, string, string, string, string, string, bigint],
+    { 'ok' : StaffCheckIn } |
+      { 'err' : string }
+  >,
+  'recordCheckOut' : ActorMethod<
+    [string, bigint],
+    { 'ok' : StaffCheckIn } |
+      { 'err' : string }
+  >,
   'recordDisputeRequest' : ActorMethod<
     [bigint, Principal, string],
     { 'ok' : string } |
       { 'err' : string }
   >,
   'recordExportRequest' : ActorMethod<[], { 'ok' : null } | { 'err' : string }>,
+  /**
+   * / Record a guest (non-app) payment and award Fan Points to the recipient.
+   * / The guest provides a phone number or email so points can be linked later.
+   * / sectionName: optional stadium section of the recipient (enables section multiplier rules).
+   */
+  'recordGuestPayment' : ActorMethod<
+    [
+      Principal,
+      bigint,
+      string,
+      { 'email' : null } |
+        { 'phone' : null },
+      [] | [string],
+    ],
+    { 'ok' : { 'guestRecordId' : string, 'fanPointsAwarded' : bigint } } |
+      { 'err' : string }
+  >,
   /**
    * / Manager: record a payout distribution (does NOT move funds — manager controls external settlement)
    */
@@ -736,12 +1126,25 @@ export interface _SERVICE {
     { 'ok' : string } |
       { 'err' : string }
   >,
+  /**
+   * / Redeem a reward by spending Fan Points. The redeemed code appears here and is stored on-chain.
+   */
+  'redeemReward' : ActorMethod<
+    [string],
+    { 'ok' : RedeemedReward } |
+      { 'err' : string }
+  >,
   'rejectBusinessApplication' : ActorMethod<
     [Principal, [] | [string]],
     { 'ok' : null } |
       { 'err' : string }
   >,
   'removeActiveSession' : ActorMethod<[string], undefined>,
+  'removeExtendedStaff' : ActorMethod<
+    [string],
+    { 'ok' : null } |
+      { 'err' : string }
+  >,
   'removePaymentMethod' : ActorMethod<[string], undefined>,
   /**
    * / Manager: remove a staff member from the roster
@@ -752,6 +1155,11 @@ export interface _SERVICE {
       { 'err' : string }
   >,
   'removeStatus' : ActorMethod<[bigint], undefined>,
+  'removeTipSplitRole' : ActorMethod<
+    [string],
+    { 'ok' : null } |
+      { 'err' : string }
+  >,
   'removeWalletAddress' : ActorMethod<[], undefined>,
   'reportFraudAlert' : ActorMethod<[FraudAlert], undefined>,
   'requestAccountDeletion' : ActorMethod<
@@ -854,11 +1262,21 @@ export interface _SERVICE {
    */
   'setAppLockEnabled' : ActorMethod<[boolean], undefined>,
   'setBiometricSettings' : ActorMethod<[BiometricSettings], undefined>,
+  'setGameStandAssignment' : ActorMethod<
+    [GameStandAssignment],
+    { 'ok' : GameStandAssignment } |
+      { 'err' : string }
+  >,
   'setKYCConfiguration' : ActorMethod<[string, string], undefined>,
   'setKYCStatus' : ActorMethod<
     [Principal, KYCStatus, [] | [string]],
     undefined
   >,
+  /**
+   * / Admin-only: set or replace the active partner branding configuration.
+   * / Rejects with a trap if the caller is not an admin.
+   */
+  'setPartnerBranding' : ActorMethod<[PartnerBrandingConfig], undefined>,
   'setPinHash' : ActorMethod<[Uint8Array, Uint8Array], undefined>,
   'setSMSConfiguration' : ActorMethod<[string, string, string], undefined>,
   'setSpendingLimits' : ActorMethod<
@@ -904,15 +1322,58 @@ export interface _SERVICE {
   >,
   'submitKYC' : ActorMethod<[], undefined>,
   'submitRSVP' : ActorMethod<[string, boolean, string], undefined>,
+  'togglePointsRule' : ActorMethod<
+    [string, boolean],
+    { 'ok' : PointsRule } |
+      { 'err' : string }
+  >,
   'toggleRecurringPayment' : ActorMethod<
     [bigint, boolean],
     { 'ok' : null } |
       { 'err' : string }
   >,
   'transform' : ActorMethod<[TransformationInput], TransformationOutput>,
+  'updateMenuItem' : ActorMethod<
+    [string, string, string, bigint, string, boolean],
+    { 'ok' : MenuItem } |
+      { 'err' : string }
+  >,
+  'updateOrderStatus' : ActorMethod<
+    [string, OrderStatus],
+    { 'ok' : null } |
+      { 'err' : string }
+  >,
   'updatePaymentMethodVerificationStatus' : ActorMethod<
     [string, string],
     undefined
+  >,
+  'updatePointsRule' : ActorMethod<
+    [string, string, string, number, [] | [string]],
+    { 'ok' : PointsRule } |
+      { 'err' : string }
+  >,
+  /**
+   * / Admin-only: full update of a reward (title, description, pointsCost, codeOrValue, quantity, teamId, active).
+   */
+  'updateReward' : ActorMethod<
+    [string, UpdateRewardParams],
+    { 'ok' : Reward } |
+      { 'err' : string }
+  >,
+  'updateStand' : ActorMethod<
+    [string, string, string, string],
+    { 'ok' : ConcessionStand } |
+      { 'err' : string }
+  >,
+  'upsertExtendedStaff' : ActorMethod<
+    [ExtendedStaffMember],
+    { 'ok' : ExtendedStaffMember } |
+      { 'err' : string }
+  >,
+  'upsertTipSplitRole' : ActorMethod<
+    [TipSplitRole],
+    { 'ok' : TipSplitRole } |
+      { 'err' : string }
   >,
   'verifyPinHash' : ActorMethod<[Uint8Array, Uint8Array], PinCheckResult>,
   'verifyWithdrawalOTP' : ActorMethod<

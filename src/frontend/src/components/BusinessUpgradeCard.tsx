@@ -1,16 +1,24 @@
 import { Button } from "@/components/ui/button";
-import { Briefcase, CheckCircle, Clock, XCircle } from "lucide-react";
+import {
+  ArrowRight,
+  Briefcase,
+  CheckCircle,
+  Clock,
+  XCircle,
+} from "lucide-react";
 import { BusinessApplicationStatus } from "../backend";
 import { useGetMyBusinessApplication } from "../hooks/useQueries";
 
 interface BusinessUpgradeCardProps {
   onOpenBusinessSettings: () => void;
   onOpenManagerDashboard?: () => void;
+  onStartOnboarding?: () => void;
 }
 
 export default function BusinessUpgradeCard({
   onOpenBusinessSettings,
   onOpenManagerDashboard,
+  onStartOnboarding = () => {},
 }: BusinessUpgradeCardProps) {
   const { data: application, isLoading } = useGetMyBusinessApplication();
 
@@ -36,6 +44,21 @@ export default function BusinessUpgradeCard({
             </p>
           </div>
         </div>
+        {/* Onboarding banner — shown until dismissed or completed */}
+        {localStorage.getItem("businessOnboardingDone") !== "true" && (
+          <button
+            type="button"
+            data-ocid="business-onboarding-banner"
+            onClick={onStartOnboarding}
+            className="mt-3 w-full flex items-center gap-2 bg-teal-500/20 border border-teal-400/40 rounded-lg p-3 text-sm text-teal-300 cursor-pointer hover:bg-teal-500/30 transition-all text-left"
+          >
+            <span className="flex-1 leading-snug">
+              Your business account is approved — click here to set up your
+              staff and QR codes.
+            </span>
+            <ArrowRight className="h-4 w-4 shrink-0" />
+          </button>
+        )}
         <Button
           data-ocid="business-open-portal-btn"
           onClick={() => onOpenManagerDashboard?.()}

@@ -30,8 +30,19 @@ type BusinessApplication__24395841 =
     termsAccepted : Bool;
     updatedAt : Int
   };
+type CentAmount__188807116 = CentAmount__843014455;
+type CentAmount__843014455 = Nat;
+type ConcessionStand__703605433 =
+  {
+    createdAt : Timestamp__408193161;
+    description : Text;
+    id : Text;
+    name : Text;
+    section : Text
+  };
 type Data__791452850<K, V> =
   {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type DeliveryMethod__875922920 = {#Delivery; #Pickup};
 type DirectDepositAccount__229701885 =
   {
     accountNumber : Text;
@@ -65,7 +76,41 @@ type Dispute__575102370 =
   };
 type EncryptionEvent__509133420 =
   {dataType : Text; eventType : Text; timestamp : Int};
+type ExtendedStaffMember__322484622 =
+  {
+    customRole : Text;
+    email : Text;
+    employmentStatus : {#active; #inactive; #suspended};
+    employmentType : {#contractor; #fullTime; #partTime};
+    hireDate : Int;
+    id : Text;
+    name : Text;
+    notes : Text;
+    phone : Text;
+    section : Text
+  };
 type ExternalBlob__246066408 = Blob;
+type FanPoints__1010559146 =
+  {
+    guestContact : ?Text;
+    points : Float;
+    totalEarned : Float;
+    totalRedeemed : Float;
+    userId : Principal
+  };
+type FoodOrder__236627434 =
+  {
+    createdAt : Timestamp__408193161;
+    customerId : UserId__747802656;
+    deliveryMethod : DeliveryMethod__875922920;
+    id : Text;
+    items : [OrderItem__236013403];
+    seatNumber : Text;
+    standId : Text;
+    status : OrderStatus__433870950;
+    totalInCents : CentAmount__188807116;
+    updatedAt : Timestamp__408193161
+  };
 type FraudAlert__836844897 =
   {
     reason : Text;
@@ -87,6 +132,28 @@ type GDPRAuditEvent__716755970 =
     principal : Principal;
     timestamp : Int
   };
+type GameStandAssignment__788314290 =
+  {
+    defaultStandId : Text;
+    gameDate : Text;
+    gameStandId : Text;
+    gameStandName : Text;
+    id : Text;
+    staffId : Text;
+    staffName : Text
+  };
+type GuestPaymentRecord__512181755 =
+  {
+    amount : Nat;
+    contactInfo : Text;
+    contactType : {#email; #phone};
+    converted : Bool;
+    convertedUserId : ?Principal;
+    fanPointsAwarded : Nat;
+    id : Text;
+    recipientId : Principal;
+    timestamp : Int
+  };
 type Int__270357528 = Int__616954475;
 type Int__616954475 = Int;
 type Internal__8484328<K, V> =
@@ -106,6 +173,16 @@ type Map__158565046<K, V> = Map__297112838<K, V>;
 type Map__297112838<K, V> =
   {var root : Node__46230540<K, V>; var size : Nat__490723111};
 type Map__605269027<K, V> = Map__158565046<K, V>;
+type MenuItem__340341605 =
+  {
+    available : Bool;
+    category : Text;
+    description : Text;
+    id : Text;
+    name : Text;
+    priceInCents : CentAmount__188807116;
+    standId : Text
+  };
 type MoneyRequest__894587261 =
   {
     amount : Nat;
@@ -130,6 +207,23 @@ type OTPChallenge__283514945 =
     var used : Bool;
     userPrincipal : Principal
   };
+type OrderItem__236013403 =
+  {
+    itemId : Text;
+    itemName : Text;
+    priceInCents : CentAmount__188807116;
+    quantity : Nat
+  };
+type OrderStatus__433870950 =
+  {#Cancelled; #Completed; #OnTheWay; #Placed; #Preparing; #ReadyForPickup};
+type PartnerBrandingConfig__468691355 =
+  {
+    isActive : Bool;
+    partnerLogoUrl : Text;
+    partnerName : Text;
+    primaryColor : Text;
+    secondaryColor : Text
+  };
 type PaymentMethodType__714138347 = {#bankAccount; #card};
 type PaymentMethod__68978920 =
   {
@@ -149,6 +243,26 @@ type PayoutRecord__169083594 =
     managerPrincipal : Principal;
     notes : Text;
     timestamp : Int
+  };
+type PointsRuleType__432386159 =
+  {
+    #firstPaymentBonus;
+    #foodMultiplier;
+    #gameDayBonus;
+    #paymentMultiplier;
+    #sectionMultiplier;
+    #tipMultiplier
+  };
+type PointsRule__126375656 =
+  {
+    createdAt : Int;
+    description : Text;
+    id : Text;
+    isActive : Bool;
+    multiplier : Float;
+    name : Text;
+    ruleType : PointsRuleType__432386159;
+    sectionName : ?Text
   };
 type RSVP__815186634 =
   {
@@ -172,7 +286,35 @@ type RecurringPayment__69347714 =
     toUser : Principal;
     totalRuns : Nat
   };
+type RedeemedReward__17304647 =
+  {
+    codeOrValue : Text;
+    contactEmail : ?Text;
+    emailSent : Bool;
+    id : Text;
+    redeemedAt : Int;
+    rewardId : Text;
+    rewardTitle : Text;
+    userId : Principal
+  };
 type RequestStatus__1046322842 = {#cancelled; #declined; #paid; #pending};
+type RewardType__1052971105 =
+  {#concessionCredit; #discountCode; #other; #ticketEntry};
+type Reward__290480288 =
+  {
+    active : Bool;
+    codeOrValue : Text;
+    createdBy : Principal;
+    description : Text;
+    expiresAt : ?Int;
+    id : Text;
+    pointsCost : Nat;
+    quantity : ?Nat;
+    quantityRemaining : ?Nat;
+    rewardType : RewardType__1052971105;
+    teamId : ?Text;
+    title : Text
+  };
 type SavingsDirection__554606990 = {#fromSavings; #toSavings};
 type SavingsTransaction__766235723 =
   {
@@ -226,6 +368,21 @@ type SplitPayment__302156093 =
     status : SplitPaymentStatus__307076164;
     totalAmount : Nat
   };
+type StaffCheckIn__356252010 =
+  {
+    checkInTime : Int;
+    checkOutTime : ?Int;
+    gameDate : Text;
+    hoursWorked : ?Float;
+    id : Text;
+    manualOverride : Bool;
+    overrideBy : ?Text;
+    role : Text;
+    staffId : Text;
+    staffName : Text;
+    standId : Text;
+    standName : Text
+  };
 type StaffInviteMethod__201275929 = {#link; #phone};
 type StaffInviteStatus__432685160 = {#accepted; #declined; #pending};
 type StaffInvite__972112728 =
@@ -244,6 +401,14 @@ type StaffMember__985834694 =
     joinedAt : Int;
     principal : Principal;
     status : StaffMemberStatus__222984788
+  };
+type StaffSection__183651939 =
+  {
+    assignedAt : Int;
+    managerId : Principal;
+    sectionLabel : Text;
+    sectionName : Text;
+    staffId : Principal
   };
 type Status__1000080315 =
   {
@@ -277,6 +442,8 @@ type SupportMessage__347385535 =
 type SupportStatus__393732494 = {#open; #resolved; #waitingForUser};
 type Time__796480547 = Int__270357528;
 type Time__900049286 = Time__796480547;
+type Timestamp__301639476 = Int;
+type Timestamp__408193161 = Timestamp__301639476;
 type TipPoolConfig__1059125421 =
   {
     customSplits : [(Principal, Nat)];
@@ -284,6 +451,31 @@ type TipPoolConfig__1059125421 =
     mode : TipPoolMode__49526000
   };
 type TipPoolMode__49526000 = {#custom; #equal};
+type TipSplitCalculation__397909957 =
+  {
+    hoursWorked : Float;
+    payoutAmount : Float;
+    role : Text;
+    rolePoints : Float;
+    sharePercent : Float;
+    staffId : Text;
+    staffName : Text;
+    weightedScore : Float
+  };
+type TipSplitPayout__70563510 =
+  {
+    approvedAt : ?Int;
+    approvedBy : ?Text;
+    calculations : [TipSplitCalculation__397909957];
+    gameDate : Text;
+    id : Text;
+    standId : Text;
+    standName : Text;
+    status : Text;
+    totalPool : Float
+  };
+type TipSplitRole__828474781 =
+  {id : Text; isCustom : Bool; pointValue : Float; roleName : Text};
 type Tip__571002024 =
   {
     amount : Nat;
@@ -296,6 +488,8 @@ type Tip__571002024 =
   };
 type TwoFactorSettings__11872040 =
   {backupCodes : [Text]; enabled : Bool; method : ?Text};
+type UserId__158757552 = Principal;
+type UserId__747802656 = UserId__158757552;
 type UserProfile__491224006 =
   {
     bio : Text;
@@ -361,6 +555,11 @@ actor {
       tooltipNote : Text;
       verificationTimestamp : Time__900049286
     };
+  stable concessionStands :
+    {
+      var root : Node__46230540<Text, ConcessionStand__703605433>;
+      var size : Nat__490723111
+    };
   stable dayNanos : Int;
   stable deletionGracePeriodNanos : Int;
   stable deletionRequests :
@@ -395,16 +594,49 @@ actor {
       var size : Nat__490723111
     };
   stable exportRateLimitWindowNanos : Int;
+  stable extendedStaffMap :
+    {
+      var root : Node__46230540<Text, ExtendedStaffMember__322484622>;
+      var size : Nat__490723111
+    };
+  stable fanPointsMap :
+    {
+      var root : Node__46230540<Principal, FanPoints__1010559146>;
+      var size : Nat__490723111
+    };
+  stable fanPointsState :
+    {
+      var nextGuestRecordId : Nat;
+      var nextRedeemedId : Nat;
+      var nextRewardId : Nat
+    };
+  stable foodOrderingState : {var nextFoodOrderSeq : Nat};
+  stable foodOrders :
+    {
+      var root : Node__46230540<Text, FoodOrder__236627434>;
+      var size : Nat__490723111
+    };
   stable var fraudAlerts :
     {
       var blockIndex : Nat__490723111;
       var blocks : [var [var ?FraudAlert__836844897]];
       var elementIndex : Nat__490723111
     };
+  stable gameStandAssignments :
+    {
+      var root : Node__46230540<Text, GameStandAssignment__788314290>;
+      var size : Nat__490723111
+    };
   stable gdprAuditLog :
     {
       var blockIndex : Nat__490723111;
       var blocks : [var [var ?GDPRAuditEvent__716755970]];
+      var elementIndex : Nat__490723111
+    };
+  stable guestPaymentRecords :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?GuestPaymentRecord__512181755]];
       var elementIndex : Nat__490723111
     };
   stable inviteLinksState :
@@ -419,6 +651,11 @@ actor {
       var size : Nat__490723111
     };
   stable lockoutDurationNanos : Nat;
+  stable menuItems :
+    {
+      var root : Node__46230540<Text, MenuItem__340341605>;
+      var size : Nat__490723111
+    };
   stable var moneyRequests :
     {
       var blockIndex : Nat__490723111;
@@ -437,6 +674,7 @@ actor {
     };
   stable otpLockouts :
     {var root : Node__46230540<Text, Int>; var size : Nat__490723111};
+  stable var partnerBrandingConfig : ?PartnerBrandingConfig__468691355;
   stable paymentMethods :
     {
       var root : Node__46230540<Principal, [PaymentMethod__68978920]>;
@@ -453,6 +691,11 @@ actor {
       var root : Node__46230540<Principal, AppLockPinData__925472262>;
       var size : Nat__490723111
     };
+  stable pointsRulesMap :
+    {
+      var root : Node__46230540<Text, PointsRule__126375656>;
+      var size : Nat__490723111
+    };
   stable rateLimitMap :
     {
       var root : Node__46230540<Principal, List__415060402<Int>>;
@@ -464,7 +707,18 @@ actor {
       var blocks : [var [var ?RecurringPayment__69347714]];
       var elementIndex : Nat__490723111
     };
+  stable redeemedRewardsMap :
+    {
+      var root :
+        Node__46230540<Principal, List__415060402<RedeemedReward__17304647>>;
+      var size : Nat__490723111
+    };
   stable var requestCounter : Nat;
+  stable rewardsMap :
+    {
+      var root : Node__46230540<Text, Reward__290480288>;
+      var size : Nat__490723111
+    };
   stable savingsBalances :
     {var root : Node__46230540<Principal, Nat>; var size : Nat__490723111};
   stable var savingsHistory :
@@ -472,6 +726,11 @@ actor {
       var blockIndex : Nat__490723111;
       var blocks : [var [var ?SavingsTransaction__766235723]];
       var elementIndex : Nat__490723111
+    };
+  stable sectionAssignmentsMap :
+    {
+      var root : Node__46230540<Principal, StaffSection__183651939>;
+      var size : Nat__490723111
     };
   stable var securityEvents :
     {
@@ -495,6 +754,11 @@ actor {
   stable splitPayments :
     {
       var root : Node__46230540<Text, SplitPayment__302156093>;
+      var size : Nat__490723111
+    };
+  stable staffCheckIns :
+    {
+      var root : Node__46230540<Text, StaffCheckIn__356252010>;
       var size : Nat__490723111
     };
   stable staffInvites :
@@ -531,6 +795,16 @@ actor {
   stable tipPoolConfigs :
     {
       var root : Node__46230540<Principal, TipPoolConfig__1059125421>;
+      var size : Nat__490723111
+    };
+  stable tipSplitPayouts :
+    {
+      var root : Node__46230540<Text, TipSplitPayout__70563510>;
+      var size : Nat__490723111
+    };
+  stable tipSplitRoles :
+    {
+      var root : Node__46230540<Text, TipSplitRole__828474781>;
       var size : Nat__490723111
     };
   stable var tips :

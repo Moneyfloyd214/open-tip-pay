@@ -108,7 +108,7 @@ function SetupSheet({ open, onOpenChange }: SetupSheetProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="bg-navy-dark/98 backdrop-blur-xl border-t border-teal/20 rounded-t-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-card/95 backdrop-blur-xl border-t border-teal/20 rounded-t-2xl max-h-[90vh] overflow-y-auto"
       >
         <SheetHeader>
           <SheetTitle className="text-white flex items-center gap-2">
@@ -131,7 +131,7 @@ function SetupSheet({ open, onOpenChange }: SetupSheetProps) {
               placeholder="e.g. aaaaa-bbbbb-ccccc-ddddd-cai"
               value={principalText}
               onChange={(e) => handlePrincipalChange(e.target.value)}
-              className={`bg-white/5 border-white/10 text-white placeholder:text-white/30 font-mono text-sm ${principalError ? "border-red-500/50" : ""}`}
+              className={`bg-muted/30 border-border text-white placeholder:text-white/30 font-mono text-sm ${principalError ? "border-red-500/50" : ""}`}
               data-ocid="recurring.recipient_input"
             />
             {principalError && (
@@ -163,7 +163,7 @@ function SetupSheet({ open, onOpenChange }: SetupSheetProps) {
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="pl-8 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                className="pl-8 bg-muted/30 border-border text-white placeholder:text-white/30"
                 data-ocid="recurring.amount_input"
               />
             </div>
@@ -184,7 +184,7 @@ function SetupSheet({ open, onOpenChange }: SetupSheetProps) {
                   className={`py-2.5 rounded-xl text-sm font-semibold border transition-all duration-200 ${
                     frequency === f
                       ? "bg-teal/20 border-teal/50 text-teal"
-                      : "bg-white/5 border-white/10 text-white/60 hover:border-white/20"
+                      : "bg-muted/30 border-border text-white/60 hover:border-white/20"
                   }`}
                 >
                   {f}
@@ -204,7 +204,7 @@ function SetupSheet({ open, onOpenChange }: SetupSheetProps) {
               onChange={(e) => setMessage(e.target.value)}
               maxLength={200}
               rows={3}
-              className="bg-white/5 border-white/10 text-white placeholder:text-white/30 resize-none text-sm"
+              className="bg-muted/30 border-border text-white placeholder:text-white/30 resize-none text-sm"
               data-ocid="recurring.message_textarea"
             />
             <p className="text-[10px] text-white/30 text-right mt-1">
@@ -274,7 +274,7 @@ export default function RecurringPayments() {
         {[1, 2].map((i) => (
           <div
             key={i}
-            className="h-24 rounded-xl bg-white/5 border border-white/10"
+            className="h-24 rounded-xl bg-muted/30 border border-border"
           />
         ))}
       </div>
@@ -286,7 +286,9 @@ export default function RecurringPayments() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <RefreshCw className="h-4 w-4 text-teal" />
-          <p className="text-sm font-bold text-white">Recurring Payments</p>
+          <p className="text-sm font-bold text-foreground">
+            Recurring Payments
+          </p>
         </div>
         <Button
           size="sm"
@@ -301,7 +303,7 @@ export default function RecurringPayments() {
 
       {payments.length === 0 ? (
         <div
-          className="text-center py-10 glassmorphism rounded-xl border border-white/10"
+          className="text-center py-10 glassmorphism rounded-xl border border-border"
           data-ocid="recurring.empty_state"
         >
           <CalendarClock className="h-10 w-10 text-white/20 mx-auto mb-3" />
@@ -330,8 +332,7 @@ export default function RecurringPayments() {
                 ? Object.keys(p.frequency)[0]
                 : String(p.frequency);
             const freqClass =
-              frequencyColor[freq] ??
-              "text-white/50 bg-white/5 border-white/10";
+              frequencyColor[freq] ?? "text-white/50 bg-muted/30 border-border";
             const recipientStr =
               typeof p.toUser === "object"
                 ? `${p.toUser.toString().slice(0, 12)}…`
@@ -343,13 +344,13 @@ export default function RecurringPayments() {
             return (
               <div
                 key={String(p.id)}
-                className="glassmorphism rounded-xl p-4 border border-white/10 space-y-3"
+                className="glassmorphism rounded-xl p-4 border border-border space-y-3"
                 data-ocid={`recurring.item.${idx + 1}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-bold text-white">
+                      <p className="text-sm font-bold text-foreground">
                         ${(Number(p.amount) / 100).toFixed(2)}
                       </p>
                       <span

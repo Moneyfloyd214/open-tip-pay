@@ -208,9 +208,9 @@ What would you like to know?`;
 
       {/* AI Assistant Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-lg h-[600px] flex flex-col bg-navy-light/95 backdrop-blur-xl border-teal/30">
+        <DialogContent className="sm:max-w-lg h-[600px] flex flex-col bg-card/95 backdrop-blur-xl border-teal/30">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-white">
+            <DialogTitle className="flex items-center gap-2 text-foreground">
               <MessageCircle className="h-5 w-5 text-teal" />
               AI Assistant
             </DialogTitle>
@@ -219,13 +219,13 @@ What would you like to know?`;
           {/* Quick Actions */}
           {messages.length === 1 && (
             <div className="space-y-2 pb-4">
-              <p className="text-xs text-white/60">Quick actions:</p>
+              <p className="text-xs text-muted-foreground">Quick actions:</p>
               <div className="grid gap-2">
                 {quickActions.map((action) => (
                   <Button
                     key={action.label}
                     variant="outline"
-                    className="justify-start border-teal/30 bg-teal/10 text-white hover:bg-teal/20 transition-all"
+                    className="justify-start border-teal/30 bg-teal/10 text-foreground hover:bg-teal/20 transition-all"
                     onClick={() => {
                       setInput(action.query);
                       handleSend();
@@ -251,7 +251,7 @@ What would you like to know?`;
                     className={`max-w-[80%] rounded-lg p-3 transition-all ${
                       message.role === "user"
                         ? "bg-teal text-white shadow-md shadow-teal/30"
-                        : "glassmorphism border border-teal/20 text-white"
+                        : "glassmorphism border border-teal/20 text-foreground"
                     }`}
                   >
                     <p className="text-sm whitespace-pre-wrap">
@@ -280,7 +280,7 @@ What would you like to know?`;
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask me anything..."
-              className="flex-1 bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+              className="flex-1 bg-muted/50 border-teal/30 text-foreground placeholder:text-muted-foreground/60"
               disabled={isProcessing}
             />
             <Button

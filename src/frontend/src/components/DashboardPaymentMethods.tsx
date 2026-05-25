@@ -193,7 +193,7 @@ export default function DashboardPaymentMethods() {
 
   if (isLoading) {
     return (
-      <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
+      <Card className="border-border bg-muted/30 backdrop-blur-sm">
         <CardContent className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-teal" />
         </CardContent>
@@ -211,7 +211,7 @@ export default function DashboardPaymentMethods() {
 
   return (
     <>
-      <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
+      <Card className="border-border bg-muted/30 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-lg text-white flex items-center gap-2">
             <img
@@ -233,7 +233,7 @@ export default function DashboardPaymentMethods() {
                     alt="Cards"
                     className="h-4 w-4"
                   />
-                  <h4 className="text-sm font-medium text-white">Cards</h4>
+                  <h4 className="text-sm font-medium text-foreground">Cards</h4>
                 </div>
                 <Button
                   onClick={() => setAddCardDialogOpen(true)}
@@ -248,7 +248,9 @@ export default function DashboardPaymentMethods() {
               {cards.length === 0 ? (
                 <div className="glassmorphism p-4 rounded-lg text-center">
                   <CreditCard className="h-6 w-6 text-white/40 mx-auto mb-1" />
-                  <p className="text-xs text-white/60">No cards added</p>
+                  <p className="text-xs text-muted-foreground">
+                    No cards added
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -299,7 +301,7 @@ export default function DashboardPaymentMethods() {
                     alt="Bank Accounts"
                     className="h-4 w-4"
                   />
-                  <h4 className="text-sm font-medium text-white">
+                  <h4 className="text-sm font-medium text-foreground">
                     Bank Accounts
                   </h4>
                 </div>
@@ -316,7 +318,7 @@ export default function DashboardPaymentMethods() {
               {banks.length === 0 ? (
                 <div className="glassmorphism p-4 rounded-lg text-center">
                   <Building2 className="h-6 w-6 text-white/40 mx-auto mb-1" />
-                  <p className="text-xs text-white/60">
+                  <p className="text-xs text-muted-foreground">
                     No bank accounts added
                   </p>
                 </div>
@@ -388,7 +390,7 @@ export default function DashboardPaymentMethods() {
 
       {/* Add Card Dialog */}
       <Dialog open={addCardDialogOpen} onOpenChange={setAddCardDialogOpen}>
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-teal/20 text-white">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-teal/20 text-foreground">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <CreditCard className="h-5 w-5 text-teal" />
@@ -405,10 +407,10 @@ export default function DashboardPaymentMethods() {
                 Card Type
               </Label>
               <Select value={cardBrand} onValueChange={setCardBrand}>
-                <SelectTrigger className="bg-navy-dark/50 border-teal/30 text-white">
+                <SelectTrigger className="bg-muted/50 border-teal/30 text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-navy-dark border-teal/30">
+                <SelectContent className="bg-background border-teal/30">
                   <SelectItem value="visa">Visa</SelectItem>
                   <SelectItem value="mastercard">Mastercard</SelectItem>
                   <SelectItem value="amex">American Express</SelectItem>
@@ -429,7 +431,7 @@ export default function DashboardPaymentMethods() {
                   setCardNumber(e.target.value.replace(/\s/g, ""))
                 }
                 maxLength={19}
-                className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
               />
             </div>
 
@@ -446,7 +448,7 @@ export default function DashboardPaymentMethods() {
                     setCardExpiry(e.target.value.replace(/\D/g, ""))
                   }
                   maxLength={5}
-                  className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                  className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
                 />
               </div>
               <div className="space-y-2">
@@ -461,7 +463,7 @@ export default function DashboardPaymentMethods() {
                     setCardCVC(e.target.value.replace(/\D/g, ""))
                   }
                   maxLength={4}
-                  className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                  className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
                 />
               </div>
             </div>
@@ -496,7 +498,7 @@ export default function DashboardPaymentMethods() {
 
       {/* Add Bank Dialog */}
       <Dialog open={addBankDialogOpen} onOpenChange={setAddBankDialogOpen}>
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-teal/20 text-white">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-teal/20 text-foreground">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Building2 className="h-5 w-5 text-teal" />
@@ -518,7 +520,7 @@ export default function DashboardPaymentMethods() {
                 placeholder="Chase Bank"
                 value={bankName}
                 onChange={(e) => setBankName(e.target.value)}
-                className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
               />
             </div>
 
@@ -527,10 +529,10 @@ export default function DashboardPaymentMethods() {
                 Account Type
               </Label>
               <Select value={accountType} onValueChange={setAccountType}>
-                <SelectTrigger className="bg-navy-dark/50 border-teal/30 text-white">
+                <SelectTrigger className="bg-muted/50 border-teal/30 text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-navy-dark border-teal/30">
+                <SelectContent className="bg-background border-teal/30">
                   <SelectItem value="checking">Checking</SelectItem>
                   <SelectItem value="savings">Savings</SelectItem>
                 </SelectContent>
@@ -549,7 +551,7 @@ export default function DashboardPaymentMethods() {
                   setRoutingNumber(e.target.value.replace(/\D/g, ""))
                 }
                 maxLength={9}
-                className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
               />
             </div>
 
@@ -565,7 +567,7 @@ export default function DashboardPaymentMethods() {
                   setAccountNumber(e.target.value.replace(/\D/g, ""))
                 }
                 maxLength={17}
-                className="bg-navy-dark/50 border-teal/30 text-white placeholder:text-white/40"
+                className="bg-muted/50 border-teal/30 text-white placeholder:text-white/40"
               />
             </div>
           </div>

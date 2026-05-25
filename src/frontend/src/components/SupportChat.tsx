@@ -93,8 +93,8 @@ function OpenTicketForm({ onSuccess }: { onSuccess: () => void }) {
         <div className="h-16 w-16 rounded-2xl bg-teal/10 border border-teal/20 flex items-center justify-center mx-auto">
           <MessageCircle className="h-8 w-8 text-teal" />
         </div>
-        <h3 className="text-lg font-bold text-white">Contact Support</h3>
-        <p className="text-sm text-white/50">
+        <h3 className="text-lg font-bold text-foreground">Contact Support</h3>
+        <p className="text-sm text-muted-foreground">
           Describe your issue and our team will get back to you as soon as
           possible.
         </p>
@@ -104,7 +104,7 @@ function OpenTicketForm({ onSuccess }: { onSuccess: () => void }) {
         <div>
           <label
             htmlFor="support-subject"
-            className="text-xs font-semibold text-white/50 block mb-1.5"
+            className="text-xs font-semibold text-muted-foreground block mb-1.5"
           >
             Subject
           </label>
@@ -113,14 +113,14 @@ function OpenTicketForm({ onSuccess }: { onSuccess: () => void }) {
             placeholder="e.g. Withdrawal issue, Account question…"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+            className="bg-muted/30 border-border text-foreground placeholder:text-muted-foreground/50"
             data-ocid="support.subject_input"
           />
         </div>
         <div>
           <label
             htmlFor="support-first-message"
-            className="text-xs font-semibold text-white/50 block mb-1.5"
+            className="text-xs font-semibold text-muted-foreground block mb-1.5"
           >
             Message <span className="text-red-400">*</span>
           </label>
@@ -130,7 +130,7 @@ function OpenTicketForm({ onSuccess }: { onSuccess: () => void }) {
             value={firstMessage}
             onChange={(e) => setFirstMessage(e.target.value)}
             rows={5}
-            className="bg-white/5 border-white/10 text-white placeholder:text-white/30 resize-none text-sm"
+            className="bg-muted/30 border-border text-foreground placeholder:text-muted-foreground/50 resize-none text-sm"
             data-ocid="support.first_message_textarea"
           />
         </div>
@@ -216,10 +216,10 @@ function ChatThread() {
       {convo && (
         <div className="flex items-center justify-between mb-4 px-1">
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-white truncate">
+            <p className="text-sm font-bold text-foreground truncate">
               {convo.subject}
             </p>
-            <p className="text-[10px] text-white/30">
+            <p className="text-[10px] text-muted-foreground/50">
               Opened{" "}
               {new Date(
                 Number(convo.createdAt) / 1_000_000,
@@ -234,11 +234,11 @@ function ChatThread() {
                 void refetchConvo();
                 void refetchMessages();
               }}
-              className="h-7 w-7 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-colors"
+              className="h-7 w-7 rounded-lg bg-muted/30 hover:bg-muted/50 border border-border flex items-center justify-center transition-colors"
               aria-label="Refresh messages"
               data-ocid="support.refresh_button"
             >
-              <RefreshCw className="h-3.5 w-3.5 text-white/50" />
+              <RefreshCw className="h-3.5 w-3.5 text-muted-foreground" />
             </button>
           </div>
         </div>
@@ -259,12 +259,12 @@ function ChatThread() {
                 className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                   isUser
                     ? "bg-teal text-white rounded-br-md"
-                    : "bg-white/10 text-white/90 rounded-bl-md border border-white/10"
+                    : "bg-muted/50 text-foreground rounded-bl-md border border-border"
                 }`}
               >
                 {msg.message}
               </div>
-              <p className="text-[10px] text-white/25 px-1">
+              <p className="text-[10px] text-muted-foreground/50 px-1">
                 {isUser ? "You" : "Support"} ·{" "}
                 {ts.toLocaleTimeString([], {
                   hour: "2-digit",
@@ -279,14 +279,14 @@ function ChatThread() {
 
       {/* Input */}
       {convo?.status !== "resolved" && (
-        <div className="flex gap-2 pt-3 border-t border-white/10 mt-3">
+        <div className="flex gap-2 pt-3 border-t border-border mt-3">
           <input
             type="text"
             placeholder="Type a message…"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-teal/50"
+            className="flex-1 bg-muted/30 border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-teal/50"
             data-ocid="support.message_input"
           />
           <Button
@@ -306,7 +306,7 @@ function ChatThread() {
       )}
 
       {convo?.status === "resolved" && (
-        <div className="mt-3 pt-3 border-t border-white/10 text-center">
+        <div className="mt-3 pt-3 border-t border-border text-center">
           <p className="text-xs text-green-400/70 flex items-center justify-center gap-1.5">
             <CheckCircle className="h-3.5 w-3.5" />
             This ticket has been resolved
@@ -331,11 +331,11 @@ export function SupportChatButton({ className = "" }: SupportChatButtonProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`relative h-9 w-9 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all duration-200 ${className}`}
+        className={`relative h-9 w-9 rounded-xl bg-muted/30 hover:bg-muted/50 border border-border flex items-center justify-center transition-all duration-200 ${className}`}
         aria-label="Open support chat"
         data-ocid="support.open_modal_button"
       >
-        <MessageCircle className="h-4 w-4 text-white/70" />
+        <MessageCircle className="h-4 w-4 text-muted-foreground" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 h-4 w-4 bg-teal text-white text-[9px] font-bold rounded-full flex items-center justify-center">
             {unreadCount > 9 ? "9+" : unreadCount}
@@ -365,23 +365,23 @@ export default function SupportChatSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-md bg-navy-dark/98 backdrop-blur-xl border-l border-teal/20 flex flex-col"
+        className="w-full sm:max-w-md bg-card/98 backdrop-blur-xl border-l border-teal/20 flex flex-col"
         data-ocid="support.dialog"
       >
         <SheetHeader>
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-white flex items-center gap-2">
+            <SheetTitle className="text-foreground flex items-center gap-2">
               <MessageCircle className="h-5 w-5 text-teal" />
               Support
             </SheetTitle>
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="h-8 w-8 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center"
+              className="h-8 w-8 rounded-lg bg-muted/30 hover:bg-muted/50 border border-border flex items-center justify-center"
               aria-label="Close"
               data-ocid="support.close_button"
             >
-              <X className="h-4 w-4 text-white/60" />
+              <X className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
         </SheetHeader>

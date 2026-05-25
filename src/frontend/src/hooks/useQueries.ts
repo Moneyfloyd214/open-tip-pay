@@ -1,7 +1,12 @@
+import type { PointsRule, PointsRuleType } from "@/types/fanpoints";
 import { useActor, useInternetIdentity } from "@caffeineai/core-infrastructure";
 import type { Principal } from "@dfinity/principal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createActor } from "../backend";
+import {
+  type ExtendedStaffMember,
+  type PointsBreakdown,
+  createActor,
+} from "../backend";
 import type {
   AIQuery,
   ActiveSession,
@@ -28,6 +33,7 @@ import type {
   VaultStatus,
   VoicePrintData,
 } from "../backend";
+import { useDemoMode } from "../context/DemoContext";
 
 // User Profile Queries
 export function useGetCallerUserProfile() {
@@ -2683,5 +2689,1113 @@ export function useCalculateFee(
     },
     enabled: !!feeType && amount > 0,
     staleTime: Number.POSITIVE_INFINITY, // fee rules don't change at runtime
+  });
+}
+
+// ─── Partner Branding Hooks ───────────────────────────────────────────────────
+
+export function useGetPartnerBranding() {
+  const { actor, isFetching } = useActor(createActor);
+  return useQuery<import("@/backend").PartnerBrandingConfig | null>({
+    queryKey: ["partnerBranding"],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getPartnerBranding();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useSetPartnerBranding() {
+  const queryClient = useQueryClient();
+  const { actor } = useActor(createActor);
+  return useMutation({
+    mutationFn: async (config: import("@/backend").PartnerBrandingConfig) => {
+      if (!actor) throw new Error("Actor not ready");
+      return actor.setPartnerBranding(config);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["partnerBranding"] });
+    },
+  });
+}
+
+export function useClearPartnerBranding() {
+  const queryClient = useQueryClient();
+  const { actor } = useActor(createActor);
+  return useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error("Actor not ready");
+      return actor.clearPartnerBranding();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["partnerBranding"] });
+    },
+  });
+}
+
+// ─── Fan Points & Rewards Hooks ───────────────────────────────────────────────
+
+// Extended actor interface for Fan Points methods not yet in generated bindings.
+// Once the backend is deployed and bindings are regenerated, this interface
+// can be removed and the hooks can call actor methods directly.
+interface ExtendedActor {
+  getMyFanPoints(): Promise<import("@/types/fanpoints").FanPoints | null>;
+  getMyRedeemedRewards(): Promise<import("@/types/fanpoints").RedeemedReward[]>;
+  redeemReward(
+    rewardId: string,
+  ): Promise<
+    | { __kind__: "ok"; ok: import("@/types/fanpoints").RedeemedReward }
+    | { __kind__: "err"; err: string }
+  >;
+  recordGuestPayment(
+    recipientId: string,
+    amount: bigint,
+    contactInfo: string,
+    contactType: string,
+  ): Promise<
+    | { __kind__: "ok"; ok: import("@/types/fanpoints").GuestPaymentRecord }
+    | { __kind__: "err"; err: string }
+  >;
+  linkGuestPaymentsToUser(
+    contactInfo: string,
+  ): Promise<{ __kind__: "ok"; ok: bigint } | { __kind__: "err"; err: string }>;
+  listRewards(
+    teamId: string | null,
+  ): Promise<import("@/types/fanpoints").Reward[]>;
+  createReward(
+    title: string,
+    description: string,
+    pointsCost: bigint,
+    rewardType: string,
+    codeOrValue: string,
+    quantity: bigint | null,
+    expiresAt: bigint | null,
+    teamId: string | null,
+  ): Promise<
+    | { __kind__: "ok"; ok: import("@/types/fanpoints").Reward }
+    | { __kind__: "err"; err: string }
+  >;
+  updateReward(
+    id: string,
+    active: boolean,
+  ): Promise<{ __kind__: "ok"; ok: null } | { __kind__: "err"; err: string }>;
+  assignStaffSection(
+    staffId: string,
+    sectionName: string,
+    sectionLabel: string,
+  ): Promise<{ __kind__: "ok"; ok: null } | { __kind__: "err"; err: string }>;
+  getSectionAssignments(
+    managerId: string,
+  ): Promise<import("@/types/fanpoints").StaffSection[]>;
+  getSectionAnalytics(
+    managerId: string,
+    since: bigint | null,
+  ): Promise<import("@/types/fanpoints").SectionAnalytics[]>;
+  getStaffAnalytics(
+    managerId: string,
+    since: bigint | null,
+  ): Promise<import("@/types/fanpoints").StaffAnalytics[]>;
+  getTopStaffPerformers(
+    managerId: string,
+    limit: bigint,
+    since: bigint | null,
+  ): Promise<import("@/types/fanpoints").StaffAnalytics[]>;
+}
+
+function asExtended(
+  actor: ReturnType<typeof createActor> | null,
+): ExtendedActor | null {
+  return actor as unknown as ExtendedActor | null;
+}
+
+export function useGetMyFanPoints() {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  const { isDemoMode } = useDemoMode();
+  return useQuery<import("@/types/fanpoints").FanPoints | null>({
+    queryKey: ["myFanPoints"],
+    queryFn: async () => {
+      const ext = asExtended(actor);
+      if (!ext) return null;
+      return ext.getMyFanPoints();
+    },
+    enabled: !isDemoMode && !!actor && !actorFetching,
+  });
+}
+
+export function useGetMyRedeemedRewards() {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  const { isDemoMode } = useDemoMode();
+  return useQuery<import("@/types/fanpoints").RedeemedReward[]>({
+    queryKey: ["myRedeemedRewards"],
+    queryFn: async () => {
+      const ext = asExtended(actor);
+      if (!ext) return [];
+      return ext.getMyRedeemedRewards();
+    },
+    enabled: !isDemoMode && !!actor && !actorFetching,
+  });
+}
+
+export function useRedeemReward() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (rewardId: string) => {
+      const ext = asExtended(actor);
+      if (!ext) throw new Error("Actor not ready");
+      return ext.redeemReward(rewardId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myFanPoints"] });
+      queryClient.invalidateQueries({ queryKey: ["myRedeemedRewards"] });
+    },
+  });
+}
+
+export function useRecordGuestPayment() {
+  const { actor } = useActor(createActor);
+  return useMutation({
+    mutationFn: async (
+      params: import("@/types/fanpoints").RecordGuestPaymentParams,
+    ) => {
+      const ext = asExtended(actor);
+      if (!ext) throw new Error("Actor not ready");
+      return ext.recordGuestPayment(
+        params.recipientId,
+        params.amount,
+        params.contactInfo,
+        params.contactType,
+      );
+    },
+  });
+}
+
+export function useLinkGuestPaymentsToUser() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (contactInfo: string) => {
+      const ext = asExtended(actor);
+      if (!ext) throw new Error("Actor not ready");
+      return ext.linkGuestPaymentsToUser(contactInfo);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myFanPoints"] });
+    },
+  });
+}
+
+export function useListRewards(teamId?: string) {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/types/fanpoints").Reward[]>({
+    queryKey: ["rewards", teamId ?? "all"],
+    queryFn: async () => {
+      const ext = asExtended(actor);
+      if (!ext) return [];
+      return ext.listRewards(teamId ?? null);
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useCreateReward() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      params: import("@/types/fanpoints").CreateRewardParams,
+    ) => {
+      const ext = asExtended(actor);
+      if (!ext) throw new Error("Actor not ready");
+      return ext.createReward(
+        params.title,
+        params.description,
+        params.pointsCost,
+        params.rewardType,
+        params.codeOrValue,
+        params.quantity,
+        params.expiresAt,
+        params.teamId,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["rewards"] });
+    },
+  });
+}
+
+export function useUpdateReward() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      params,
+    }: { id: string; params: import("@/backend").UpdateRewardParams }) => {
+      if (!actor) throw new Error("Actor not ready");
+      return actor.updateReward(id, params);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["rewards"] });
+    },
+  });
+}
+
+export const useDeleteReward = () => {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      if (!actor) throw new Error("Actor not ready");
+      const result = await actor.deleteReward(id);
+      if ("err" in result) throw new Error(result.err);
+      return result.ok;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["rewards"] });
+    },
+  });
+};
+
+export function useAssignStaffSection() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      params: import("@/types/fanpoints").AssignStaffSectionParams,
+    ) => {
+      const ext = asExtended(actor);
+      if (!ext) throw new Error("Actor not ready");
+      return ext.assignStaffSection(
+        params.staffId,
+        params.sectionName,
+        params.sectionLabel,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sectionAssignments"] });
+    },
+  });
+}
+
+export function useGetSectionAssignments(managerId: string) {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/types/fanpoints").StaffSection[]>({
+    queryKey: ["sectionAssignments", managerId],
+    queryFn: async () => {
+      const ext = asExtended(actor);
+      if (!ext) return [];
+      return ext.getSectionAssignments(managerId);
+    },
+    enabled: !!actor && !actorFetching && !!managerId,
+  });
+}
+
+export function useGetSectionAnalytics(managerId: string, since?: number) {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/types/fanpoints").SectionAnalytics[]>({
+    queryKey: ["sectionAnalytics", managerId, since ?? 0],
+    queryFn: async () => {
+      const ext = asExtended(actor);
+      if (!ext) return [];
+      return ext.getSectionAnalytics(
+        managerId,
+        since != null ? BigInt(since) : null,
+      );
+    },
+    enabled: !!actor && !actorFetching && !!managerId,
+  });
+}
+
+export function useGetStaffAnalytics(managerId: string, since?: number) {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/types/fanpoints").StaffAnalytics[]>({
+    queryKey: ["staffAnalytics", managerId, since ?? 0],
+    queryFn: async () => {
+      const ext = asExtended(actor);
+      if (!ext) return [];
+      return ext.getStaffAnalytics(
+        managerId,
+        since != null ? BigInt(since) : null,
+      );
+    },
+    enabled: !!actor && !actorFetching && !!managerId,
+  });
+}
+
+export function useGetTopStaffPerformers(
+  managerId: string,
+  limit: number,
+  since?: number,
+) {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/types/fanpoints").StaffAnalytics[]>({
+    queryKey: ["topStaffPerformers", managerId, limit, since ?? 0],
+    queryFn: async () => {
+      const ext = asExtended(actor);
+      if (!ext) return [];
+      return ext.getTopStaffPerformers(
+        managerId,
+        BigInt(limit),
+        since != null ? BigInt(since) : null,
+      );
+    },
+    enabled: !!actor && !actorFetching && !!managerId && limit > 0,
+  });
+}
+
+// ─── Food Ordering Hooks ──────────────────────────────────────────────────────
+
+export function useListStands() {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/backend").ConcessionStand[]>({
+    queryKey: ["foodStands"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.listStands();
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useListMenuItems(standId: string) {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/backend").MenuItem[]>({
+    queryKey: ["foodMenuItems", standId],
+    queryFn: async () => {
+      if (!actor || !standId) return [];
+      return actor.listMenuItems(standId);
+    },
+    enabled: !!actor && !actorFetching && !!standId,
+  });
+}
+
+export function useGetMyOrders() {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/backend").FoodOrder[]>({
+    queryKey: ["myFoodOrders"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getMyOrders();
+    },
+    enabled: !!actor && !actorFetching,
+    refetchInterval: 4000,
+  });
+}
+
+export function useGetOrder(orderId: string, enabled: boolean) {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/backend").FoodOrder | null>({
+    queryKey: ["foodOrder", orderId],
+    queryFn: async () => {
+      if (!actor || !orderId) return null;
+      return actor.getOrder(orderId);
+    },
+    enabled: !!actor && !actorFetching && enabled && !!orderId,
+    refetchInterval: enabled ? 4000 : false,
+  });
+}
+
+export function usePlaceOrder() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      standId,
+      items,
+      seatNumber,
+      deliveryMethod,
+    }: {
+      standId: string;
+      items: import("@/backend").OrderItemInput[];
+      seatNumber: string;
+      deliveryMethod: import("@/backend").DeliveryMethod;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.placeOrder(
+        standId,
+        items,
+        seatNumber,
+        deliveryMethod,
+      );
+      if (result.__kind__ === "err") throw new Error(result.err);
+      return result.ok;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myFoodOrders"] });
+    },
+  });
+}
+
+export function useCancelOrder() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (orderId: string) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.cancelOrder(orderId);
+      if (result.__kind__ === "err") throw new Error(result.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myFoodOrders"] });
+      queryClient.invalidateQueries({ queryKey: ["activeOrders"] });
+    },
+  });
+}
+
+export function useUpdateOrderStatus() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      orderId,
+      status,
+    }: {
+      orderId: string;
+      status: import("@/backend").OrderStatus;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.updateOrderStatus(orderId, status);
+      if (result.__kind__ === "err") throw new Error(result.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myFoodOrders"] });
+      queryClient.invalidateQueries({ queryKey: ["activeOrders"] });
+    },
+  });
+}
+
+export function useGetActiveOrdersForManager() {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<import("@/backend").FoodOrder[]>({
+    queryKey: ["activeOrders"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getActiveOrdersForManager();
+    },
+    enabled: !!actor && !actorFetching,
+    refetchInterval: 5000,
+  });
+}
+
+export function useCreateStand() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      name,
+      description,
+      section,
+    }: {
+      name: string;
+      description?: string | null;
+      section?: string | null;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.createStand(
+        name,
+        description ?? "",
+        section ?? "",
+      );
+      if (result.__kind__ === "err") throw new Error(result.err);
+      return result.ok;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["foodStands"] });
+    },
+  });
+}
+
+export function useUpdateStand() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      name,
+      description,
+      section,
+    }: {
+      id: string;
+      name: string;
+      description?: string | null;
+      section?: string | null;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.updateStand(
+        id,
+        name,
+        description ?? "",
+        section ?? "",
+      );
+      if (result.__kind__ === "err") throw new Error(result.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["foodStands"] });
+    },
+  });
+}
+
+export function useDeleteStand() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.deleteStand(id);
+      if (result.__kind__ === "err") throw new Error(result.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["foodStands"] });
+    },
+  });
+}
+
+export function useAddMenuItem() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      standId,
+      name,
+      priceInCents,
+      description,
+      category,
+      available,
+    }: {
+      standId: string;
+      name: string;
+      priceInCents: bigint;
+      description: string;
+      category?: string;
+      available?: boolean;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.addMenuItem(
+        standId,
+        name,
+        description,
+        priceInCents,
+        category ?? "Food",
+        available ?? true,
+      );
+      if (result.__kind__ === "err") throw new Error(result.err);
+      return result.ok;
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({
+        queryKey: ["foodMenuItems", vars.standId],
+      });
+    },
+  });
+}
+
+export function useUpdateMenuItem() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      name,
+      priceInCents,
+      description,
+      category,
+      available,
+    }: {
+      id: string;
+      standId: string;
+      name: string;
+      priceInCents: bigint;
+      description: string;
+      category?: string;
+      available?: boolean;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.updateMenuItem(
+        id,
+        name,
+        description,
+        priceInCents,
+        category ?? "Food",
+        available ?? true,
+      );
+      if (result.__kind__ === "err") throw new Error(result.err);
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({
+        queryKey: ["foodMenuItems", vars.standId],
+      });
+    },
+  });
+}
+
+export function useDeleteMenuItem() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id }: { id: string; standId: string }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.deleteMenuItem(id);
+      if (result.__kind__ === "err") throw new Error(result.err);
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({
+        queryKey: ["foodMenuItems", vars.standId],
+      });
+    },
+  });
+}
+
+// ─── Fractional Points Engine Hooks ─────────────────────────────────────────
+
+export function useListPointsRules() {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<PointsRule[]>({
+    queryKey: ["pointsRules"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.listPointsRules();
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useTogglePointsRule() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.togglePointsRule(id, active);
+      if (result.__kind__ === "err") throw new Error(result.err);
+      return result.ok;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pointsRules"] });
+    },
+  });
+}
+
+export function useUpdatePointsRule() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      name,
+      description,
+      multiplier,
+      sectionName,
+    }: {
+      id: string;
+      name: string;
+      description: string;
+      multiplier: number;
+      sectionName?: string | null;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.updatePointsRule(
+        id,
+        name,
+        description,
+        multiplier,
+        sectionName ?? null,
+      );
+      if (result.__kind__ === "err") throw new Error(result.err);
+      return result.ok;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pointsRules"] });
+    },
+  });
+}
+
+export interface CreatePointsRuleParams {
+  id: string;
+  name: string;
+  description: string;
+  ruleType: PointsRuleType;
+  multiplier: number;
+  isActive: boolean;
+  createdAt: bigint;
+  sectionName?: string | null;
+}
+
+export function useCreatePointsRule() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (rule: CreatePointsRuleParams) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.createPointsRule({
+        id: rule.id,
+        name: rule.name,
+        description: rule.description,
+        ruleType: rule.ruleType as import("@/backend").PointsRuleType,
+        multiplier: rule.multiplier,
+        isActive: rule.isActive,
+        createdAt: rule.createdAt,
+      });
+      if (result.__kind__ === "err") throw new Error(result.err);
+      return result.ok;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pointsRules"] });
+    },
+  });
+}
+
+export function useGetPointsBreakdown(
+  amountCents: bigint,
+  transactionType: string,
+  isGameDay: boolean,
+  isFirstPayment: boolean,
+  sectionName?: string | null,
+) {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<PointsBreakdown | null>({
+    queryKey: [
+      "pointsBreakdown",
+      amountCents.toString(),
+      transactionType,
+      isGameDay,
+      isFirstPayment,
+      sectionName ?? null,
+    ],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getPointsBreakdown(
+        amountCents,
+        transactionType,
+        isGameDay,
+        isFirstPayment,
+        sectionName ?? null,
+      );
+    },
+    enabled:
+      !!actor &&
+      !actorFetching &&
+      amountCents > BigInt(0) &&
+      transactionType.length > 0,
+  });
+}
+
+// ─── Extended Staff Hooks ────────────────────────────────────────────────────
+
+export function useListExtendedStaff() {
+  const { actor, isFetching: actorFetching } = useActor(createActor);
+  return useQuery<ExtendedStaffMember[]>({
+    queryKey: ["extendedStaff"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.listExtendedStaff();
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useUpsertExtendedStaff() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (member: ExtendedStaffMember) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.upsertExtendedStaff(member);
+      if (result.__kind__ === "err") throw new Error(result.err);
+      return result.ok;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["extendedStaff"] });
+    },
+  });
+}
+
+export function useRemoveExtendedStaff() {
+  const { actor } = useActor(createActor);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      if (!actor) throw new Error("Actor not available");
+      const result = await actor.removeExtendedStaff(id);
+      if (result.__kind__ === "err") throw new Error(result.err);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["extendedStaff"] });
+    },
+  });
+}
+// ─── Tip Split & Check-In Hooks ───────────────────────────────────────────────
+
+export interface StaffCheckIn {
+  id: string;
+  staffId: string;
+  staffName: string;
+  role: string;
+  standId: string;
+  standName: string;
+  gameDate: string;
+  checkInTime: bigint;
+  manualOverride: boolean;
+  checkOutTime?: bigint;
+  hoursWorked?: number;
+}
+
+export interface GameStandAssignment {
+  id: string;
+  staffId: string;
+  staffName: string;
+  standId: string;
+  standName: string;
+  gameDate: string;
+  gameStandId: string;
+  defaultStandId: string;
+  gameStandName: string;
+}
+
+export interface TipSplitRole {
+  id: string;
+  roleName: string;
+  pointValue: number;
+  isCustom: boolean;
+}
+
+export interface TipSplitLineItem {
+  staffId: string;
+  staffName: string;
+  role: string;
+  hoursWorked: number;
+  rolePoints: number;
+  weightedScore: number;
+  sharePercent: number;
+  payoutAmount: number;
+}
+
+export interface TipSplitPayout {
+  id: string;
+  standId: string;
+  standName: string;
+  gameDate: string;
+  totalPool: number;
+  status: string;
+  calculations: TipSplitLineItem[];
+  approvedBy?: string;
+  approvedAt?: number;
+}
+
+export function useRecordCheckIn() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: {
+      staffId: string;
+      staffName: string;
+      role: string;
+      standId: string;
+      standName: string;
+      gameDate: string;
+      checkInTime: bigint;
+    }): Promise<StaffCheckIn> => {
+      return {
+        id: `checkin-${params.staffId}-${params.gameDate}`,
+        manualOverride: false,
+        ...params,
+      };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["checkIns"] });
+    },
+  });
+}
+
+export function useRecordCheckOut() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: {
+      checkInId: string;
+      checkOutTime: bigint;
+    }): Promise<StaffCheckIn> => {
+      return {
+        id: params.checkInId,
+        staffId: "",
+        staffName: "",
+        role: "",
+        standId: "",
+        standName: "",
+        gameDate: "",
+        checkInTime: BigInt(0),
+        manualOverride: false,
+        checkOutTime: params.checkOutTime,
+      };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["checkIns"] });
+    },
+  });
+}
+
+export function useManualSetHours() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: {
+      checkInId: string;
+      hoursWorked: number;
+      overrideBy: string;
+    }): Promise<StaffCheckIn> => {
+      return {
+        id: params.checkInId,
+        staffId: "",
+        staffName: "",
+        role: "",
+        standId: "",
+        standName: "",
+        gameDate: "",
+        checkInTime: BigInt(0),
+        manualOverride: true,
+        hoursWorked: params.hoursWorked,
+      };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["checkIns"] });
+    },
+  });
+}
+
+export function useGetCheckInsForGame(gameDate: string) {
+  return useQuery<StaffCheckIn[]>({
+    queryKey: ["checkIns", gameDate],
+    queryFn: async () => [],
+    enabled: !!gameDate,
+  });
+}
+
+export function useGetGameStandAssignment(staffId: string, gameDate: string) {
+  return useQuery<GameStandAssignment | null>({
+    queryKey: ["gameStandAssignment", staffId, gameDate],
+    queryFn: async () => null,
+    enabled: !!staffId && !!gameDate,
+  });
+}
+
+export function useSetGameStandAssignment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: {
+      staffId: string;
+      staffName: string;
+      standId: string;
+      standName: string;
+      gameDate: string;
+      gameStandId: string;
+      defaultStandId: string;
+      gameStandName: string;
+    }): Promise<GameStandAssignment> => {
+      return { id: `gsa-${params.staffId}-${params.gameDate}`, ...params };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gameStandAssignment"] });
+    },
+  });
+}
+
+export function useGetTipSplitRoles() {
+  return useQuery<TipSplitRole[]>({
+    queryKey: ["tipSplitRoles"],
+    queryFn: async () => [
+      {
+        id: "role-1",
+        roleName: "Head Bartender",
+        pointValue: 3,
+        isCustom: false,
+      },
+      { id: "role-2", roleName: "Bartender", pointValue: 2, isCustom: false },
+      { id: "role-3", roleName: "Barback", pointValue: 1, isCustom: false },
+      {
+        id: "role-4",
+        roleName: "Concession Worker",
+        pointValue: 1,
+        isCustom: false,
+      },
+      {
+        id: "role-5",
+        roleName: "Suite Runner",
+        pointValue: 2,
+        isCustom: false,
+      },
+    ],
+  });
+}
+
+export function useUpsertTipSplitRole() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (role: TipSplitRole): Promise<TipSplitRole> => role,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tipSplitRoles"] });
+    },
+  });
+}
+
+export function useRemoveTipSplitRole() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (_roleId: string): Promise<void> => {},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tipSplitRoles"] });
+    },
+  });
+}
+
+export function useCalculateTipSplit() {
+  return useMutation({
+    mutationFn: async (params: {
+      standId: string;
+      standName: string;
+      gameDate: string;
+      totalPool: number;
+    }): Promise<TipSplitPayout> => {
+      return {
+        id: `split-${params.standId}-${params.gameDate}`,
+        standId: params.standId,
+        standName: params.standName,
+        gameDate: params.gameDate,
+        totalPool: params.totalPool,
+        status: "pending",
+        calculations: [],
+      };
+    },
+  });
+}
+
+export function useApproveTipSplitPayout() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: {
+      payoutId: string;
+      approvedBy: string;
+      approvedAt: number;
+    }): Promise<TipSplitPayout> => {
+      return {
+        id: params.payoutId,
+        standId: "",
+        standName: "",
+        gameDate: "",
+        totalPool: 0,
+        status: "approved",
+        calculations: [],
+        approvedBy: params.approvedBy,
+        approvedAt: params.approvedAt,
+      };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tipSplitPayouts"] });
+    },
+  });
+}
+
+export function useGetTipSplitPayouts(standId: string, gameDate: string) {
+  return useQuery<TipSplitPayout[]>({
+    queryKey: ["tipSplitPayouts", standId, gameDate],
+    queryFn: async () => [],
+    enabled: !!standId && !!gameDate,
   });
 }

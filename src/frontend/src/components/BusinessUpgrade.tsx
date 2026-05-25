@@ -69,16 +69,27 @@ export default function BusinessUpgrade() {
   const [description, setDescription] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showFormAgain, setShowFormAgain] = useState(false);
+  const [ein, setEin] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [einError, setEinError] = useState("");
+
+  const EIN_REGEX = /^\d{2}-\d{7}$/;
 
   const isFormValid =
     businessName.trim().length > 0 &&
     businessType.length > 0 &&
     description.trim().length > 0 &&
-    termsAccepted;
+    termsAccepted &&
+    EIN_REGEX.test(ein);
 
   const hasSubmitted = !!application && !showFormAgain;
 
   async function handleSubmit() {
+    if (!EIN_REGEX.test(ein)) {
+      setEinError("Please enter a valid EIN (format: XX-XXXXXXX)");
+      return;
+    }
+    setEinError("");
     if (!isFormValid) return;
     try {
       await submit.mutateAsync({
@@ -87,6 +98,16 @@ export default function BusinessUpgrade() {
         description,
         termsAccepted,
       });
+      // Store verification info in localStorage for admin review
+      localStorage.setItem(
+        "businessVerificationInfo",
+        JSON.stringify({
+          ein,
+          licenseNumber,
+          businessName,
+          submittedAt: Date.now(),
+        }),
+      );
       toast.success("Application submitted! We'll review it shortly.");
       setShowFormAgain(false);
     } catch (err: unknown) {
@@ -112,7 +133,7 @@ export default function BusinessUpgrade() {
         {/* Header */}
         <div className="flex items-center gap-2">
           <Briefcase className="h-4 w-4 text-teal" />
-          <h3 className="text-sm font-semibold text-white">
+          <h3 className="text-sm font-semibold text-foreground">
             Upgrade to Business
           </h3>
           <Badge className="ml-auto text-[10px] bg-teal/10 text-teal border-teal/30">
@@ -148,7 +169,7 @@ export default function BusinessUpgrade() {
                 </div>
                 <div className="flex flex-col gap-1 text-xs">
                   <span className="text-white/50">Description</span>
-                  <p className="text-white/80 leading-relaxed bg-navy-dark/40 rounded p-2">
+                  <p className="text-white/80 leading-relaxed bg-muted/40 rounded p-2">
                     {application.description}
                   </p>
                 </div>
@@ -252,7 +273,7 @@ export default function BusinessUpgrade() {
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   placeholder="e.g. The Corner Bistro"
-                  className="bg-navy-dark/50 border-white/10 text-white placeholder:text-white/30 text-sm h-9 focus:border-teal/50"
+                  className="bg-muted/50 border-border text-white placeholder:text-white/30 text-sm h-9 focus:border-teal/50"
                 />
               </div>
 
@@ -265,11 +286,11 @@ export default function BusinessUpgrade() {
                   <SelectTrigger
                     id="biz-type"
                     data-ocid="business-type-select"
-                    className="bg-navy-dark/50 border-white/10 text-white h-9 text-sm focus:border-teal/50"
+                    className="bg-muted/50 border-border text-white h-9 text-sm focus:border-teal/50"
                   >
                     <SelectValue placeholder="Select type…" />
                   </SelectTrigger>
-                  <SelectContent className="bg-navy-light border-white/10">
+                  <SelectContent className="bg-card border-border">
                     {BUSINESS_TYPES.map((t) => (
                       <SelectItem
                         key={t}
@@ -281,6 +302,63 @@ export default function BusinessUpgrade() {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* EIN */}
+              <div className="space-y-1.5">
+                <Label htmlFor="biz-ein" className="text-xs text-white/80">
+                  Employer Identification Number (EIN){" "}
+                  <span className="text-red-400">*</span>
+                </Label>
+                <Input
+                  id="biz-ein"
+                  data-ocid="business-ein-input"
+                  value={ein}
+                  onChange={(e) => {
+                    setEin(e.target.value);
+                    if (einError) setEinError("");
+                  }}
+                  onBlur={() => {
+                    if (ein && !EIN_REGEX.test(ein))
+                      setEinError(
+                        "Please enter a valid EIN (format: XX-XXXXXXX)",
+                      );
+                  }}
+                  placeholder="12-3456789"
+                  className={`bg-muted/50 border-border text-white placeholder:text-white/30 text-sm h-9 focus:border-teal/50 ${
+                    einError ? "border-red-500/60 focus:border-red-500/80" : ""
+                  }`}
+                />
+                {einError ? (
+                  <p
+                    className="text-[11px] text-red-400"
+                    data-ocid="business-ein-field_error"
+                  >
+                    {einError}
+                  </p>
+                ) : (
+                  <p className="text-[11px] text-white/35">
+                    Required to verify your business. Format: XX-XXXXXXX
+                  </p>
+                )}
+              </div>
+
+              {/* License Number */}
+              <div className="space-y-1.5">
+                <Label htmlFor="biz-license" className="text-xs text-white/80">
+                  Business License Number
+                  <span className="text-white/35 ml-1 font-normal">
+                    (Optional)
+                  </span>
+                </Label>
+                <Input
+                  id="biz-license"
+                  data-ocid="business-license-input"
+                  value={licenseNumber}
+                  onChange={(e) => setLicenseNumber(e.target.value)}
+                  placeholder="Enter your license number"
+                  className="bg-muted/50 border-border text-white placeholder:text-white/30 text-sm h-9 focus:border-teal/50"
+                />
               </div>
 
               {/* Description */}
@@ -303,7 +381,7 @@ export default function BusinessUpgrade() {
                     setDescription(e.target.value.slice(0, MAX_DESCRIPTION))
                   }
                   placeholder="Describe your business and how you plan to use Open Tip Pay…"
-                  className="bg-navy-dark/50 border-white/10 text-white placeholder:text-white/30 text-sm min-h-[80px] resize-none focus:border-teal/50"
+                  className="bg-muted/50 border-border text-white placeholder:text-white/30 text-sm min-h-[80px] resize-none focus:border-teal/50"
                   rows={3}
                 />
               </div>

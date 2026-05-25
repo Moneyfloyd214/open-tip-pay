@@ -170,7 +170,7 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
               {/* Label */}
               <p
                 className={`text-xs font-semibold uppercase tracking-widest transition-colors duration-300 ${
-                  vaultLocked ? "text-amber-400/80" : "text-white/50"
+                  vaultLocked ? "text-amber-400/80" : "text-muted-foreground"
                 }`}
               >
                 Available Balance
@@ -185,7 +185,7 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
                 )}
                 <span
                   className={`text-5xl font-bold tabular-nums tracking-tight transition-colors duration-300 ${
-                    vaultLocked ? "text-amber-300" : "text-white"
+                    vaultLocked ? "text-amber-300" : "text-foreground"
                   }`}
                 >
                   {balanceInDollars.toFixed(2)}
@@ -198,7 +198,9 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
                   Vault secured — withdrawals frozen
                 </p>
               ) : (
-                <p className="text-xs text-white/30">USD · Updated just now</p>
+                <p className="text-xs text-muted-foreground/50">
+                  USD · Updated just now
+                </p>
               )}
             </div>
 
@@ -212,7 +214,7 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
                 className={`transition-all duration-200 font-semibold shadow-lg ${
                   vaultLocked
                     ? "bg-amber-500/20 border border-amber-400/30 text-amber-300 cursor-not-allowed opacity-70"
-                    : "bg-teal hover:bg-teal-dark text-white hover:scale-[1.02] shadow-teal/30"
+                    : "bg-teal hover:bg-teal-dark text-foreground hover:scale-[1.02] shadow-teal/30"
                 }`}
                 data-ocid="withdraw-btn"
               >
@@ -230,7 +232,7 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
               </Button>
               {vaultLocked && (
                 <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block z-20 pointer-events-none">
-                  <div className="bg-navy-light border border-amber-400/30 text-amber-200 text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
+                  <div className="bg-card border border-amber-400/30 text-amber-200 text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
                     Vault is locked. Request unlock first.
                   </div>
                 </div>
@@ -242,13 +244,13 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
 
       {/* Withdrawal Type Selector Dialog */}
       <Dialog open={showTypeSelector} onOpenChange={handleTypeSelectorCancel}>
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-teal/20 max-w-sm">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-teal/20 max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-foreground flex items-center gap-2">
               <ArrowUpRight className="h-5 w-5 text-teal" />
               Choose Withdrawal Speed
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-muted-foreground">
               Select how quickly you want your funds.
             </DialogDescription>
           </DialogHeader>
@@ -256,10 +258,10 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
           <div className="space-y-3 py-2">
             <div className="glassmorphism p-3 rounded-lg border border-teal/30">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white/70">
+                <span className="text-sm font-medium text-muted-foreground">
                   Withdrawal Amount:
                 </span>
-                <span className="text-base font-bold text-white">
+                <span className="text-base font-bold text-foreground">
                   ${balanceInDollars.toFixed(2)}
                 </span>
               </div>
@@ -273,7 +275,7 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
               className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
                 withdrawalType === "standard"
                   ? "border-teal bg-teal/10"
-                  : "border-white/10 bg-navy-dark/40 hover:border-white/20"
+                  : "border-border bg-muted/40 hover:border-border/60"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -282,8 +284,10 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
                     className={`h-5 w-5 mt-0.5 flex-shrink-0 ${withdrawalType === "standard" ? "text-teal" : "text-white/50"}`}
                   />
                   <div>
-                    <p className="text-white font-medium text-sm">Standard</p>
-                    <p className="text-white/50 text-xs mt-0.5">
+                    <p className="text-foreground font-medium text-sm">
+                      Standard
+                    </p>
+                    <p className="text-muted-foreground text-xs mt-0.5">
                       1–3 business days
                     </p>
                   </div>
@@ -293,9 +297,9 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
                 </Badge>
               </div>
               {withdrawalType === "standard" && (
-                <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-                  <span className="text-white/50">You receive</span>
-                  <span className="text-white font-semibold">
+                <div className="mt-3 pt-3 border-t border-border flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">You receive</span>
+                  <span className="text-foreground font-semibold">
                     ${balanceInDollars.toFixed(2)}
                   </span>
                 </div>
@@ -310,7 +314,7 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
               className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${
                 withdrawalType === "instant"
                   ? "border-teal bg-teal/10"
-                  : "border-white/10 bg-navy-dark/40 hover:border-white/20"
+                  : "border-border bg-muted/40 hover:border-border/60"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -319,8 +323,10 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
                     className={`h-5 w-5 mt-0.5 flex-shrink-0 ${withdrawalType === "instant" ? "text-teal" : "text-white/50"}`}
                   />
                   <div>
-                    <p className="text-white font-medium text-sm">Instant</p>
-                    <p className="text-white/50 text-xs mt-0.5">
+                    <p className="text-foreground font-medium text-sm">
+                      Instant
+                    </p>
+                    <p className="text-muted-foreground text-xs mt-0.5">
                       Arrives immediately
                     </p>
                   </div>
@@ -330,25 +336,27 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
                 </Badge>
               </div>
               {withdrawalType === "instant" && (
-                <div className="mt-3 pt-3 border-t border-white/10 space-y-1.5">
+                <div className="mt-3 pt-3 border-t border-border space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-white/50">Amount</span>
-                    <span className="text-white/70">
+                    <span className="text-muted-foreground">Amount</span>
+                    <span className="text-foreground/80">
                       ${balanceInDollars.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-white/50">
+                    <span className="text-muted-foreground">
                       Instant fee{" "}
-                      <span className="text-white/30">(~1.5%, min $0.25)</span>
+                      <span className="text-muted-foreground/50">
+                        (~1.5%, min $0.25)
+                      </span>
                     </span>
                     <span className="text-amber-400/90">
                       −${instantFee.toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-xs font-semibold pt-1 border-t border-white/10">
-                    <span className="text-white/80">You receive</span>
-                    <span className="text-white">
+                  <div className="flex items-center justify-between text-xs font-semibold pt-1 border-t border-border">
+                    <span className="text-foreground/80">You receive</span>
+                    <span className="text-foreground">
                       ${Math.max(0, instantReceive).toFixed(2)}
                     </span>
                   </div>
@@ -357,8 +365,8 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
             </button>
 
             <div className="flex items-start gap-2 px-1">
-              <Info className="h-3.5 w-3.5 text-white/30 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-white/30 leading-relaxed">
+              <Info className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-muted-foreground/50 leading-relaxed">
                 Fees are shown before confirmation, just like your bank.
               </p>
             </div>
@@ -368,14 +376,14 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
             <Button
               onClick={handleTypeSelectorCancel}
               variant="outline"
-              className="border-white/10 text-white hover:bg-white/5"
+              className="border-border text-foreground hover:bg-muted/30"
               data-ocid="withdrawal.type.cancel"
             >
               Cancel
             </Button>
             <Button
               onClick={handleTypeConfirm}
-              className="bg-teal hover:bg-teal-dark text-white"
+              className="bg-teal hover:bg-teal-dark text-foreground"
               data-ocid="withdrawal.type.confirm"
             >
               Continue
@@ -386,13 +394,13 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
 
       {/* KYC Warning Dialog */}
       <Dialog open={showKYCWarning} onOpenChange={setShowKYCWarning}>
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-teal/20">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-teal/20">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-foreground flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-yellow-500" />
               KYC Verification Required
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-muted-foreground">
               {getKYCWarningMessage()}
             </DialogDescription>
           </DialogHeader>
@@ -404,10 +412,10 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
                 className="h-8 w-8 mt-1"
               />
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-white">
+                <h4 className="text-sm font-semibold text-foreground">
                   Complete KYC Verification
                 </h4>
-                <p className="text-xs text-white/60 leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Navigate to Security Settings → KYC Verification to complete
                   your identity verification.
                 </p>
@@ -418,7 +426,7 @@ export default function BalanceCard({ balance }: BalanceCardProps) {
             <Button
               onClick={() => setShowKYCWarning(false)}
               variant="outline"
-              className="border-teal/30 text-white hover:bg-teal/10"
+              className="border-teal/30 text-foreground hover:bg-teal/10"
             >
               Close
             </Button>

@@ -163,9 +163,9 @@ export default function NFCTapToTip({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-navy-light/95 backdrop-blur-xl border-teal/30">
+      <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl border-teal/30">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-white">
+          <DialogTitle className="flex items-center gap-2 text-foreground">
             <img
               src="/assets/generated/nfc-tap-icon.dim_32x32.png"
               alt="NFC"
@@ -190,7 +190,7 @@ export default function NFCTapToTip({
                   className={
                     mode === "share"
                       ? "bg-teal hover:bg-teal-dark"
-                      : "border-teal/30 bg-navy-dark/50 text-white hover:bg-teal/20"
+                      : "border-teal/30 bg-muted/50 text-white hover:bg-teal/20"
                   }
                 >
                   Share My Link
@@ -201,7 +201,7 @@ export default function NFCTapToTip({
                   className={
                     mode === "receive"
                       ? "bg-teal hover:bg-teal-dark"
-                      : "border-teal/30 bg-navy-dark/50 text-white hover:bg-teal/20"
+                      : "border-teal/30 bg-muted/50 text-white hover:bg-teal/20"
                   }
                 >
                   Receive Link
@@ -232,7 +232,7 @@ export default function NFCTapToTip({
                     <p className="text-white font-medium">
                       {mode === "share" ? "Ready to share!" : "Scanning..."}
                     </p>
-                    <p className="text-sm text-white/70">
+                    <p className="text-sm text-muted-foreground">
                       {mode === "share"
                         ? "Tap your phone to another device"
                         : "Hold your phone near another device"}
@@ -245,7 +245,7 @@ export default function NFCTapToTip({
                         ? "Share Your Payment Link"
                         : "Receive a Payment Link"}
                     </p>
-                    <p className="text-sm text-white/70">
+                    <p className="text-sm text-muted-foreground">
                       Tap the button below to start
                     </p>
                   </>
@@ -278,7 +278,7 @@ export default function NFCTapToTip({
               <Button
                 onClick={() => setShowQRFallback(true)}
                 variant="outline"
-                className="w-full border-teal/30 bg-navy-dark/50 text-white hover:bg-teal/20"
+                className="w-full border-teal/30 bg-muted/50 text-white hover:bg-teal/20"
               >
                 Use QR Code Instead
               </Button>
@@ -301,7 +301,7 @@ export default function NFCTapToTip({
                 <Button
                   onClick={() => setShowQRFallback(false)}
                   variant="outline"
-                  className="w-full border-teal/30 bg-navy-dark/50 text-white hover:bg-teal/20"
+                  className="w-full border-teal/30 bg-muted/50 text-white hover:bg-teal/20"
                 >
                   Try NFC Again
                 </Button>

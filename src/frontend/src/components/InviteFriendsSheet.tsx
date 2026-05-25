@@ -90,13 +90,13 @@ export default function InviteFriendsSheet({
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side="bottom"
-        className="border-t border-white/10 bg-navy-dark/95 backdrop-blur-xl rounded-t-3xl max-h-[85vh] overflow-y-auto"
+        className="border-t border-border bg-card/95 backdrop-blur-xl rounded-t-3xl max-h-[85vh] overflow-y-auto"
       >
         <SheetHeader className="space-y-3 pb-6">
-          <SheetTitle className="text-2xl font-bold text-white text-center">
+          <SheetTitle className="text-2xl font-bold text-foreground text-center">
             Invite your friends to join Open Tip Pay!
           </SheetTitle>
-          <SheetDescription className="text-white/70 text-center text-base">
+          <SheetDescription className="text-muted-foreground text-center text-base">
             Share Open Tip Pay with your friends and help them discover the
             easiest way to send and receive tips.
           </SheetDescription>
@@ -105,7 +105,7 @@ export default function InviteFriendsSheet({
         <div className="space-y-6 py-4">
           {/* Invite Link Display */}
           <div className="glass-card p-6 rounded-2xl border border-teal/30 shadow-lg shadow-teal/20">
-            <p className="text-xs text-white/60 mb-3 uppercase tracking-wider font-semibold">
+            <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider font-semibold">
               Your Invite Link
             </p>
 
@@ -115,8 +115,8 @@ export default function InviteFriendsSheet({
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="bg-navy-dark/70 rounded-xl p-4 border border-white/10">
-                  <p className="text-sm text-white/90 break-all font-mono">
+                <div className="bg-muted/50 rounded-xl p-4 border border-border">
+                  <p className="text-sm text-foreground break-all font-mono">
                     {inviteLink}
                   </p>
                 </div>
@@ -124,7 +124,7 @@ export default function InviteFriendsSheet({
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     onClick={handleCopyLink}
-                    className="w-full bg-navy-light/50 hover:bg-navy-light border border-teal/30 text-white font-semibold shadow-lg shadow-teal/20 transition-all duration-300 hover:shadow-teal/40"
+                    className="w-full bg-card/50 hover:bg-card border border-teal/30 text-foreground font-semibold shadow-lg shadow-teal/20 transition-all duration-300 hover:shadow-teal/40"
                   >
                     <Copy className="mr-2 h-4 w-4" />
                     Copy Link
@@ -142,16 +142,16 @@ export default function InviteFriendsSheet({
           </div>
 
           {/* Info Section */}
-          <div className="glass-card p-5 rounded-xl border border-white/10">
+          <div className="glass-card p-5 rounded-xl border border-border">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-full bg-teal/20 flex items-center justify-center flex-shrink-0 mt-1">
                 <Share2 className="h-5 w-5 text-teal" />
               </div>
               <div className="flex-1">
-                <h3 className="text-white font-semibold mb-1">
+                <h3 className="text-foreground font-semibold mb-1">
                   Share via any app
                 </h3>
-                <p className="text-white/70 text-sm leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   Send your invite link through SMS, WhatsApp, social media, or
                   any messaging app. Your friends can join Open Tip Pay
                   instantly!

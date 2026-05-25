@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useInternetIdentity } from "@caffeineai/core-infrastructure";
 import type { Principal } from "@dfinity/principal";
 import { useQueryClient } from "@tanstack/react-query";
@@ -6,27 +7,37 @@ import {
   Activity,
   ArrowDownLeft,
   Bell,
+  Briefcase,
+  CheckCircle,
+  ChevronRight,
   FileText,
   Loader2,
   LogOut,
+  QrCode,
   Scissors,
   Shield,
   Sparkles,
+  Star,
   UserPlus,
 } from "lucide-react";
 import { useState } from "react";
 import AIAssistant from "../components/AIAssistant";
+import ActiveOrderCard from "../components/ActiveOrderCard";
 import AdminPanel from "../components/AdminPanel";
 import BalanceCard from "../components/BalanceCard";
+import BusinessOnboarding from "../components/BusinessOnboarding";
 import BusinessUpgradeCard from "../components/BusinessUpgradeCard";
 import DashboardPaymentMethods from "../components/DashboardPaymentMethods";
 import DirectDepositCard from "../components/DirectDepositCard";
+import FoodOrderSheet from "../components/FoodOrderSheet";
 import Header from "../components/Header";
 import InviteFriendsSheet from "../components/InviteFriendsSheet";
 import ManagerDashboard, {
   StaffInviteBanner,
 } from "../components/ManagerDashboard";
+import MyQRCodeSheet from "../components/MyQRCodeSheet";
 import MyTipLinkCard from "../components/MyTipLinkCard";
+import { PlaidCardLinking } from "../components/PlaidCardLinking";
 import QuickActionsCard from "../components/QuickActionsCard";
 import RequestMoneySheet from "../components/RequestMoneySheet";
 import SavingsPocketCard from "../components/SavingsPocketCard";
@@ -43,12 +54,14 @@ import VaultLockCard from "../components/VaultLockCard";
 import WalletCard from "../components/WalletCard";
 import {
   DEMO_BALANCE_BIGINT,
+  DEMO_POINT_TRANSACTIONS,
   DEMO_PROFILE,
   useDemoMode,
 } from "../context/DemoContext";
 import {
   useGetBalance,
   useGetCallerUserProfile,
+  useGetMyFanPoints,
   useGetPendingRequestsReceived,
   useIsCallerAdmin,
 } from "../hooks/useQueries";
@@ -72,6 +85,9 @@ export default function DashboardPage() {
   const [inviteFriendsOpen, setInviteFriendsOpen] = useState(false);
   const [managerDashboardOpen, setManagerDashboardOpen] = useState(false);
   const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+  const [businessOnboardingOpen, setBusinessOnboardingOpen] = useState(false);
+  const [myQRCodeOpen, setMyQRCodeOpen] = useState(false);
+  const [foodOrderOpen, setFoodOrderOpen] = useState(false);
   const [recipientPrincipal, setRecipientPrincipal] =
     useState<Principal | null>(null);
   const [settingsDefaultTab, setSettingsDefaultTab] = useState("security");
@@ -87,6 +103,7 @@ export default function DashboardPage() {
   const { data: realBalance, isLoading: balanceLoading } = useGetBalance();
   const { data: isAdmin } = useIsCallerAdmin();
   const { data: pendingRequests } = useGetPendingRequestsReceived();
+  const { data: fanPoints, isLoading: fanPointsLoading } = useGetMyFanPoints();
 
   // Use mock data in demo mode, real data otherwise
   const userProfile = isDemoMode ? DEMO_PROFILE : realProfile;
@@ -95,6 +112,11 @@ export default function DashboardPage() {
   const pendingCount = pendingRequests?.length ?? 0;
   const greeting = getGreeting();
   const displayName = userProfile?.username ?? "there";
+
+  const demoFanPointsTotal = DEMO_POINT_TRANSACTIONS.reduce(
+    (sum, tx) => sum + tx.finalPoints,
+    0,
+  );
 
   const handleScanSuccess = (principal: Principal) => {
     setRecipientPrincipal(principal);
@@ -171,10 +193,12 @@ export default function DashboardPage() {
 
   if (!isDemoMode && (profileLoading || balanceLoading)) {
     return (
-      <div className="min-h-screen bg-navy-dark flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-10 w-10 animate-spin text-teal" />
-          <p className="text-white/60 text-sm">Loading your dashboard…</p>
+          <p className="text-muted-foreground text-sm">
+            Loading your dashboard…
+          </p>
         </div>
       </div>
     );
@@ -189,7 +213,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-navy-dark relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Ambient CSS orbs — no JS, no layout jitter */}
       <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
         <div className="orb-1 absolute top-[-8%] left-[20%] w-[420px] h-[420px] bg-teal/[0.12] rounded-full blur-[90px]" />
@@ -239,10 +263,12 @@ export default function DashboardPage() {
 
           {/* Greeting */}
           <div className="space-y-0.5">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold text-foreground">
               {greeting}, {displayName}!
             </h2>
-            <p className="text-sm text-white/45">Manage your money below.</p>
+            <p className="text-sm text-muted-foreground">
+              Manage your money below.
+            </p>
           </div>
 
           <SearchBar onSelectUser={handleSelectUser} />
@@ -269,12 +295,12 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-white font-semibold text-sm">
+                <p className="text-foreground font-semibold text-sm">
                   {pendingCount === 1
                     ? "1 pending money request"
                     : `${pendingCount} pending money requests`}
                 </p>
-                <p className="text-white/50 text-xs">
+                <p className="text-muted-foreground text-xs">
                   Tap to review and respond
                 </p>
               </div>
@@ -295,8 +321,83 @@ export default function DashboardPage() {
             </Button>
           )}
 
+          {/* Manager Portal quick access — admin and demo mode */}
+          {(isAdmin || isDemoMode) && (
+            <Button
+              data-ocid="dashboard.manager_portal_button"
+              onClick={() => setManagerDashboardOpen(true)}
+              className="w-full bg-gradient-to-r from-green-500/20 to-green-500/10 hover:from-green-500/30 hover:to-green-500/20 border border-green-500/40 text-green-300 font-semibold shadow-lg shadow-green-500/10 transition-all duration-200 hover:shadow-green-500/25 hover:scale-[1.01]"
+              size="lg"
+              variant="outline"
+            >
+              <Briefcase className="mr-2 h-5 w-5" />
+              Manager Portal
+            </Button>
+          )}
+
+          {/* Admin Access banner — inline below Manager Portal */}
+          {isAdmin && (
+            <div
+              data-ocid="admin-access-banner"
+              className="glassmorphism rounded-xl p-4 border border-teal/30 bg-teal/5"
+            >
+              <div className="flex items-start gap-3">
+                <div className="h-10 w-10 rounded-lg bg-teal/20 flex items-center justify-center shrink-0 glow-teal">
+                  <CheckCircle className="h-5 w-5 text-teal" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white">
+                    Admin Access
+                  </p>
+                  <p className="text-xs text-white/60 mt-0.5 leading-relaxed">
+                    You have full access to the Manager Portal as admin.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Balance */}
           <BalanceCard balance={balance || BigInt(0)} />
+
+          {/* Fan Points widget */}
+          <button
+            type="button"
+            onClick={() => {
+              window.location.href = "/rewards";
+            }}
+            data-ocid="fan_points.card"
+            className="flex items-center gap-3 p-4 rounded-xl border border-amber-400/30 bg-amber-400/10 hover:bg-amber-400/15 hover:border-amber-400/50 transition-all duration-200 cursor-pointer text-left w-full"
+          >
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-amber-400/20">
+              <Star className="h-5 w-5 text-amber-400 fill-amber-400/40" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                Fan Points
+              </p>
+              {fanPointsLoading && !isDemoMode ? (
+                <Skeleton className="h-5 w-20 mt-0.5 bg-muted/50" />
+              ) : (
+                <p className="text-lg font-bold text-amber-300">
+                  {isDemoMode
+                    ? demoFanPointsTotal.toFixed(3)
+                    : fanPoints?.points !== undefined
+                      ? Number(fanPoints.points).toLocaleString()
+                      : "0"}
+                  <span className="text-xs text-amber-400/70 font-normal ml-1">
+                    pts
+                  </span>
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <span className="text-sm font-semibold text-teal">
+                View Rewards
+              </span>
+              <ChevronRight className="h-4 w-4 text-teal" />
+            </div>
+          </button>
 
           {/* Quick Actions — 2×2 grid (directly below balance) */}
           <div className="space-y-2">
@@ -319,7 +420,7 @@ export default function DashboardPage() {
                   setSendTipDefaultMode(true);
                   setSendTipOpen(true);
                 }}
-                className="w-full glassmorphism hover:bg-teal/20 border border-teal/50 text-white font-semibold py-5 text-base transition-all duration-200 hover:scale-[1.02] hover:border-teal/70"
+                className="w-full glassmorphism hover:bg-teal/20 border border-teal/50 text-foreground font-semibold py-5 text-base transition-all duration-200 hover:scale-[1.02] hover:border-teal/70"
                 size="lg"
                 variant="outline"
               >
@@ -333,7 +434,7 @@ export default function DashboardPage() {
                   setRecipientPrincipal(null);
                   setRequestMoneyOpen(true);
                 }}
-                className="w-full glassmorphism hover:bg-navy-light border border-white/15 hover:border-teal/40 text-white font-semibold py-5 text-base transition-all duration-200 hover:scale-[1.02] relative"
+                className="w-full glassmorphism hover:bg-card border border-border hover:border-teal/40 text-foreground font-semibold py-5 text-base transition-all duration-200 hover:scale-[1.02] relative"
                 size="lg"
                 variant="outline"
               >
@@ -348,12 +449,22 @@ export default function DashboardPage() {
               <Button
                 data-ocid="dashboard.split_bill_button"
                 onClick={() => setSplitPaymentOpen(true)}
-                className="w-full glassmorphism hover:bg-navy-light border border-white/15 hover:border-teal/40 text-white font-semibold py-5 text-base transition-all duration-200 hover:scale-[1.02]"
+                className="w-full glassmorphism hover:bg-card border border-border hover:border-teal/40 text-foreground font-semibold py-5 text-base transition-all duration-200 hover:scale-[1.02]"
                 size="lg"
                 variant="outline"
               >
                 <Scissors className="mr-2 h-4 w-4 text-teal" />
                 Split
+              </Button>
+              <Button
+                data-ocid="dashboard.my_qr_code_button"
+                onClick={() => setMyQRCodeOpen(true)}
+                className="w-full col-span-2 glassmorphism hover:bg-teal/10 border border-teal/30 hover:border-teal/60 text-teal font-semibold py-5 text-base transition-all duration-200 hover:scale-[1.01]"
+                size="lg"
+                variant="outline"
+              >
+                <QrCode className="mr-2 h-4 w-4" />
+                My QR Code
               </Button>
             </div>
           </div>
@@ -364,6 +475,7 @@ export default function DashboardPage() {
           <BusinessUpgradeCard
             onOpenBusinessSettings={handleOpenBusinessSettings}
             onOpenManagerDashboard={() => setManagerDashboardOpen(true)}
+            onStartOnboarding={() => setBusinessOnboardingOpen(true)}
           />
 
           {/* Wallet section */}
@@ -375,17 +487,26 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Linked Card for Fan Points — standalone section between Wallet and Payment Link */}
+          <div className="space-y-2">
+            <p className="section-header">Linked Card for Fan Points</p>
+            <PlaidCardLinking />
+          </div>
+
           <MyTipLinkCard username={userProfile?.username || "User"} />
+
+          <ActiveOrderCard onViewOrder={() => setFoodOrderOpen(true)} />
 
           <QuickActionsCard
             onScanClick={() => setScanOpen(true)}
             onNFCSuccess={handleNFCSuccess}
+            onOrderFoodClick={() => setFoodOrderOpen(true)}
           />
 
           <Button
             onClick={() => setInviteFriendsOpen(true)}
             data-ocid="invite_friends.button"
-            className="w-full bg-gradient-to-r from-teal/20 to-teal/10 hover:from-teal/30 hover:to-teal/20 border border-teal/40 text-white font-bold shadow-lg shadow-teal/20 transition-all duration-200 hover:shadow-teal/40 hover:scale-[1.01] py-6 text-base"
+            className="w-full bg-gradient-to-r from-teal/20 to-teal/10 hover:from-teal/30 hover:to-teal/20 border border-teal/40 text-foreground font-bold shadow-lg shadow-teal/20 transition-all duration-200 hover:shadow-teal/40 hover:scale-[1.01] py-6 text-base"
             size="lg"
           >
             <UserPlus className="mr-3 h-5 w-5 text-teal" />
@@ -395,7 +516,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Button
               onClick={() => setTaxReportOpen(true)}
-              className="w-full glassmorphism hover:bg-navy-light border border-white/10 hover:border-teal/30 text-white font-semibold shadow-md transition-all duration-200"
+              className="w-full glassmorphism hover:bg-card border border-border hover:border-teal/30 text-foreground font-semibold shadow-md transition-all duration-200"
               size="lg"
             >
               <FileText className="mr-2 h-5 w-5 text-teal" />
@@ -403,7 +524,7 @@ export default function DashboardPage() {
             </Button>
             <Button
               onClick={() => setStatusManagerOpen(true)}
-              className="w-full glassmorphism hover:bg-navy-light border border-white/10 hover:border-teal/30 text-white font-semibold shadow-md transition-all duration-200"
+              className="w-full glassmorphism hover:bg-card border border-border hover:border-teal/30 text-foreground font-semibold shadow-md transition-all duration-200"
               size="lg"
             >
               <Activity className="mr-2 h-5 w-5 text-teal" />
@@ -419,13 +540,13 @@ export default function DashboardPage() {
 
           {/* Branding footer */}
           <div className="pt-4 pb-8 text-center">
-            <p className="text-xs text-white/20">
+            <p className="text-xs text-muted-foreground/40">
               © {new Date().getFullYear()} Open Tip Pay ·{" "}
               <a
                 href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-white/40 transition-colors"
+                className="underline underline-offset-2 hover:text-foreground/60 transition-colors"
               >
                 Built with caffeine.ai
               </a>
@@ -480,6 +601,19 @@ export default function DashboardPage() {
           open={inviteFriendsOpen}
           onOpenChange={setInviteFriendsOpen}
         />
+
+        <BusinessOnboarding
+          open={businessOnboardingOpen}
+          onClose={() => setBusinessOnboardingOpen(false)}
+          onOpenManagerPortal={() => setManagerDashboardOpen(true)}
+        />
+
+        <MyQRCodeSheet
+          open={myQRCodeOpen}
+          onClose={() => setMyQRCodeOpen(false)}
+        />
+
+        <FoodOrderSheet open={foodOrderOpen} onOpenChange={setFoodOrderOpen} />
       </div>
     </div>
   );

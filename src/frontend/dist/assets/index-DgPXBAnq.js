@@ -14310,7 +14310,7 @@ const renderDeadlineTimer = setTimeout(() => {
 (async () => {
   let AppComponent = null;
   try {
-    const mod = await __vitePreload(() => import("./App-BXY_iw_D.js"), true ? [] : void 0);
+    const mod = await __vitePreload(() => import("./App-BpOiggIL.js").then((n) => n.q), true ? [] : void 0);
     AppComponent = mod.default;
   } catch (importErr) {
     console.error(
@@ -14334,29 +14334,31 @@ const renderDeadlineTimer = setTimeout(() => {
   }
 })();
 export {
+  QueryClientProvider as Q,
   React$2 as R,
   Subscribable as S,
   __vitePreload as _,
-  resolveStaleTime as a,
-  timeoutManager as b,
-  fetchState as c,
-  replaceData as d,
+  QueryClient as a,
+  resolveEnabled as b,
+  resolveStaleTime as c,
+  timeoutManager as d,
   environmentManager as e,
   focusManager as f,
-  notifyManager as g,
-  hashKey as h,
+  fetchState as g,
+  replaceData as h,
   isValidTimeout as i,
-  getDefaultState as j,
-  reactExports as k,
-  shouldThrowError as l,
-  ReactDOM$2 as m,
+  jsxRuntimeExports as j,
+  notifyManager as k,
+  hashKey as l,
+  getDefaultState as m,
   noop$6 as n,
-  jsxRuntimeExports as o,
+  shouldThrowError as o,
   pendingThenable as p,
-  React$3 as q,
-  resolveEnabled as r,
+  ReactDOM$2 as q,
+  reactExports as r,
   shallowEqualObjects as s,
   timeUntilStale as t,
   useQueryClient as u,
-  reactDomExports as v
+  React$3 as v,
+  reactDomExports as w
 };

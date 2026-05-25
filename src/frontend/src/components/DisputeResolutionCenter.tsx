@@ -40,23 +40,23 @@ export default function DisputeResolutionCenter() {
           className="h-8 w-8"
         />
         <div>
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl font-bold text-foreground">
             Dispute Resolution Center
           </h2>
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-muted-foreground">
             Manage and resolve transaction disputes with AI assistance
           </p>
         </div>
       </div>
 
-      <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
+      <Card className="border-border bg-card/50 backdrop-blur-sm">
         <CardContent className="p-6">
           <Tabs
             value={selectedTab}
             onValueChange={(v) => setSelectedTab(v as any)}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-3 bg-navy-dark/50">
+            <TabsList className="grid w-full grid-cols-3 bg-muted/50">
               <TabsTrigger value="open" className="data-[state=active]:bg-teal">
                 <Clock className="mr-2 h-4 w-4" />
                 Open ({openDisputes.length})
@@ -159,12 +159,12 @@ function DisputeCard({ dispute, showAI = false }: DisputeCardProps) {
       case "Resolved":
         return "bg-teal/20 text-teal border-teal/30";
       default:
-        return "bg-white/10 text-white/70 border-white/20";
+        return "bg-muted/50 text-foreground/70 border-border";
     }
   };
 
   return (
-    <div className="glassmorphism rounded-lg p-4 space-y-3 border border-white/10">
+    <div className="glassmorphism rounded-lg p-4 space-y-3 border border-border">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20">
@@ -172,7 +172,7 @@ function DisputeCard({ dispute, showAI = false }: DisputeCardProps) {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold text-foreground">
                 {dispute.reason}
               </p>
               {isCrypto ? (
@@ -181,7 +181,7 @@ function DisputeCard({ dispute, showAI = false }: DisputeCardProps) {
                 <DollarSign className="h-3.5 w-3.5 text-white/60" />
               )}
             </div>
-            <p className="text-xs text-white/60">
+            <p className="text-xs text-muted-foreground">
               Transaction: ${amount.toFixed(2)} • {date.toLocaleDateString()}
             </p>
           </div>
@@ -191,7 +191,7 @@ function DisputeCard({ dispute, showAI = false }: DisputeCardProps) {
         </Badge>
       </div>
 
-      <p className="text-sm text-white/80">{dispute.description}</p>
+      <p className="text-sm text-foreground/80">{dispute.description}</p>
 
       {showAI && dispute.aiRecommendation && (
         <div className="mt-3 rounded-lg bg-teal/10 border border-teal/30 p-3">
@@ -263,8 +263,8 @@ function EmptyState({ icon, message, description }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       {icon}
-      <h3 className="mt-4 text-lg font-semibold text-white">{message}</h3>
-      <p className="mt-2 text-sm text-white/60">{description}</p>
+      <h3 className="mt-4 text-lg font-semibold text-foreground">{message}</h3>
+      <p className="mt-2 text-sm text-muted-foreground">{description}</p>
     </div>
   );
 }

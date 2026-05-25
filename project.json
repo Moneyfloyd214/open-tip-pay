@@ -1,27 +1,31 @@
 {
-  "overview": "Open Tip Pay is a mobile-first P2P tipping and payment platform where anyone can send and receive tips and payments using cards, bank accounts, or crypto wallets. It features advanced 2FA security, a Vault Lock freeze, business tip-pooling tools, GDPR data controls, and now split-payment for groups dividing bills.",
+  "overview": "Open Tip Pay is a mobile-first tipping, payments, and in-seat food ordering platform white-labeled as Colts Tip Pay for stadium use.",
   "features": [
-    "Send & receive money/tips instantly",
-    "Split bills among multiple people with equal, percentage, or exact-amount modes",
-    "Request money with required note",
-    "Direct deposit with unique routing & account numbers",
-    "Vault Lock to freeze all outgoing transactions",
-    "2FA withdrawal security (PIN + SMS)",
-    "Manager Portal with tip pooling for businesses",
-    "Savings pocket and spending limits",
-    "Recurring/scheduled payments",
-    "GDPR/CCPA data export & deletion",
-    "Admin Panel for platform management"
+    "Staff check-in and check-out with automatic hours calculation",
+    "Per-game stand assignment without changing permanent roster",
+    "Automated tip split engine using role weight times hours worked",
+    "Stand-isolated tip pools — each stand splits only among its own staff",
+    "Role point value rules with custom role support",
+    "Manager review and one-tap payout approval",
+    "Pre-seeded Colts demo data for all three features",
+    "Fan Points fractional engine with stadium section multipliers",
+    "In-seat food ordering with Section, Row, Seat delivery",
+    "Plaid-simulated card linking for automatic Fan Points",
+    "Digital badge generator for staff and stands",
+    "Manager Portal with staff roster, CSV import, and tip pooling"
   ],
-  "category": "finance",
+  "category": "fintech",
   "tags": [
-    "payments",
     "tipping",
-    "split-bill",
-    "p2p",
-    "fintech",
-    "pwa",
-    "manager-portal"
+    "payments",
+    "stadium",
+    "sports",
+    "nfl",
+    "colts",
+    "fan-points",
+    "tip-split",
+    "manager-portal",
+    "workforce-management"
   ],
-  "last_updated": "2026-04-25T02:33:56.182Z"
+  "last_updated": "2026-05-25T10:52:59.474Z"
 }

@@ -220,10 +220,10 @@ export default function SecurityCenter() {
               className="h-8 w-8"
             />
             <div>
-              <h3 className="text-sm font-semibold text-white">
+              <h3 className="text-sm font-semibold text-foreground">
                 Security Center
               </h3>
-              <p className="text-xs text-white/60">
+              <p className="text-xs text-muted-foreground">
                 Manage your security settings
               </p>
             </div>
@@ -251,13 +251,13 @@ export default function SecurityCenter() {
           data-ocid="recovery.settings.card"
         >
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <Shield className="h-4 w-4 text-teal" />
               Account Recovery
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-xs text-white/60">
+            <p className="text-xs text-muted-foreground">
               Manage your recovery phrase and backup devices to ensure you can
               always access your account.
             </p>
@@ -290,7 +290,7 @@ export default function SecurityCenter() {
           data-ocid="app-lock.card"
         >
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <Lock className="h-4 w-4 text-teal" />
               App Lock PIN
             </CardTitle>
@@ -301,11 +301,11 @@ export default function SecurityCenter() {
               <div className="space-y-0.5 pr-4">
                 <Label
                   htmlFor="app-lock-toggle"
-                  className="text-sm text-white cursor-pointer"
+                  className="text-sm text-foreground cursor-pointer"
                 >
                   Require PIN to open app
                 </Label>
-                <p className="text-xs text-white/60">
+                <p className="text-xs text-muted-foreground">
                   When enabled, you'll need a 4-digit PIN every time you open
                   the app or after 1 minute of inactivity
                 </p>
@@ -323,7 +323,7 @@ export default function SecurityCenter() {
               className={`p-3 rounded-lg border ${
                 appLockEnabled
                   ? "bg-teal/10 border-teal/30"
-                  : "bg-white/5 border-white/10"
+                  : "bg-muted/30 border-border"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -336,8 +336,8 @@ export default function SecurityCenter() {
                   </>
                 ) : (
                   <>
-                    <Lock className="h-4 w-4 text-white/40 shrink-0" />
-                    <p className="text-xs text-white/50">
+                    <Lock className="h-4 w-4 text-muted-foreground/50 shrink-0" />
+                    <p className="text-xs text-muted-foreground">
                       App Lock is OFF — app opens without a code
                     </p>
                   </>
@@ -370,9 +370,9 @@ export default function SecurityCenter() {
 
             {/* PIN setup inline overlay */}
             {showPinSetup && (
-              <div className="fixed inset-0 z-50 bg-navy/95 backdrop-blur-sm flex flex-col">
-                <div className="flex items-center justify-between p-4 border-b border-white/10">
-                  <p className="text-sm font-semibold text-white">
+              <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col">
+                <div className="flex items-center justify-between p-4 border-b border-border">
+                  <p className="text-sm font-semibold text-foreground">
                     Set Up App Lock PIN
                   </p>
                   <Button
@@ -380,7 +380,7 @@ export default function SecurityCenter() {
                     variant="ghost"
                     data-ocid="app-lock.setup_cancel_button"
                     onClick={handlePinSetupCancel}
-                    className="text-white/60 hover:text-white h-8 text-xs"
+                    className="text-white/60 hover:text-foreground h-8 text-xs"
                   >
                     Cancel
                   </Button>
@@ -395,7 +395,7 @@ export default function SecurityCenter() {
 
             {/* PIN already set + enabled hint */}
             {appLockEnabled && hasPin && (
-              <p className="text-xs text-white/40">
+              <p className="text-xs text-muted-foreground/50">
                 To change your PIN, disable App Lock and re-enable it to set a
                 new one.
               </p>
@@ -406,7 +406,7 @@ export default function SecurityCenter() {
         {/* Authentication & Authorization Status */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <img
                 src="/assets/generated/internet-identity-icon-transparent.dim_32x32.png"
                 alt=""
@@ -417,7 +417,7 @@ export default function SecurityCenter() {
           </CardHeader>
           <CardContent className="space-y-3">
             {/* Internet Identity Status */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-3">
                 <img
                   src="/assets/generated/internet-identity-icon-transparent.dim_32x32.png"
@@ -425,10 +425,10 @@ export default function SecurityCenter() {
                   className="h-5 w-5"
                 />
                 <div>
-                  <p className="text-sm text-white font-medium">
+                  <p className="text-sm text-foreground font-medium">
                     Internet Identity
                   </p>
-                  <p className="text-xs text-white/60">
+                  <p className="text-xs text-muted-foreground">
                     Secure authentication via ICP
                   </p>
                 </div>
@@ -449,7 +449,7 @@ export default function SecurityCenter() {
             </div>
 
             {/* Role-Based Authorization */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-3">
                 <img
                   src="/assets/generated/role-auth-badge-transparent.dim_24x24.png"
@@ -457,10 +457,10 @@ export default function SecurityCenter() {
                   className="h-5 w-5"
                 />
                 <div>
-                  <p className="text-sm text-white font-medium">
+                  <p className="text-sm text-foreground font-medium">
                     Role-Based Authorization
                   </p>
-                  <p className="text-xs text-white/60">
+                  <p className="text-xs text-muted-foreground">
                     Strict access controls
                   </p>
                 </div>
@@ -481,7 +481,7 @@ export default function SecurityCenter() {
             </div>
 
             {/* OAuth Compatible Structure */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-3">
                 <img
                   src="/assets/generated/oauth-compatible-icon-transparent.dim_24x24.png"
@@ -489,10 +489,10 @@ export default function SecurityCenter() {
                   className="h-5 w-5"
                 />
                 <div>
-                  <p className="text-sm text-white font-medium">
+                  <p className="text-sm text-foreground font-medium">
                     OAuth Compatible
                   </p>
-                  <p className="text-xs text-white/60">
+                  <p className="text-xs text-muted-foreground">
                     Future-ready authentication
                   </p>
                 </div>
@@ -508,9 +508,9 @@ export default function SecurityCenter() {
               </Badge>
             </div>
 
-            <Separator className="my-3 bg-white/10" />
+            <Separator className="my-3 bg-muted/50" />
 
-            <div className="space-y-2 text-xs text-white/60">
+            <div className="space-y-2 text-xs text-muted-foreground">
               <p className="flex items-center gap-2">
                 <ShieldCheck className="h-3 w-3 text-teal" />
                 No local password storage - ICP handles all authentication
@@ -530,7 +530,7 @@ export default function SecurityCenter() {
         {/* Input Validation & Protection */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <img
                 src="/assets/generated/input-validation-shield-transparent.dim_24x24.png"
                 alt=""
@@ -564,10 +564,10 @@ export default function SecurityCenter() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between p-2 rounded bg-navy-dark/50 text-xs">
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50 text-xs">
                 <div className="flex items-center gap-2">
                   <FileCheck className="h-3 w-3 text-teal" />
-                  <span className="text-white/80">XSS Protection</span>
+                  <span className="text-foreground/80">XSS Protection</span>
                 </div>
                 <Badge
                   variant="outline"
@@ -577,10 +577,10 @@ export default function SecurityCenter() {
                 </Badge>
               </div>
 
-              <div className="flex items-center justify-between p-2 rounded bg-navy-dark/50 text-xs">
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50 text-xs">
                 <div className="flex items-center gap-2">
                   <FileCheck className="h-3 w-3 text-teal" />
-                  <span className="text-white/80">CSRF Protection</span>
+                  <span className="text-foreground/80">CSRF Protection</span>
                 </div>
                 <Badge
                   variant="outline"
@@ -590,10 +590,12 @@ export default function SecurityCenter() {
                 </Badge>
               </div>
 
-              <div className="flex items-center justify-between p-2 rounded bg-navy-dark/50 text-xs">
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50 text-xs">
                 <div className="flex items-center gap-2">
                   <FileCheck className="h-3 w-3 text-teal" />
-                  <span className="text-white/80">Injection Prevention</span>
+                  <span className="text-foreground/80">
+                    Injection Prevention
+                  </span>
                 </div>
                 <Badge
                   variant="outline"
@@ -603,10 +605,10 @@ export default function SecurityCenter() {
                 </Badge>
               </div>
 
-              <div className="flex items-center justify-between p-2 rounded bg-navy-dark/50 text-xs">
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50 text-xs">
                 <div className="flex items-center gap-2">
                   <FileCheck className="h-3 w-3 text-teal" />
-                  <span className="text-white/80">Input Sanitization</span>
+                  <span className="text-foreground/80">Input Sanitization</span>
                 </div>
                 <Badge
                   variant="outline"
@@ -617,9 +619,9 @@ export default function SecurityCenter() {
               </div>
             </div>
 
-            <Separator className="my-3 bg-white/10" />
+            <Separator className="my-3 bg-muted/50" />
 
-            <div className="space-y-2 text-xs text-white/60">
+            <div className="space-y-2 text-xs text-muted-foreground">
               <p className="flex items-center gap-2">
                 <Shield className="h-3 w-3 text-teal" />
                 All user inputs validated and sanitized
@@ -639,7 +641,7 @@ export default function SecurityCenter() {
         {/* Security Compilation Status */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <img
                 src="/assets/generated/code-obfuscation-shield-transparent.dim_24x24.png"
                 alt=""
@@ -652,7 +654,7 @@ export default function SecurityCenter() {
             {compilationStatus ? (
               <>
                 {/* Obfuscation Layer Status */}
-                <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
                   <div className="flex items-center gap-3">
                     <img
                       src={
@@ -663,10 +665,10 @@ export default function SecurityCenter() {
                       className="h-5 w-5"
                     />
                     <div>
-                      <p className="text-sm text-white font-medium">
+                      <p className="text-sm text-foreground font-medium">
                         Obfuscation Layer
                       </p>
-                      <p className="text-xs text-white/60">
+                      <p className="text-xs text-muted-foreground">
                         Mobile build protection
                       </p>
                     </div>
@@ -686,14 +688,14 @@ export default function SecurityCenter() {
                 </div>
 
                 {/* Compilation Verification Timestamp */}
-                <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
                   <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-teal" />
                     <div>
-                      <p className="text-sm text-white font-medium">
+                      <p className="text-sm text-foreground font-medium">
                         Last Verification
                       </p>
-                      <p className="text-xs text-white/60">
+                      <p className="text-xs text-muted-foreground">
                         {compilationStatus.verificationTimestamp > 0
                           ? format(
                               Number(compilationStatus.verificationTimestamp) /
@@ -730,9 +732,9 @@ export default function SecurityCenter() {
                   </div>
                 </div>
 
-                <Separator className="my-3 bg-white/10" />
+                <Separator className="my-3 bg-muted/50" />
 
-                <div className="space-y-2 text-xs text-white/60">
+                <div className="space-y-2 text-xs text-muted-foreground">
                   <p className="flex items-center gap-2">
                     <Shield className="h-3 w-3 text-teal" />
                     ProGuard for Android packages
@@ -753,7 +755,7 @@ export default function SecurityCenter() {
               </>
             ) : (
               <div className="p-4 text-center">
-                <p className="text-xs text-white/60">
+                <p className="text-xs text-muted-foreground">
                   Loading compilation status...
                 </p>
               </div>
@@ -764,7 +766,7 @@ export default function SecurityCenter() {
         {/* Security Event Log */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <img
                 src="/assets/generated/security-event-log-icon-transparent.dim_24x24.png"
                 alt=""
@@ -775,9 +777,9 @@ export default function SecurityCenter() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+              <div className="p-3 rounded-lg bg-muted/50 border border-border">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-white font-medium">
+                  <span className="text-sm text-foreground font-medium">
                     Recent Events
                   </span>
                   <Badge
@@ -787,7 +789,7 @@ export default function SecurityCenter() {
                     Monitoring
                   </Badge>
                 </div>
-                <p className="text-xs text-white/60">
+                <p className="text-xs text-muted-foreground">
                   All validation events, blocked attempts, and security
                   incidents are logged for transparency and audit purposes.
                 </p>
@@ -798,13 +800,15 @@ export default function SecurityCenter() {
                   {encryptionLog.slice(0, 5).map((event, index) => (
                     <div
                       key={`enc-${event.eventType}-${index}`}
-                      className="flex items-center justify-between p-2 rounded bg-navy-dark/50 text-xs border border-white/5"
+                      className="flex items-center justify-between p-2 rounded bg-muted/50 text-xs border border-border/50"
                     >
                       <div className="flex items-center gap-2">
                         <Eye className="h-3 w-3 text-teal" />
-                        <span className="text-white/80">{event.eventType}</span>
+                        <span className="text-foreground/80">
+                          {event.eventType}
+                        </span>
                       </div>
-                      <span className="text-white/60">
+                      <span className="text-muted-foreground">
                         {format(
                           Number(event.timestamp) / 1000000,
                           "MMM d, HH:mm",
@@ -815,13 +819,13 @@ export default function SecurityCenter() {
                 </div>
               ) : (
                 <div className="p-4 text-center">
-                  <p className="text-xs text-white/60">
+                  <p className="text-xs text-muted-foreground">
                     No security events logged yet
                   </p>
                 </div>
               )}
 
-              <div className="space-y-2 text-xs text-white/60 pt-2">
+              <div className="space-y-2 text-xs text-muted-foreground pt-2">
                 <p className="flex items-center gap-2">
                   <Shield className="h-3 w-3 text-teal" />
                   Input validation failures logged
@@ -842,7 +846,7 @@ export default function SecurityCenter() {
         {/* Encryption Status Dashboard */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <img
                 src="/assets/generated/encryption-status-icon-transparent.dim_32x32.png"
                 alt=""
@@ -876,7 +880,7 @@ export default function SecurityCenter() {
             </div>
 
             {/* Data at Rest Encryption */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-3">
                 <img
                   src="/assets/generated/data-encryption-check-transparent.dim_24x24.png"
@@ -884,8 +888,12 @@ export default function SecurityCenter() {
                   className="h-5 w-5"
                 />
                 <div>
-                  <p className="text-sm text-white font-medium">Data at Rest</p>
-                  <p className="text-xs text-white/60">AES-256 encryption</p>
+                  <p className="text-sm text-foreground font-medium">
+                    Data at Rest
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    AES-256 encryption
+                  </p>
                 </div>
               </div>
               <Badge
@@ -904,7 +912,7 @@ export default function SecurityCenter() {
             </div>
 
             {/* Transport Security */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-3">
                 <img
                   src="/assets/generated/transport-security-badge-transparent.dim_24x24.png"
@@ -912,10 +920,12 @@ export default function SecurityCenter() {
                   className="h-5 w-5"
                 />
                 <div>
-                  <p className="text-sm text-white font-medium">
+                  <p className="text-sm text-foreground font-medium">
                     Transport Security
                   </p>
-                  <p className="text-xs text-white/60">HTTPS/TLS encryption</p>
+                  <p className="text-xs text-muted-foreground">
+                    HTTPS/TLS encryption
+                  </p>
                 </div>
               </div>
               <Badge
@@ -934,7 +944,7 @@ export default function SecurityCenter() {
             </div>
 
             {/* Mobile PWA Encryption */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-3">
                 <img
                   src="/assets/generated/mobile-security-indicator-transparent.dim_24x24.png"
@@ -942,10 +952,10 @@ export default function SecurityCenter() {
                   className="h-5 w-5"
                 />
                 <div>
-                  <p className="text-sm text-white font-medium">
+                  <p className="text-sm text-foreground font-medium">
                     Mobile PWA Security
                   </p>
-                  <p className="text-xs text-white/60">
+                  <p className="text-xs text-muted-foreground">
                     Platform-native encryption
                   </p>
                 </div>
@@ -966,14 +976,14 @@ export default function SecurityCenter() {
             </div>
 
             {/* Local Storage Encryption */}
-            <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
               <div className="flex items-center gap-3">
                 <Lock className="h-5 w-5 text-teal" />
                 <div>
-                  <p className="text-sm text-white font-medium">
+                  <p className="text-sm text-foreground font-medium">
                     Local Storage
                   </p>
-                  <p className="text-xs text-white/60">
+                  <p className="text-xs text-muted-foreground">
                     Encrypted session cache
                   </p>
                 </div>
@@ -993,9 +1003,9 @@ export default function SecurityCenter() {
               </Badge>
             </div>
 
-            <Separator className="my-3 bg-white/10" />
+            <Separator className="my-3 bg-muted/50" />
 
-            <div className="space-y-2 text-xs text-white/60">
+            <div className="space-y-2 text-xs text-muted-foreground">
               <p className="flex items-center gap-2">
                 <Shield className="h-3 w-3 text-teal" />
                 All sensitive data encrypted with AES-256
@@ -1018,7 +1028,7 @@ export default function SecurityCenter() {
         {/* Biometric Authentication */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <img
                 src="/assets/generated/biometric-auth-icon.dim_32x32.png"
                 alt=""
@@ -1030,10 +1040,10 @@ export default function SecurityCenter() {
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="biometric" className="text-sm text-white">
+                <Label htmlFor="biometric" className="text-sm text-foreground">
                   Enable Biometric Login
                 </Label>
-                <p className="text-xs text-white/60">
+                <p className="text-xs text-muted-foreground">
                   Use FaceID, TouchID, or Fingerprint
                 </p>
               </div>
@@ -1057,14 +1067,14 @@ export default function SecurityCenter() {
         {/* Active Sessions */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <Monitor className="h-4 w-4 text-teal" />
               Active Sessions ({sessions.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             {sessions.length === 0 ? (
-              <p className="text-xs text-white/60 text-center py-4">
+              <p className="text-xs text-muted-foreground text-center py-4">
                 No active sessions
               </p>
             ) : (
@@ -1072,12 +1082,12 @@ export default function SecurityCenter() {
                 {sessions.slice(0, 3).map((session, index) => (
                   <div
                     key={session.sessionId || `session-${index}`}
-                    className="p-3 rounded-lg bg-navy-dark/50 border border-white/10"
+                    className="p-3 rounded-lg bg-muted/50 border border-border"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Smartphone className="h-4 w-4 text-teal" />
-                        <span className="text-sm font-medium text-white">
+                        <span className="text-sm font-medium text-foreground">
                           {session.deviceName}
                         </span>
                       </div>
@@ -1088,7 +1098,7 @@ export default function SecurityCenter() {
                         Active
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-xs text-white/60">
+                    <div className="space-y-1 text-xs text-muted-foreground">
                       <div className="flex items-center gap-2">
                         <MapPin className="h-3 w-3" />
                         <span>{session.location}</span>
@@ -1113,23 +1123,25 @@ export default function SecurityCenter() {
         {/* AI Fraud Detection */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <AlertTriangle className="h-4 w-4 text-teal" />
               AI Fraud Detection
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-navy-dark/50">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-teal animate-pulse" />
-                  <span className="text-sm text-white">Status: Active</span>
+                  <span className="text-sm text-foreground">
+                    Status: Active
+                  </span>
                 </div>
                 <Badge variant="outline" className="border-teal/30 text-teal">
                   Monitoring
                 </Badge>
               </div>
-              <p className="text-xs text-white/60">
+              <p className="text-xs text-muted-foreground">
                 AI monitors unusual activity patterns and automatically requires
                 2FA verification for suspicious transactions.
               </p>
@@ -1152,14 +1164,14 @@ export default function SecurityCenter() {
         {/* Data Encryption Log */}
         <Card className="glassmorphism border-teal/20">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <Lock className="h-4 w-4 text-teal" />
               Data Encryption Log
             </CardTitle>
           </CardHeader>
           <CardContent>
             {encryptionLog.length === 0 ? (
-              <p className="text-xs text-white/60 text-center py-4">
+              <p className="text-xs text-muted-foreground text-center py-4">
                 No encryption events logged
               </p>
             ) : (
@@ -1167,13 +1179,15 @@ export default function SecurityCenter() {
                 {encryptionLog.slice(0, 5).map((event, index) => (
                   <div
                     key={`enclog-${event.eventType}-${index}`}
-                    className="flex items-center justify-between p-2 rounded bg-navy-dark/50 text-xs"
+                    className="flex items-center justify-between p-2 rounded bg-muted/50 text-xs"
                   >
                     <div className="flex items-center gap-2">
                       <Eye className="h-3 w-3 text-teal" />
-                      <span className="text-white/80">{event.eventType}</span>
+                      <span className="text-foreground/80">
+                        {event.eventType}
+                      </span>
                     </div>
-                    <span className="text-white/60">
+                    <span className="text-muted-foreground">
                       {format(
                         Number(event.timestamp) / 1000000,
                         "MMM d, HH:mm",
@@ -1183,8 +1197,8 @@ export default function SecurityCenter() {
                 ))}
               </div>
             )}
-            <Separator className="my-3 bg-white/10" />
-            <div className="space-y-2 text-xs text-white/60">
+            <Separator className="my-3 bg-muted/50" />
+            <div className="space-y-2 text-xs text-muted-foreground">
               <p>🔒 AES-256 encryption for all data at rest</p>
               <p>🔐 End-to-end encryption for messages</p>
               <p>🛡️ MPC for crypto wallet key integrity</p>
@@ -1195,7 +1209,7 @@ export default function SecurityCenter() {
         {/* Security FAQ */}
         <Card className="glassmorphism border-teal/20" id="security-faq">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center gap-2 text-white">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
               <HelpCircle className="h-4 w-4 text-teal" />
               Security FAQ
             </CardTitle>
@@ -1206,10 +1220,10 @@ export default function SecurityCenter() {
                 value="2fa-withdrawal"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔐 How does 2FA Withdrawal Security work?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   2FA Withdrawal Security adds an extra layer of protection for
                   your funds. When you attempt a withdrawal over $50 or any
                   crypto transfer, you'll first enter your 4-digit security PIN,
@@ -1226,10 +1240,10 @@ export default function SecurityCenter() {
                 value="code-obfuscation"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔐 What is code obfuscation and why is it important?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Code obfuscation is a security technique that transforms your
                   app's code into a form that's extremely difficult to
                   reverse-engineer. Open Tip Pay uses ProGuard for Android
@@ -1247,10 +1261,10 @@ export default function SecurityCenter() {
                 value="internet-identity"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔐 What is Internet Identity authentication?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Internet Identity is ICP's secure authentication system that
                   eliminates the need for passwords. Your credentials are never
                   stored locally or on our servers - authentication happens
@@ -1266,10 +1280,10 @@ export default function SecurityCenter() {
                 value="input-protection"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🛡️ How does input protection work?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Every piece of data you enter is validated and sanitized on
                   both the client and server side. We automatically detect and
                   block XSS (Cross-Site Scripting) attacks, CSRF (Cross-Site
@@ -1285,10 +1299,10 @@ export default function SecurityCenter() {
                 value="role-based-auth"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   👥 What is role-based authorization?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Role-based authorization ensures that only verified,
                   authorized users can perform sensitive operations. For
                   example, only you can view your financial information, only
@@ -1304,10 +1318,10 @@ export default function SecurityCenter() {
                 value="oauth-compatible"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔗 What does OAuth-compatible mean?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   While we currently use Internet Identity exclusively, our
                   authentication system is built with an OAuth-compatible
                   structure. This means we're ready to integrate with
@@ -1323,10 +1337,10 @@ export default function SecurityCenter() {
                 value="secure-credentials"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔑 How are API keys and credentials managed?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   All sensitive credentials (Stripe keys, API keys, etc.) are
                   managed through secure environment variables and vault
                   mechanisms. We never hardcode credentials in the application
@@ -1341,10 +1355,10 @@ export default function SecurityCenter() {
                 value="security-event-log"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   📋 What is the Security Event Log?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   The Security Event Log provides real-time visibility into all
                   security-related activities on your account. This includes
                   validation failures, blocked malicious attempts,
@@ -1360,10 +1374,10 @@ export default function SecurityCenter() {
                 value="encryption-status"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔐 What does the Encryption Status dashboard show?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   The Encryption Status dashboard provides real-time
                   verification of all security layers protecting your data: Data
                   at Rest (AES-256 encryption for stored data), Transport
@@ -1379,10 +1393,10 @@ export default function SecurityCenter() {
                 value="kyc-compliance"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔍 Why is KYC verification required?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   KYC (Know Your Customer) verification is required for
                   withdrawals over $200 to comply with financial regulations and
                   prevent fraud. It helps protect all users by ensuring the
@@ -1396,10 +1410,10 @@ export default function SecurityCenter() {
                 value="crypto-security"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔒 How secure are crypto payments?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Crypto payments on Open Tip Pay are non-custodial, meaning we
                   never store your private keys. All transactions use
                   Multi-Party Computation (MPC) for key integrity, and your
@@ -1412,10 +1426,10 @@ export default function SecurityCenter() {
                 value="encryption"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔐 What encryption do you use?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   We use AES-256 encryption for all data at rest, ensuring your
                   personal information, transaction history, KYC records, and
                   all sensitive data are protected. All messages and transaction
@@ -1429,10 +1443,10 @@ export default function SecurityCenter() {
                 value="wallet-connection"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔗 Is it safe to connect my wallet?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Yes! When you connect your wallet (MetaMask or WalletConnect),
                   we only store your public wallet address for display purposes.
                   Your private keys never leave your wallet. All transactions
@@ -1445,10 +1459,10 @@ export default function SecurityCenter() {
                 value="fraud-detection"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🤖 How does AI fraud detection work?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Our AI system monitors transaction patterns in real-time,
                   looking for unusual activity such as multiple tips from new
                   locations or rapid transaction sequences. If suspicious
@@ -1462,10 +1476,10 @@ export default function SecurityCenter() {
                 value="2fa"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🛡️ When is 2FA required?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Two-factor authentication (2FA) is automatically required for
                   withdrawals above $50, all crypto transfers, and any
                   transaction flagged as suspicious by our AI fraud detection
@@ -1478,10 +1492,10 @@ export default function SecurityCenter() {
                 value="data-privacy"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   🔏 What data do you store?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   We store only essential data: your profile information (name,
                   bio, photo), transaction history, and connected wallet
                   addresses (public addresses only). All data is encrypted with
@@ -1495,10 +1509,10 @@ export default function SecurityCenter() {
                 value="biometric"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   👤 How does biometric authentication work?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Biometric authentication (FaceID, TouchID, Fingerprint) is
                   your primary login method. Your biometric data never leaves
                   your device - it's processed locally by your device's secure
@@ -1511,10 +1525,10 @@ export default function SecurityCenter() {
                 value="blockchain"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   ⛓️ Why use the Internet Computer blockchain?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   The Internet Computer provides a secure, decentralized
                   infrastructure for Open Tip Pay. All transactions are recorded
                   on-chain for transparency and immutability, while smart
@@ -1527,10 +1541,10 @@ export default function SecurityCenter() {
                 value="pwa-security"
                 className="border-teal/20 glassmorphism rounded-lg px-4"
               >
-                <AccordionTrigger className="text-sm text-white hover:text-teal">
+                <AccordionTrigger className="text-sm text-foreground hover:text-teal">
                   📱 How secure is the mobile PWA?
                 </AccordionTrigger>
-                <AccordionContent className="text-xs text-white/70 leading-relaxed">
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                   Our Progressive Web App (PWA) uses platform-native encryption
                   APIs to ensure secure communications on mobile devices. All
                   data transmitted through the PWA is protected with HTTPS/TLS

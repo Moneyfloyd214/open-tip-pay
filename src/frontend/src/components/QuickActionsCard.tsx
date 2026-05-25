@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Principal } from "@dfinity/principal";
-import { Mic, Scan } from "lucide-react";
+import { Mic, Scan, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import NFCTapToTip from "./NFCTapToTip";
 import VoiceActivatedTipping from "./VoiceActivatedTipping";
@@ -9,11 +9,13 @@ import VoiceActivatedTipping from "./VoiceActivatedTipping";
 interface QuickActionsCardProps {
   onScanClick: () => void;
   onNFCSuccess?: (principal: Principal) => void;
+  onOrderFoodClick?: () => void;
 }
 
 export default function QuickActionsCard({
   onScanClick,
   onNFCSuccess,
+  onOrderFoodClick,
 }: QuickActionsCardProps) {
   const [nfcOpen, setNfcOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -60,6 +62,25 @@ export default function QuickActionsCard({
             <Mic className="mr-2 h-5 w-5" />
             Voice Command
           </Button>
+
+          <Button
+            onClick={() => onOrderFoodClick?.()}
+            variant="outline"
+            className="w-full border-teal/30 bg-teal/10 text-teal hover:bg-teal/20 font-semibold transition-all"
+            size="lg"
+            data-ocid="quick_actions.order_food_button"
+          >
+            <ShoppingCart className="mr-2 h-5 w-5" />
+            Order Food
+          </Button>
+
+          <a
+            href="/order-history"
+            className="block text-center text-xs text-teal/70 hover:text-teal transition-colors py-0.5"
+            data-ocid="quick_actions.order_history_link"
+          >
+            View Order History
+          </a>
         </CardContent>
       </Card>
 

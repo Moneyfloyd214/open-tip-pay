@@ -188,7 +188,7 @@ export default function RequestMoneySheet({
     >
       <SheetContent
         side="bottom"
-        className="h-[90vh] bg-navy border-t-2 border-teal/30 overflow-y-auto"
+        className="h-[90vh] bg-card border-t-2 border-teal/30 overflow-y-auto"
       >
         {/* ── Step: Search ── */}
         {step === "search" && (
@@ -214,7 +214,7 @@ export default function RequestMoneySheet({
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onFocus={() => setSearchFocused(true)}
-                    className="w-full pl-12 pr-10 py-6 text-base bg-navy-light/50 border-2 border-teal/30 rounded-2xl text-white placeholder:text-white/50 focus:border-teal focus:ring-2 focus:ring-teal/50 transition-all duration-300"
+                    className="w-full pl-12 pr-10 py-6 text-base bg-card/50 border-2 border-teal/30 rounded-2xl text-white placeholder:text-white/50 focus:border-teal focus:ring-2 focus:ring-teal/50 transition-all duration-300"
                     autoFocus
                   />
                   {searchTerm && (
@@ -234,7 +234,7 @@ export default function RequestMoneySheet({
 
                 {/* Search results dropdown */}
                 {showSearchDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-2 max-h-80 overflow-y-auto bg-navy-light/95 backdrop-blur-xl border-2 border-teal/30 rounded-2xl shadow-2xl shadow-teal/20 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                  <div className="absolute top-full left-0 right-0 mt-2 max-h-80 overflow-y-auto bg-card/95 backdrop-blur-xl border-2 border-teal/30 rounded-2xl shadow-2xl shadow-teal/20 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
                     {searchLoading ? (
                       <div className="flex items-center justify-center py-8">
                         <Loader2 className="h-6 w-6 animate-spin text-teal" />
@@ -260,7 +260,7 @@ export default function RequestMoneySheet({
                                   alt={result.username}
                                 />
                               ) : (
-                                <AvatarFallback className="bg-navy text-white text-sm">
+                                <AvatarFallback className="bg-muted text-foreground text-sm">
                                   {result.username
                                     .substring(0, 2)
                                     .toUpperCase()}
@@ -318,7 +318,7 @@ export default function RequestMoneySheet({
             <div className="space-y-6">
               {/* Recipient Card — show when profile resolved, or skeleton */}
               {recipientProfile ? (
-                <div className="flex items-center gap-4 p-4 bg-navy-light/50 rounded-xl border border-teal/20">
+                <div className="flex items-center gap-4 p-4 bg-card/50 rounded-xl border border-teal/20">
                   {/* Change recipient button */}
                   {!hasPresetRecipient && (
                     <button
@@ -344,7 +344,7 @@ export default function RequestMoneySheet({
                         alt={recipientProfile.username}
                       />
                     ) : (
-                      <AvatarFallback className="bg-navy text-white text-lg">
+                      <AvatarFallback className="bg-muted text-foreground text-lg">
                         {recipientProfile.username
                           .substring(0, 2)
                           .toUpperCase()}
@@ -373,7 +373,7 @@ export default function RequestMoneySheet({
                 </div>
               ) : (
                 /* Profile is still resolving — show a subtle loading card */
-                <div className="flex items-center gap-4 p-4 bg-navy-light/50 rounded-xl border border-teal/20">
+                <div className="flex items-center gap-4 p-4 bg-card/50 rounded-xl border border-teal/20">
                   <div className="h-16 w-16 rounded-full bg-teal/10 animate-pulse flex-shrink-0" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-32 bg-teal/10 animate-pulse rounded" />
@@ -408,7 +408,7 @@ export default function RequestMoneySheet({
                       className={`transition-all duration-200 ${
                         amount === preset.toString()
                           ? "bg-teal border-teal text-white shadow-md shadow-teal/30"
-                          : "bg-navy-light/50 border-teal/30 text-white hover:bg-teal hover:text-white hover:border-teal"
+                          : "bg-card/50 border-teal/30 text-white hover:bg-teal hover:text-white hover:border-teal"
                       }`}
                     >
                       ${preset}
@@ -416,7 +416,7 @@ export default function RequestMoneySheet({
                   ))}
                 </div>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                     $
                   </span>
                   <Input
@@ -425,7 +425,7 @@ export default function RequestMoneySheet({
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0.00"
-                    className="pl-8 bg-navy-light/50 border-teal/30 text-white placeholder:text-white/40"
+                    className="pl-8 bg-card/50 border-teal/30 text-white placeholder:text-white/40"
                     min="0.01"
                     step="0.01"
                   />
@@ -452,7 +452,7 @@ export default function RequestMoneySheet({
                   placeholder="What's this request for? (required)"
                   maxLength={MAX_NOTE_LENGTH}
                   aria-required="true"
-                  className={`bg-navy-light/50 text-white placeholder:text-white/40 min-h-[90px] transition-colors duration-200 ${
+                  className={`bg-card/50 text-white placeholder:text-white/40 min-h-[90px] transition-colors duration-200 ${
                     noteError
                       ? "border-red-400 focus:border-red-400 border-2"
                       : "border-teal/30"

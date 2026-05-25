@@ -112,13 +112,13 @@ export default function VaultLockCard() {
 
   if (isLoading) {
     return (
-      <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
+      <Card className="border-border bg-card/50 backdrop-blur-sm">
         <CardContent className="p-5">
           <div className="animate-pulse flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-white/10" />
+            <div className="w-8 h-8 rounded-full bg-muted/50" />
             <div className="space-y-2 flex-1">
-              <div className="h-4 bg-white/10 rounded w-1/3" />
-              <div className="h-3 bg-white/10 rounded w-2/3" />
+              <div className="h-4 bg-muted/50 rounded w-1/3" />
+              <div className="h-3 bg-muted/50 rounded w-2/3" />
             </div>
           </div>
         </CardContent>
@@ -159,7 +159,7 @@ export default function VaultLockCard() {
               ) : (
                 <Shield className="h-5 w-5 text-teal" />
               )}
-              <span className="font-semibold text-white">Vault Lock</span>
+              <span className="font-semibold text-foreground">Vault Lock</span>
             </div>
             <StatusBadge
               locked={locked}
@@ -206,7 +206,7 @@ export default function VaultLockCard() {
                     : "Cooldown finishing..."}
                 </span>
               </div>
-              <p className="text-xs text-white/60">
+              <p className="text-xs text-muted-foreground">
                 Your vault is scheduled to unlock. If this wasn't you, secure
                 your account immediately.
               </p>
@@ -251,7 +251,7 @@ export default function VaultLockCard() {
           ) : locked ? (
             /* LOCKED */
             <div className="space-y-3">
-              <p className="text-sm text-white/70">
+              <p className="text-sm text-muted-foreground">
                 All outgoing transactions are frozen. Incoming tips remain
                 active.
               </p>
@@ -268,7 +268,7 @@ export default function VaultLockCard() {
           ) : (
             /* UNLOCKED */
             <div className="space-y-3">
-              <p className="text-sm text-white/70">
+              <p className="text-sm text-muted-foreground">
                 Your vault is open. All transactions are active.
               </p>
               <Button
@@ -287,13 +287,13 @@ export default function VaultLockCard() {
 
       {/* Confirm Lock Dialog */}
       <Dialog open={showConfirmLock} onOpenChange={setShowConfirmLock}>
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-amber-400/20">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-amber-400/20">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-foreground flex items-center gap-2">
               <Lock className="h-5 w-5 text-amber-400" />
               Lock Your Vault?
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-muted-foreground">
               This will immediately freeze all outgoing transactions and P2P
               sends. Incoming tips will still work. Unlocking requires a 24-hour
               cooldown.
@@ -303,7 +303,7 @@ export default function VaultLockCard() {
             <Button
               variant="outline"
               onClick={() => setShowConfirmLock(false)}
-              className="border-white/20 text-white hover:bg-white/10"
+              className="border-border text-foreground hover:bg-muted/20"
             >
               Cancel
             </Button>
@@ -324,13 +324,13 @@ export default function VaultLockCard() {
         open={showConfirmRequestUnlock}
         onOpenChange={setShowConfirmRequestUnlock}
       >
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-teal/20">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-teal/20">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-foreground flex items-center gap-2">
               <ShieldOff className="h-5 w-5 text-teal" />
               Request Vault Unlock?
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-muted-foreground">
               A 24-hour cooldown period will begin. You'll receive security
               alerts during this time. After 24 hours, you'll need to confirm
               your identity with biometrics to complete the unlock.
@@ -340,7 +340,7 @@ export default function VaultLockCard() {
             <Button
               variant="outline"
               onClick={() => setShowConfirmRequestUnlock(false)}
-              className="border-white/20 text-white hover:bg-white/10"
+              className="border-border text-foreground hover:bg-muted/20"
             >
               Cancel
             </Button>
@@ -360,13 +360,13 @@ export default function VaultLockCard() {
 
       {/* Biometric Finalize Dialog */}
       <Dialog open={showBiometricDialog} onOpenChange={setShowBiometricDialog}>
-        <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-emerald-500/20">
+        <DialogContent className="bg-card/95 backdrop-blur-xl border-emerald-500/20">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-foreground flex items-center gap-2">
               <Fingerprint className="h-5 w-5 text-emerald-400" />
               Confirm Your Identity
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-muted-foreground">
               Use biometrics to finalize the vault unlock.
             </DialogDescription>
           </DialogHeader>
@@ -379,7 +379,9 @@ export default function VaultLockCard() {
                   </div>
                   <div className="absolute inset-0 rounded-full border-2 border-emerald-500 animate-ping opacity-30" />
                 </div>
-                <p className="text-sm text-white/70">Verifying biometrics...</p>
+                <p className="text-sm text-muted-foreground">
+                  Verifying biometrics...
+                </p>
               </>
             ) : (
               <>
@@ -398,7 +400,7 @@ export default function VaultLockCard() {
               variant="outline"
               onClick={() => setShowBiometricDialog(false)}
               disabled={biometricChecking}
-              className="border-white/20 text-white hover:bg-white/10"
+              className="border-border text-foreground hover:bg-muted/20"
             >
               <X className="mr-1 h-4 w-4" />
               Cancel
@@ -515,7 +517,7 @@ function VaultAlertBanner({
           type="button"
           onClick={onDismiss}
           disabled={isAcknowledging}
-          className="text-amber-400/60 hover:text-amber-300 transition-colors flex-shrink-0"
+          className="text-foreground/60 hover:text-foreground transition-colors flex-shrink-0"
           aria-label="Dismiss alert"
         >
           <X className="h-4 w-4" />

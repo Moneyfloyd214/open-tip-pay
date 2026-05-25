@@ -118,7 +118,7 @@ export default function KYCVerification() {
   return (
     <Card className="glassmorphism border-teal/20">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm flex items-center gap-2 text-white">
+        <CardTitle className="text-sm flex items-center gap-2 text-foreground">
           <img
             src="/assets/generated/kyc-verification-icon-transparent.dim_32x32.png"
             alt=""
@@ -134,10 +134,10 @@ export default function KYCVerification() {
             <div className="flex items-center gap-3">
               <img src={statusConfig.imageSrc} alt="" className="h-8 w-8" />
               <div>
-                <h4 className="text-sm font-semibold text-white">
+                <h4 className="text-sm font-semibold text-foreground">
                   {statusConfig.title}
                 </h4>
-                <p className="text-xs text-white/60 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {statusConfig.description}
                 </p>
               </div>
@@ -147,13 +147,13 @@ export default function KYCVerification() {
 
           {kycStatus === KYCStatus.notSubmitted && (
             <>
-              <Separator className="my-4 bg-white/10" />
+              <Separator className="my-4 bg-border" />
               <div className="space-y-3">
-                <p className="text-xs text-white/70">
+                <p className="text-xs text-muted-foreground">
                   To complete KYC verification, you'll need to:
                 </p>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-white/80">
+                  <div className="flex items-center gap-2 text-xs text-foreground/80">
                     <img
                       src="/assets/generated/id-document-scan-icon-transparent.dim_24x24.png"
                       alt=""
@@ -161,7 +161,7 @@ export default function KYCVerification() {
                     />
                     <span>Upload a valid government-issued ID</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-white/80">
+                  <div className="flex items-center gap-2 text-xs text-foreground/80">
                     <img
                       src="/assets/generated/liveness-selfie-icon-transparent.dim_24x24.png"
                       alt=""
@@ -177,8 +177,8 @@ export default function KYCVerification() {
           {kycStatus === KYCStatus.pending &&
             userProfile?.kycSubmissionTimestamp && (
               <>
-                <Separator className="my-4 bg-white/10" />
-                <div className="text-xs text-white/60">
+                <Separator className="my-4 bg-border" />
+                <div className="text-xs text-muted-foreground">
                   Submitted:{" "}
                   {new Date(
                     Number(userProfile.kycSubmissionTimestamp) / 1000000,
@@ -213,8 +213,8 @@ export default function KYCVerification() {
         )}
 
         {/* Educational Content */}
-        <div className="glassmorphism p-3 rounded-lg border border-white/10">
-          <h5 className="text-xs font-semibold text-white mb-2 flex items-center gap-2">
+        <div className="glassmorphism p-3 rounded-lg border border-border">
+          <h5 className="text-xs font-semibold text-foreground mb-2 flex items-center gap-2">
             <img
               src="/assets/generated/legal-compliance-icon-transparent.dim_32x32.png"
               alt=""
@@ -222,7 +222,7 @@ export default function KYCVerification() {
             />
             Why KYC is Required
           </h5>
-          <p className="text-xs text-white/60 leading-relaxed">
+          <p className="text-xs text-muted-foreground leading-relaxed">
             KYC (Know Your Customer) verification helps us comply with financial
             regulations and protect all users from fraud. Your data is encrypted
             with E2EE and stored securely. We only use it for identity
@@ -231,10 +231,10 @@ export default function KYCVerification() {
         </div>
 
         {/* Privacy Notice */}
-        <div className="p-3 rounded-lg bg-navy-dark/50 border border-white/10">
-          <p className="text-xs text-white/60 leading-relaxed">
-            🔒 <strong className="text-white">Privacy Protected:</strong> All
-            KYC data is encrypted end-to-end (E2EE) and complies with data
+        <div className="p-3 rounded-lg bg-muted/50 border border-border">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            🔒 <strong className="text-foreground">Privacy Protected:</strong>{" "}
+            All KYC data is encrypted end-to-end (E2EE) and complies with data
             protection regulations. We never share your information with third
             parties without your consent.
           </p>

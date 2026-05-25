@@ -288,7 +288,7 @@ export default function SplitPaymentSheet({
     >
       <SheetContent
         side="bottom"
-        className="h-[92vh] bg-navy border-t-2 border-teal/30 overflow-y-auto"
+        className="h-[92vh] bg-card border-t-2 border-teal/30 overflow-y-auto"
       >
         {/* ── Step: Amount + Description ── */}
         {step === "amount" && (
@@ -322,7 +322,7 @@ export default function SplitPaymentSheet({
                     placeholder="0.00"
                     min="0.01"
                     step="0.01"
-                    className="pl-8 text-xl font-bold bg-navy-light/50 border-teal/30 text-white placeholder:text-white/40 h-14"
+                    className="pl-8 text-xl font-bold bg-card/50 border-teal/30 text-white placeholder:text-white/40 h-14"
                     autoFocus
                   />
                 </div>
@@ -345,7 +345,7 @@ export default function SplitPaymentSheet({
                     }
                   }}
                   placeholder="Dinner at restaurant, vacation rental, etc. (required)"
-                  className={`bg-navy-light/50 text-white placeholder:text-white/40 min-h-[80px] transition-colors duration-200 ${
+                  className={`bg-card/50 text-white placeholder:text-white/40 min-h-[80px] transition-colors duration-200 ${
                     descError ? "border-red-400 border-2" : "border-teal/30"
                   }`}
                   aria-required="true"
@@ -415,7 +415,7 @@ export default function SplitPaymentSheet({
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onFocus={() => setSearchFocused(true)}
-                    className="w-full pl-12 pr-10 py-6 text-base bg-navy-light/50 border-2 border-teal/30 rounded-2xl text-white placeholder:text-white/50 focus:border-teal focus:ring-2 focus:ring-teal/50 transition-all duration-300"
+                    className="w-full pl-12 pr-10 py-6 text-base bg-card/50 border-2 border-teal/30 rounded-2xl text-white placeholder:text-white/50 focus:border-teal focus:ring-2 focus:ring-teal/50 transition-all duration-300"
                   />
                   {searchTerm && (
                     <button
@@ -433,7 +433,7 @@ export default function SplitPaymentSheet({
                 </div>
 
                 {showDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-2 max-h-72 overflow-y-auto bg-navy-light/95 backdrop-blur-xl border-2 border-teal/30 rounded-2xl shadow-2xl shadow-teal/20 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                  <div className="absolute top-full left-0 right-0 mt-2 max-h-72 overflow-y-auto bg-card/95 backdrop-blur-xl border-2 border-teal/30 rounded-2xl shadow-2xl shadow-teal/20 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
                     {searchLoading ? (
                       <div className="flex items-center justify-center py-8">
                         <Loader2 className="h-6 w-6 animate-spin text-teal" />
@@ -464,7 +464,7 @@ export default function SplitPaymentSheet({
                                     alt={result.username}
                                   />
                                 ) : (
-                                  <AvatarFallback className="bg-navy text-white text-xs">
+                                  <AvatarFallback className="bg-muted text-foreground text-xs">
                                     {result.username
                                       .substring(0, 2)
                                       .toUpperCase()}
@@ -508,7 +508,7 @@ export default function SplitPaymentSheet({
                       <div
                         key={p.username}
                         data-ocid={`split_payment.participant.${i + 1}`}
-                        className="flex items-center gap-3 p-3 bg-navy-dark/40 rounded-xl border border-teal/10"
+                        className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl border border-teal/10"
                       >
                         <Avatar className="h-9 w-9 border border-teal/40 flex-shrink-0">
                           {p.photo ? (
@@ -517,7 +517,7 @@ export default function SplitPaymentSheet({
                               alt={p.username}
                             />
                           ) : (
-                            <AvatarFallback className="bg-navy text-white text-xs">
+                            <AvatarFallback className="bg-muted text-foreground text-xs">
                               {p.username.substring(0, 2).toUpperCase()}
                             </AvatarFallback>
                           )}
@@ -605,7 +605,7 @@ export default function SplitPaymentSheet({
                 value={splitMode}
                 onValueChange={(v) => setSplitMode(v as SplitMode)}
               >
-                <TabsList className="grid w-full grid-cols-3 bg-navy-dark/50">
+                <TabsList className="grid w-full grid-cols-3 bg-muted/50">
                   <TabsTrigger
                     value="equal"
                     data-ocid="split_payment.mode_equal_tab"
@@ -657,7 +657,7 @@ export default function SplitPaymentSheet({
                     <div
                       key={p.username}
                       data-ocid={`split_payment.share_input.${i + 1}`}
-                      className="flex items-center gap-3 p-3 bg-navy-dark/30 rounded-xl"
+                      className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl"
                     >
                       <Avatar className="h-8 w-8 border border-teal/40 flex-shrink-0">
                         {p.photo ? (
@@ -666,7 +666,7 @@ export default function SplitPaymentSheet({
                             alt={p.username}
                           />
                         ) : (
-                          <AvatarFallback className="bg-navy text-white text-xs">
+                          <AvatarFallback className="bg-muted text-foreground text-xs">
                             {p.username.substring(0, 2).toUpperCase()}
                           </AvatarFallback>
                         )}
@@ -691,7 +691,7 @@ export default function SplitPaymentSheet({
                           min={0}
                           step={splitMode === "exact" ? "0.01" : "1"}
                           max={splitMode === "percentage" ? 100 : undefined}
-                          className={`${splitMode === "exact" ? "pl-7" : "pl-3"} pr-2 h-9 bg-navy-light/50 border-teal/30 text-white text-sm`}
+                          className={`${splitMode === "exact" ? "pl-7" : "pl-3"} pr-2 h-9 bg-card/50 border-teal/30 text-white text-sm`}
                         />
                         {splitMode === "percentage" && (
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 text-xs">
@@ -763,7 +763,7 @@ export default function SplitPaymentSheet({
 
             <div className="space-y-5">
               {/* Summary card */}
-              <div className="p-4 bg-navy-dark/40 rounded-2xl border border-teal/20 space-y-3">
+              <div className="p-4 bg-muted/40 rounded-2xl border border-teal/20 space-y-3">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-white font-semibold">{description}</p>
@@ -790,7 +790,7 @@ export default function SplitPaymentSheet({
                   <div
                     key={p.username}
                     data-ocid={`split_payment.confirm_item.${i + 1}`}
-                    className="flex items-center gap-3 p-3 bg-navy-dark/30 rounded-xl"
+                    className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl"
                   >
                     <Avatar className="h-9 w-9 border border-teal/40 flex-shrink-0">
                       {p.photo ? (
@@ -799,7 +799,7 @@ export default function SplitPaymentSheet({
                           alt={p.username}
                         />
                       ) : (
-                        <AvatarFallback className="bg-navy text-white text-xs">
+                        <AvatarFallback className="bg-muted text-foreground text-xs">
                           {p.username.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       )}
@@ -878,7 +878,9 @@ export default function SplitPaymentSheet({
               <CheckCircle2 className="h-10 w-10 text-teal" />
             </div>
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white">Split Created!</h2>
+              <h2 className="text-2xl font-bold text-foreground">
+                Split Created!
+              </h2>
               <p className="text-white/60 text-sm max-w-xs mx-auto">
                 Payment requests have been sent to{" "}
                 <span className="text-teal font-medium">

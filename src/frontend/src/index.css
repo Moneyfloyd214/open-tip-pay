@@ -1,3 +1,40 @@
+/* Ensure color-scheme is reflected in the root for browser chrome */
+:root {
+  color-scheme: dark;
+
+  --accent: 0.72 0.12 165;
+  --accent-foreground: 0.985 0 0;
+  --secondary: 0.25 0.06 240;
+
+  --background: 0.145 0.08 240;
+  --foreground: 0.985 0 0;
+  --card: 0.205 0.08 240;
+  --card-foreground: 0.985 0 0;
+  --popover: 0.25 0.06 240;
+  --popover-foreground: 0.985 0 0;
+  --primary: 0.72 0.12 165;
+  --primary-foreground: 0.145 0.08 240;
+  --secondary-foreground: 0.985 0 0;
+  --muted: 0.25 0.06 240;
+  --muted-foreground: 0.7 0.04 240;
+  --destructive: 0.704 0.191 22.216;
+  --destructive-foreground: 0.985 0 0;
+  --border: 1 0 0 / 10%;
+  --input: 1 0 0 / 15%;
+  --ring: 0.72 0.12 165;
+
+  --status-operational: 0.628 0.225 142;
+  --status-warning: 0.688 0.195 55;
+  --status-alert: 0.704 0.191 22.216;
+}
+.dark {
+  color-scheme: dark;
+
+  --status-operational: 0.628 0.225 142;
+  --status-warning: 0.688 0.195 55;
+  --status-alert: 0.704 0.191 22.216;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -50,6 +87,15 @@
     --chart-3: 0.65 0.14 165;
     --chart-4: 0.25 0.06 240;
     --chart-5: 0.78 0.1 165;
+
+    --gold: 0.665 0.15 72;
+    --gold-light: 0.73 0.14 72;
+    --gold-dark: 0.58 0.16 72;
+    --success: 0.628 0.225 142;
+    --success-light: 0.7 0.18 142;
+    --warning: 0.688 0.195 55;
+    --chart-6: 0.665 0.15 72;
+    --chart-7: 0.628 0.225 142;
   }
 
   .dark {
@@ -86,6 +132,9 @@
     --chart-3: 0.205 0.08 240;
     --chart-4: 0.65 0.14 165;
     --chart-5: 0.25 0.06 240;
+
+    --chart-6: 0.665 0.15 72;
+    --chart-7: 0.628 0.225 142;
   }
 
   * {
@@ -143,7 +192,7 @@
     border-color: oklch(var(--navy-light));
   }
 
-  /* Enhanced Glassmorphism effect */
+  /* Enhanced Glassmorphism effect — dark mode (default) */
   .glassmorphism {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(16px);
@@ -169,7 +218,7 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Frosted glass effect */
+  /* Frosted glass effect — dark mode navy tint */
   .frosted-glass {
     background: rgba(26, 43, 60, 0.7);
     backdrop-filter: blur(20px) saturate(180%);
@@ -190,6 +239,76 @@
     text-transform: uppercase;
     color: oklch(var(--teal));
     opacity: 0.85;
+  }
+
+  .bg-gold {
+    background-color: oklch(var(--gold));
+  }
+
+  .bg-gold-light {
+    background-color: oklch(var(--gold-light));
+  }
+
+  .bg-gold-dark {
+    background-color: oklch(var(--gold-dark));
+  }
+
+  .bg-success {
+    background-color: oklch(var(--success));
+  }
+
+  .bg-success-light {
+    background-color: oklch(var(--success-light));
+  }
+
+  .text-gold {
+    color: oklch(var(--gold));
+  }
+
+  .text-success {
+    color: oklch(var(--success));
+  }
+
+  .border-gold {
+    border-color: oklch(var(--gold));
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(218, 165, 32, 0.4), 0 0 40px
+      rgba(218, 165, 32, 0.2);
+  }
+
+  .glow-success {
+    box-shadow: 0 0 16px rgba(76, 175, 80, 0.35), 0 0 32px
+      rgba(76, 175, 80, 0.15);
+  }
+
+  .live-pulse {
+    animation: live-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .data-metric-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.625rem;
+  }
+
+  .staffing-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(230, 124, 115, 0.15);
+    border: 1px solid oklch(var(--status-alert) / 0.4);
+    border-radius: 0.25rem;
+    color: oklch(var(--status-alert));
+    font-size: 0.875rem;
+    font-weight: 600;
   }
 }
 
@@ -339,6 +458,27 @@
 
   .ring-pulse {
     animation: ring-pulse 3s ease-in-out infinite;
+  }
+  /* Prefers reduced motion — disable animations for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .neon-glow,
+    .cta-pulse,
+    .orb-1,
+    .orb-2,
+    .orb-3,
+    .fade-in-up,
+    .animate-shake,
+    .ring-pulse {
+      animation: none !important;
+    }
   }
 
   /* Animation delays */

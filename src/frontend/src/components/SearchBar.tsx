@@ -73,13 +73,13 @@ export default function SearchBar({ onSelectUser }: SearchBarProps) {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={() => setIsFocused(true)}
-            className="w-full pl-12 pr-12 py-6 text-base bg-navy-light/50 border-2 border-teal/30 rounded-2xl text-white placeholder:text-white/50 focus:border-teal focus:ring-2 focus:ring-teal/50 transition-all duration-300 shadow-lg shadow-teal/10"
+            className="w-full pl-12 pr-12 py-6 text-base bg-card/50 border-2 border-teal/30 rounded-2xl text-foreground placeholder:text-muted-foreground/70 focus:border-teal focus:ring-2 focus:ring-teal/50 transition-all duration-300 shadow-lg shadow-teal/10"
           />
           {searchTerm && (
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
@@ -88,7 +88,7 @@ export default function SearchBar({ onSelectUser }: SearchBarProps) {
 
         {/* Search results dropdown */}
         {showResults && (
-          <div className="absolute top-full left-0 right-0 mt-2 max-h-96 overflow-y-auto bg-navy-light/95 backdrop-blur-xl border-2 border-teal/30 rounded-2xl shadow-2xl shadow-teal/20 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="absolute top-full left-0 right-0 mt-2 max-h-96 overflow-y-auto bg-card/95 backdrop-blur-xl border-2 border-teal/30 rounded-2xl shadow-2xl shadow-teal/20 animate-in fade-in slide-in-from-top-2 duration-300">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-teal" />
@@ -102,7 +102,7 @@ export default function SearchBar({ onSelectUser }: SearchBarProps) {
                     type="button"
                     key={result.username}
                     onClick={() => handleSelectResult(result.username)}
-                    className="w-full px-6 py-4 flex items-center gap-4 hover:bg-teal/10 transition-colors duration-200 border-b border-white/5 last:border-b-0"
+                    className="w-full px-6 py-4 flex items-center gap-4 hover:bg-teal/10 transition-colors duration-200 border-b border-border/30 last:border-b-0"
                   >
                     {/* Profile Picture */}
                     <Avatar className="h-12 w-12 border-2 border-teal/50">
@@ -112,7 +112,7 @@ export default function SearchBar({ onSelectUser }: SearchBarProps) {
                           alt={result.username}
                         />
                       ) : (
-                        <AvatarFallback className="bg-navy text-white text-sm">
+                        <AvatarFallback className="bg-muted text-foreground text-sm">
                           {result.username.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       )}
@@ -121,7 +121,7 @@ export default function SearchBar({ onSelectUser }: SearchBarProps) {
                     {/* User Info */}
                     <div className="flex-1 text-left">
                       <div className="flex items-center gap-2">
-                        <p className="font-semibold text-white">
+                        <p className="font-semibold text-foreground">
                           @{result.username}
                         </p>
                         {result.isVerified && (
@@ -133,7 +133,7 @@ export default function SearchBar({ onSelectUser }: SearchBarProps) {
                         )}
                       </div>
                       {result.bio && (
-                        <p className="text-sm text-white/60 line-clamp-1 mt-0.5">
+                        <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
                           {result.bio}
                         </p>
                       )}

@@ -72,7 +72,7 @@ export default function RecoverySetupPage({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-navy-dark px-5 py-8 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background px-5 py-8 overflow-y-auto">
       {/* Ambient glows */}
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -133,7 +133,7 @@ export default function RecoverySetupPage({
 
             {/* Recovery phrase grid */}
             <div
-              className="rounded-xl border border-teal/30 bg-navy-dark/70 p-4"
+              className="rounded-xl border border-teal/30 bg-card/80 p-4"
               data-ocid="recovery.phrase_box"
             >
               <div className="grid grid-cols-3 gap-2">
@@ -145,7 +145,7 @@ export default function RecoverySetupPage({
                     <span className="text-[10px] font-mono text-teal/60 w-4 shrink-0">
                       {i + 1}.
                     </span>
-                    <span className="text-xs font-mono font-semibold text-white">
+                    <span className="text-xs font-mono font-semibold text-foreground">
                       {word}
                     </span>
                   </div>
@@ -187,7 +187,7 @@ export default function RecoverySetupPage({
 
             {/* Confirmation checkbox */}
             <div
-              className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 cursor-pointer"
+              className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-3.5 cursor-pointer"
               onClick={() => setConfirmed((v) => !v)}
               onKeyDown={(e) => {
                 if (e.key === " " || e.key === "Enter") setConfirmed((v) => !v);
@@ -256,7 +256,7 @@ export default function RecoverySetupPage({
               </div>
             </div>
 
-            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+            <div className="rounded-xl border border-border bg-muted/30 p-4">
               <p className="text-sm text-white/75 leading-relaxed">
                 Add your laptop or tablet as a backup way to sign in. If you
                 ever lose your phone, you can recover your account from another
@@ -309,7 +309,7 @@ export default function RecoverySetupPage({
 
               <Button
                 variant="outline"
-                className="w-full h-11 text-sm rounded-xl border-white/20 text-white/60 bg-transparent hover:bg-white/5 hover:text-white/80 transition-all duration-200"
+                className="w-full h-11 text-sm rounded-xl border-white/20 text-white/60 bg-transparent hover:bg-muted/30 hover:text-white/80 transition-all duration-200"
                 onClick={handleSkip}
                 data-ocid="recovery.skip_button"
               >

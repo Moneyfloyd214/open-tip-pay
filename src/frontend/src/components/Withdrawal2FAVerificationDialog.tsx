@@ -179,7 +179,7 @@ export default function Withdrawal2FAVerificationDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-navy-light/95 backdrop-blur-xl border-teal/20 max-w-md">
+      <DialogContent className="bg-card/95 backdrop-blur-xl border-teal/20 max-w-md">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
             <Shield className="h-5 w-5 text-teal" />
@@ -232,8 +232,10 @@ export default function Withdrawal2FAVerificationDialog({
           {/* Amount Display */}
           <div className="glassmorphism p-4 rounded-lg border border-teal/30">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/70">Withdrawal Amount:</span>
-              <span className="text-lg font-bold text-white">
+              <span className="text-sm text-muted-foreground">
+                Withdrawal Amount:
+              </span>
+              <span className="text-lg font-bold text-foreground">
                 ${amountDollars.toFixed(2)}
               </span>
             </div>
@@ -242,7 +244,7 @@ export default function Withdrawal2FAVerificationDialog({
           {/* PIN Step */}
           {step === "pin" && (
             <div className="space-y-3">
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
                 <Lock className="h-4 w-4 text-teal" />
                 <p className="text-xs text-white/80">
                   Step 1 of 2: Enter your security PIN
@@ -250,7 +252,7 @@ export default function Withdrawal2FAVerificationDialog({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="pin" className="text-sm text-white">
+                <Label htmlFor="pin" className="text-sm text-foreground">
                   Security PIN
                 </Label>
                 <Input
@@ -261,7 +263,7 @@ export default function Withdrawal2FAVerificationDialog({
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
                   placeholder="••••"
-                  className="bg-navy-dark/50 border-white/10 text-white text-center text-2xl tracking-widest"
+                  className="bg-muted/50 border-border text-white text-center text-2xl tracking-widest"
                   autoFocus
                   data-ocid="withdrawal-2fa-pin-input"
                 />
@@ -288,7 +290,7 @@ export default function Withdrawal2FAVerificationDialog({
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-navy-dark/50 border border-white/10">
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
                 <Smartphone className="h-4 w-4 text-teal" />
                 <p className="text-xs text-white/80">
                   Step 2 of 2: SMS code sent to{" "}
@@ -299,7 +301,7 @@ export default function Withdrawal2FAVerificationDialog({
               </div>
 
               {timeRemaining > 0 && (
-                <div className="flex items-center justify-center gap-2 p-2 rounded bg-navy-dark/50">
+                <div className="flex items-center justify-center gap-2 p-2 rounded bg-muted/50">
                   <Clock className="h-4 w-4 text-teal" />
                   <span className="text-sm text-white font-mono">
                     Code expires in: {formatTime(timeRemaining)}
@@ -308,7 +310,7 @@ export default function Withdrawal2FAVerificationDialog({
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="otp" className="text-sm text-white">
+                <Label htmlFor="otp" className="text-sm text-foreground">
                   SMS Verification Code
                 </Label>
                 <Input
@@ -319,7 +321,7 @@ export default function Withdrawal2FAVerificationDialog({
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                   placeholder="······"
-                  className="bg-navy-dark/50 border-white/10 text-white text-center text-2xl tracking-widest"
+                  className="bg-muted/50 border-border text-white text-center text-2xl tracking-widest"
                   autoFocus
                   data-ocid="withdrawal-2fa-otp-input"
                 />
@@ -343,7 +345,7 @@ export default function Withdrawal2FAVerificationDialog({
           <Button
             onClick={handleCancel}
             variant="outline"
-            className="border-white/10 text-white hover:bg-white/5"
+            className="border-border text-white hover:bg-white/5"
             disabled={startChallenge.isPending || verifyOTP.isPending}
             data-ocid="withdrawal-2fa-cancel"
           >
@@ -354,7 +356,7 @@ export default function Withdrawal2FAVerificationDialog({
             <Button
               onClick={handleSubmitPIN}
               disabled={pin.length !== 4 || startChallenge.isPending}
-              className="bg-teal hover:bg-teal-dark text-white"
+              className="bg-teal hover:bg-teal-dark text-foreground"
               data-ocid="withdrawal-2fa-pin-submit"
             >
               {startChallenge.isPending ? (
@@ -370,7 +372,7 @@ export default function Withdrawal2FAVerificationDialog({
             <Button
               onClick={handleSubmitOTP}
               disabled={otp.length < 4 || verifyOTP.isPending}
-              className="bg-teal hover:bg-teal-dark text-white"
+              className="bg-teal hover:bg-teal-dark text-foreground"
               data-ocid="withdrawal-2fa-otp-submit"
             >
               {verifyOTP.isPending ? (

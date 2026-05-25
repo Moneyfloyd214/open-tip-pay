@@ -25,6 +25,16 @@ export const ActiveSession = IDL.Record({
   'sessionId' : IDL.Text,
   'location' : IDL.Text,
 });
+export const CentAmount = IDL.Nat;
+export const MenuItem = IDL.Record({
+  'id' : IDL.Text,
+  'standId' : IDL.Text,
+  'name' : IDL.Text,
+  'description' : IDL.Text,
+  'available' : IDL.Bool,
+  'category' : IDL.Text,
+  'priceInCents' : CentAmount,
+});
 export const PaymentMethodType = IDL.Variant({
   'bankAccount' : IDL.Null,
   'card' : IDL.Null,
@@ -68,10 +78,38 @@ export const SupportMessage = IDL.Record({
   'timestamp' : IDL.Int,
   'senderIsAdmin' : IDL.Bool,
 });
+export const TipSplitCalculation = IDL.Record({
+  'staffName' : IDL.Text,
+  'staffId' : IDL.Text,
+  'hoursWorked' : IDL.Float64,
+  'role' : IDL.Text,
+  'sharePercent' : IDL.Float64,
+  'weightedScore' : IDL.Float64,
+  'rolePoints' : IDL.Float64,
+  'payoutAmount' : IDL.Float64,
+});
+export const TipSplitPayout = IDL.Record({
+  'id' : IDL.Text,
+  'status' : IDL.Text,
+  'standName' : IDL.Text,
+  'standId' : IDL.Text,
+  'approvedAt' : IDL.Opt(IDL.Int),
+  'approvedBy' : IDL.Opt(IDL.Text),
+  'totalPool' : IDL.Float64,
+  'calculations' : IDL.Vec(TipSplitCalculation),
+  'gameDate' : IDL.Text,
+});
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
   'guest' : IDL.Null,
+});
+export const StaffSection = IDL.Record({
+  'assignedAt' : IDL.Int,
+  'staffId' : IDL.Principal,
+  'sectionName' : IDL.Text,
+  'managerId' : IDL.Principal,
+  'sectionLabel' : IDL.Text,
 });
 export const ShoppingItem = IDL.Record({
   'productName' : IDL.Text,
@@ -80,10 +118,56 @@ export const ShoppingItem = IDL.Record({
   'priceInCents' : IDL.Nat,
   'productDescription' : IDL.Text,
 });
+export const PointsRuleType = IDL.Variant({
+  'paymentMultiplier' : IDL.Null,
+  'firstPaymentBonus' : IDL.Null,
+  'foodMultiplier' : IDL.Null,
+  'sectionMultiplier' : IDL.Null,
+  'tipMultiplier' : IDL.Null,
+  'gameDayBonus' : IDL.Null,
+});
+export const PointsRule = IDL.Record({
+  'id' : IDL.Text,
+  'multiplier' : IDL.Float64,
+  'ruleType' : PointsRuleType,
+  'sectionName' : IDL.Opt(IDL.Text),
+  'name' : IDL.Text,
+  'createdAt' : IDL.Int,
+  'description' : IDL.Text,
+  'isActive' : IDL.Bool,
+});
 export const RecurringFrequency = IDL.Variant({
   'monthly' : IDL.Null,
   'daily' : IDL.Null,
   'weekly' : IDL.Null,
+});
+export const RewardType = IDL.Variant({
+  'other' : IDL.Null,
+  'discountCode' : IDL.Null,
+  'concessionCredit' : IDL.Null,
+  'ticketEntry' : IDL.Null,
+});
+export const Reward = IDL.Record({
+  'id' : IDL.Text,
+  'title' : IDL.Text,
+  'active' : IDL.Bool,
+  'expiresAt' : IDL.Opt(IDL.Int),
+  'quantityRemaining' : IDL.Opt(IDL.Nat),
+  'createdBy' : IDL.Principal,
+  'codeOrValue' : IDL.Text,
+  'description' : IDL.Text,
+  'rewardType' : RewardType,
+  'quantity' : IDL.Opt(IDL.Nat),
+  'pointsCost' : IDL.Nat,
+  'teamId' : IDL.Opt(IDL.Text),
+});
+export const Timestamp = IDL.Int;
+export const ConcessionStand = IDL.Record({
+  'id' : IDL.Text,
+  'name' : IDL.Text,
+  'createdAt' : Timestamp,
+  'section' : IDL.Text,
+  'description' : IDL.Text,
 });
 export const KYCStatus = IDL.Variant({
   'notSubmitted' : IDL.Null,
@@ -134,6 +218,37 @@ export const DeletionStatus = IDL.Variant({
   'not_requested' : IDL.Null,
   'finalized' : IDL.Null,
 });
+export const OrderStatus = IDL.Variant({
+  'OnTheWay' : IDL.Null,
+  'Placed' : IDL.Null,
+  'ReadyForPickup' : IDL.Null,
+  'Preparing' : IDL.Null,
+  'Cancelled' : IDL.Null,
+  'Completed' : IDL.Null,
+});
+export const DeliveryMethod = IDL.Variant({
+  'Delivery' : IDL.Null,
+  'Pickup' : IDL.Null,
+});
+export const UserId = IDL.Principal;
+export const OrderItem = IDL.Record({
+  'itemId' : IDL.Text,
+  'itemName' : IDL.Text,
+  'quantity' : IDL.Nat,
+  'priceInCents' : CentAmount,
+});
+export const FoodOrder = IDL.Record({
+  'id' : IDL.Text,
+  'status' : OrderStatus,
+  'standId' : IDL.Text,
+  'createdAt' : Timestamp,
+  'deliveryMethod' : DeliveryMethod,
+  'updatedAt' : Timestamp,
+  'totalInCents' : CentAmount,
+  'customerId' : UserId,
+  'items' : IDL.Vec(OrderItem),
+  'seatNumber' : IDL.Text,
+});
 export const BusinessApplicationStatus = IDL.Variant({
   'pending' : IDL.Null,
   'approved' : IDL.Null,
@@ -177,6 +292,20 @@ export const BiometricSettings = IDL.Record({
   'biometricType' : IDL.Opt(IDL.Text),
   'enabled' : IDL.Bool,
 });
+export const StaffCheckIn = IDL.Record({
+  'id' : IDL.Text,
+  'staffName' : IDL.Text,
+  'staffId' : IDL.Text,
+  'standName' : IDL.Text,
+  'standId' : IDL.Text,
+  'hoursWorked' : IDL.Opt(IDL.Float64),
+  'role' : IDL.Text,
+  'checkInTime' : IDL.Int,
+  'manualOverride' : IDL.Bool,
+  'gameDate' : IDL.Text,
+  'checkOutTime' : IDL.Opt(IDL.Int),
+  'overrideBy' : IDL.Opt(IDL.Text),
+});
 export const CompilationStatus = IDL.Record({
   'obfuscationLayer' : IDL.Text,
   'verificationTimestamp' : IDL.Int,
@@ -197,6 +326,33 @@ export const EncryptionEvent = IDL.Record({
   'timestamp' : IDL.Int,
   'eventType' : IDL.Text,
 });
+export const ExtendedStaffMember = IDL.Record({
+  'id' : IDL.Text,
+  'hireDate' : IDL.Int,
+  'name' : IDL.Text,
+  'section' : IDL.Text,
+  'email' : IDL.Text,
+  'employmentType' : IDL.Variant({
+    'partTime' : IDL.Null,
+    'fullTime' : IDL.Null,
+    'contractor' : IDL.Null,
+  }),
+  'notes' : IDL.Text,
+  'customRole' : IDL.Text,
+  'phone' : IDL.Text,
+  'employmentStatus' : IDL.Variant({
+    'active' : IDL.Null,
+    'inactive' : IDL.Null,
+    'suspended' : IDL.Null,
+  }),
+});
+export const FanPoints = IDL.Record({
+  'userId' : IDL.Principal,
+  'totalEarned' : IDL.Float64,
+  'totalRedeemed' : IDL.Float64,
+  'guestContact' : IDL.Opt(IDL.Text),
+  'points' : IDL.Float64,
+});
 export const GDPRAuditEventType = IDL.Variant({
   'deletion_finalized' : IDL.Null,
   'deletion_requested' : IDL.Null,
@@ -207,6 +363,15 @@ export const GDPRAuditEvent = IDL.Record({
   'principal' : IDL.Principal,
   'timestamp' : IDL.Int,
   'eventType' : GDPRAuditEventType,
+});
+export const GameStandAssignment = IDL.Record({
+  'id' : IDL.Text,
+  'gameStandId' : IDL.Text,
+  'staffName' : IDL.Text,
+  'staffId' : IDL.Text,
+  'defaultStandId' : IDL.Text,
+  'gameStandName' : IDL.Text,
+  'gameDate' : IDL.Text,
 });
 export const InviteCode = IDL.Record({
   'created' : Time,
@@ -251,6 +416,16 @@ export const RecurringPayment = IDL.Record({
   'frequency' : RecurringFrequency,
   'amount' : IDL.Nat,
 });
+export const RedeemedReward = IDL.Record({
+  'id' : IDL.Text,
+  'redeemedAt' : IDL.Int,
+  'rewardTitle' : IDL.Text,
+  'userId' : IDL.Principal,
+  'codeOrValue' : IDL.Text,
+  'rewardId' : IDL.Text,
+  'contactEmail' : IDL.Opt(IDL.Text),
+  'emailSent' : IDL.Bool,
+});
 export const StaffInviteStatus = IDL.Variant({
   'pending' : IDL.Null,
   'accepted' : IDL.Null,
@@ -275,6 +450,13 @@ export const DirectDepositAccount = IDL.Record({
   'createdAt' : IDL.Int,
   'accountNumber' : IDL.Text,
 });
+export const PartnerBrandingConfig = IDL.Record({
+  'partnerName' : IDL.Text,
+  'primaryColor' : IDL.Text,
+  'isActive' : IDL.Bool,
+  'secondaryColor' : IDL.Text,
+  'partnerLogoUrl' : IDL.Text,
+});
 export const PayoutRecord = IDL.Record({
   'id' : IDL.Text,
   'distributions' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
@@ -298,6 +480,13 @@ export const MoneyRequest = IDL.Record({
   'fromUser' : IDL.Principal,
   'amount' : IDL.Nat,
 });
+export const PointsBreakdown = IDL.Record({
+  'transactionType' : IDL.Text,
+  'finalPoints' : IDL.Float64,
+  'amountCents' : IDL.Nat,
+  'appliedRules' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Float64, IDL.Opt(IDL.Text))),
+  'basePoints' : IDL.Float64,
+});
 export const SavingsDirection = IDL.Variant({
   'fromSavings' : IDL.Null,
   'toSavings' : IDL.Null,
@@ -308,6 +497,14 @@ export const SavingsTransaction = IDL.Record({
   'owner' : IDL.Principal,
   'timestamp' : IDL.Int,
   'amount' : IDL.Nat,
+});
+export const SectionAnalytics = IDL.Record({
+  'sectionName' : IDL.Text,
+  'totalTips' : IDL.Nat,
+  'topStaffId' : IDL.Opt(IDL.Principal),
+  'totalAmount' : IDL.Nat,
+  'sectionLabel' : IDL.Text,
+  'staffCount' : IDL.Nat,
 });
 export const SpendingLimitView = IDL.Record({
   'lastMonthReset' : IDL.Int,
@@ -363,6 +560,12 @@ export const TipPoolConfig = IDL.Record({
   'enabled' : IDL.Bool,
   'customSplits' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
 });
+export const TipSplitRole = IDL.Record({
+  'id' : IDL.Text,
+  'roleName' : IDL.Text,
+  'pointValue' : IDL.Float64,
+  'isCustom' : IDL.Bool,
+});
 export const TwoFactorSettings = IDL.Record({
   'method' : IDL.Opt(IDL.Text),
   'backupCodes' : IDL.Vec(IDL.Text),
@@ -378,6 +581,10 @@ export const VoicePrintData = IDL.Record({
   'voicePrintHash' : IDL.Text,
   'lastVerified' : IDL.Opt(IDL.Int),
   'enrollmentDate' : IDL.Int,
+});
+export const OrderItemInput = IDL.Record({
+  'itemId' : IDL.Text,
+  'quantity' : IDL.Nat,
 });
 export const SearchResult = IDL.Record({
   'bio' : IDL.Text,
@@ -406,6 +613,15 @@ export const TransformationOutput = IDL.Record({
   'status' : IDL.Nat,
   'body' : IDL.Vec(IDL.Nat8),
   'headers' : IDL.Vec(http_header),
+});
+export const UpdateRewardParams = IDL.Record({
+  'title' : IDL.Opt(IDL.Text),
+  'active' : IDL.Opt(IDL.Bool),
+  'codeOrValue' : IDL.Opt(IDL.Text),
+  'description' : IDL.Opt(IDL.Text),
+  'quantity' : IDL.Opt(IDL.Nat),
+  'pointsCost' : IDL.Opt(IDL.Nat),
+  'teamId' : IDL.Opt(IDL.Text),
 });
 export const PinCheckResult = IDL.Variant({
   'verified' : IDL.Null,
@@ -448,6 +664,11 @@ export const idlService = IDL.Service({
     ),
   'acknowledgeVaultAlert' : IDL.Func([], [], []),
   'addActiveSession' : IDL.Func([ActiveSession], [], []),
+  'addMenuItem' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text, IDL.Nat, IDL.Text, IDL.Bool],
+      [IDL.Variant({ 'ok' : MenuItem, 'err' : IDL.Text })],
+      [],
+    ),
   'addPaymentMethod' : IDL.Func([PaymentMethod], [], []),
   'addStatus' : IDL.Func([Status], [], []),
   'adminCloseSupportTicket' : IDL.Func(
@@ -475,7 +696,17 @@ export const idlService = IDL.Service({
       [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
       [],
     ),
+  'approveTipSplitPayout' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Int],
+      [IDL.Variant({ 'ok' : TipSplitPayout, 'err' : IDL.Text })],
+      [],
+    ),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'assignStaffSection' : IDL.Func(
+      [IDL.Principal, IDL.Text, IDL.Text],
+      [IDL.Variant({ 'ok' : StaffSection, 'err' : IDL.Text })],
+      [],
+    ),
   'assignUserRole' : IDL.Func(
       [
         IDL.Principal,
@@ -502,6 +733,11 @@ export const idlService = IDL.Service({
       [IDL.Nat],
       ['query'],
     ),
+  'calculateTipSplit' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Float64],
+      [IDL.Variant({ 'ok' : TipSplitPayout, 'err' : IDL.Text })],
+      [],
+    ),
   'cancelAccountDeletion' : IDL.Func(
       [],
       [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
@@ -510,6 +746,11 @@ export const idlService = IDL.Service({
   'cancelMoneyRequest' : IDL.Func(
       [IDL.Nat],
       [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'cancelOrder' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
       [],
     ),
   'cancelRecurringPayment' : IDL.Func(
@@ -527,6 +768,7 @@ export const idlService = IDL.Service({
       [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
       [],
     ),
+  'clearPartnerBranding' : IDL.Func([], [], []),
   'clearSpendingLimits' : IDL.Func([], [IDL.Variant({ 'ok' : IDL.Null })], []),
   'completeDirectDeposit' : IDL.Func(
       [IDL.Text],
@@ -538,9 +780,28 @@ export const idlService = IDL.Service({
       [IDL.Text],
       [],
     ),
+  'createPointsRule' : IDL.Func(
+      [PointsRule],
+      [IDL.Variant({ 'ok' : PointsRule, 'err' : IDL.Text })],
+      [],
+    ),
   'createRecurringPayment' : IDL.Func(
       [IDL.Principal, IDL.Nat, IDL.Text, RecurringFrequency],
       [IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text })],
+      [],
+    ),
+  'createReward' : IDL.Func(
+      [
+        IDL.Text,
+        IDL.Text,
+        IDL.Nat,
+        RewardType,
+        IDL.Text,
+        IDL.Opt(IDL.Nat),
+        IDL.Opt(IDL.Int),
+        IDL.Opt(IDL.Text),
+      ],
+      [IDL.Variant({ 'ok' : Reward, 'err' : IDL.Text })],
       [],
     ),
   'createRosterInviteLink' : IDL.Func(
@@ -553,6 +814,11 @@ export const idlService = IDL.Service({
       [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
       [],
     ),
+  'createStand' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text],
+      [IDL.Variant({ 'ok' : ConcessionStand, 'err' : IDL.Text })],
+      [],
+    ),
   'createStripeCheckoutSession' : IDL.Func(
       [IDL.Vec(ShoppingItem), IDL.Text, IDL.Text],
       [IDL.Text],
@@ -560,6 +826,21 @@ export const idlService = IDL.Service({
     ),
   'deactivateStatus' : IDL.Func([], [], []),
   'declineStaffInvite' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+      [],
+    ),
+  'deleteMenuItem' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+      [],
+    ),
+  'deleteReward' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Bool, 'err' : IDL.Text })],
+      [],
+    ),
+  'deleteStand' : IDL.Func(
       [IDL.Text],
       [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
       [],
@@ -596,6 +877,7 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getAccountDeletionStatus' : IDL.Func([], [DeletionStatus], ['query']),
+  'getActiveOrdersForManager' : IDL.Func([], [IDL.Vec(FoodOrder)], ['query']),
   'getActiveSessions' : IDL.Func(
       [IDL.Principal],
       [IDL.Vec(ActiveSession)],
@@ -624,6 +906,7 @@ export const idlService = IDL.Service({
     ),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getCheckInsForGame' : IDL.Func([IDL.Text], [IDL.Vec(StaffCheckIn)], []),
   'getCompilationStatus' : IDL.Func([], [CompilationStatus], ['query']),
   'getCurrentStatus' : IDL.Func([IDL.Principal], [IDL.Opt(Status)], ['query']),
   'getDirectDepositHistory' : IDL.Func([], [IDL.Vec(DirectDeposit)], []),
@@ -632,12 +915,23 @@ export const idlService = IDL.Service({
       [IDL.Vec(EncryptionEvent)],
       ['query'],
     ),
+  'getExtendedStaff' : IDL.Func(
+      [IDL.Text],
+      [IDL.Opt(ExtendedStaffMember)],
+      ['query'],
+    ),
+  'getFanPoints' : IDL.Func([IDL.Principal], [IDL.Opt(FanPoints)], ['query']),
   'getFraudAlerts' : IDL.Func(
       [IDL.Principal],
       [IDL.Vec(FraudAlert)],
       ['query'],
     ),
   'getGDPRAuditLog' : IDL.Func([], [IDL.Vec(GDPRAuditEvent)], ['query']),
+  'getGameStandAssignment' : IDL.Func(
+      [IDL.Text, IDL.Text],
+      [IDL.Opt(GameStandAssignment)],
+      ['query'],
+    ),
   'getInviteCodes' : IDL.Func([], [IDL.Vec(InviteCode)], ['query']),
   'getKYCConfigurationStatus' : IDL.Func(
       [],
@@ -661,13 +955,22 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getMyDisputes' : IDL.Func([], [IDL.Vec(Dispute)], ['query']),
+  'getMyFanPoints' : IDL.Func([], [IDL.Opt(FanPoints)], ['query']),
+  'getMyOrders' : IDL.Func([], [IDL.Vec(FoodOrder)], ['query']),
   'getMyRecurringPayments' : IDL.Func(
       [],
       [IDL.Vec(RecurringPayment)],
       ['query'],
     ),
+  'getMyRedeemedRewards' : IDL.Func([], [IDL.Vec(RedeemedReward)], ['query']),
   'getMyRosterInvites' : IDL.Func([], [IDL.Vec(StaffInvite)], ['query']),
   'getOrCreateDirectDepositAccount' : IDL.Func([], [DirectDepositAccount], []),
+  'getOrder' : IDL.Func([IDL.Text], [IDL.Opt(FoodOrder)], ['query']),
+  'getPartnerBranding' : IDL.Func(
+      [],
+      [IDL.Opt(PartnerBrandingConfig)],
+      ['query'],
+    ),
   'getPaymentMethods' : IDL.Func(
       [IDL.Principal],
       [IDL.Vec(PaymentMethod)],
@@ -687,6 +990,11 @@ export const idlService = IDL.Service({
   'getPendingRequestsReceived' : IDL.Func(
       [],
       [IDL.Vec(MoneyRequest)],
+      ['query'],
+    ),
+  'getPointsBreakdown' : IDL.Func(
+      [IDL.Nat, IDL.Text, IDL.Bool, IDL.Bool, IDL.Opt(IDL.Text)],
+      [PointsBreakdown],
       ['query'],
     ),
   'getProfessionalTips' : IDL.Func([IDL.Principal], [IDL.Vec(Tip)], ['query']),
@@ -727,9 +1035,20 @@ export const idlService = IDL.Service({
     ),
   'getRequestsReceived' : IDL.Func([], [IDL.Vec(MoneyRequest)], ['query']),
   'getRequestsSent' : IDL.Func([], [IDL.Vec(MoneyRequest)], ['query']),
+  'getReward' : IDL.Func([IDL.Text], [IDL.Opt(Reward)], ['query']),
   'getSMSConfigurationStatus' : IDL.Func([], [IDL.Bool], ['query']),
   'getSavingsBalance' : IDL.Func([], [IDL.Nat], ['query']),
   'getSavingsHistory' : IDL.Func([], [IDL.Vec(SavingsTransaction)], ['query']),
+  'getSectionAnalytics' : IDL.Func(
+      [IDL.Principal, IDL.Opt(IDL.Int)],
+      [IDL.Vec(SectionAnalytics)],
+      ['query'],
+    ),
+  'getSectionAssignments' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Vec(StaffSection)],
+      ['query'],
+    ),
   'getSecurityEvents' : IDL.Func(
       [IDL.Principal],
       [IDL.Vec(SecurityEvent)],
@@ -743,6 +1062,25 @@ export const idlService = IDL.Service({
   'getSpendingLimits' : IDL.Func([], [IDL.Opt(SpendingLimitView)], ['query']),
   'getSplitById' : IDL.Func([IDL.Text], [IDL.Opt(SplitPayment)], ['query']),
   'getSplitPayments' : IDL.Func([], [IDL.Vec(SplitPayment)], ['query']),
+  'getStaffAnalytics' : IDL.Func(
+      [IDL.Principal, IDL.Opt(IDL.Int)],
+      [
+        IDL.Vec(
+          IDL.Record({
+            'staffId' : IDL.Principal,
+            'sectionName' : IDL.Opt(IDL.Text),
+            'totalTips' : IDL.Nat,
+            'totalAmount' : IDL.Nat,
+          })
+        ),
+      ],
+      ['query'],
+    ),
+  'getStaffSection' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(StaffSection)],
+      ['query'],
+    ),
   'getStaffTipTotals' : IDL.Func(
       [IDL.Opt(IDL.Int)],
       [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat))],
@@ -757,6 +1095,12 @@ export const idlService = IDL.Service({
     ),
   'getSupportMessages' : IDL.Func([], [IDL.Vec(SupportMessage)], ['query']),
   'getTipPoolSettings' : IDL.Func([], [TipPoolConfig], ['query']),
+  'getTipSplitPayouts' : IDL.Func(
+      [IDL.Opt(IDL.Text), IDL.Opt(IDL.Text)],
+      [IDL.Vec(TipSplitPayout)],
+      [],
+    ),
+  'getTipSplitRoles' : IDL.Func([], [IDL.Vec(TipSplitRole)], ['query']),
   'getTips' : IDL.Func([], [IDL.Vec(Tip)], ['query']),
   'getTipsReceived' : IDL.Func([IDL.Principal], [IDL.Vec(Tip)], ['query']),
   'getTipsSent' : IDL.Func([IDL.Principal], [IDL.Vec(Tip)], ['query']),
@@ -786,6 +1130,16 @@ export const idlService = IDL.Service({
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'isKYCConfigured' : IDL.Func([], [IDL.Bool], ['query']),
   'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
+  'linkGuestPaymentsToUser' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text })],
+      [],
+    ),
+  'listExtendedStaff' : IDL.Func([], [IDL.Vec(ExtendedStaffMember)], []),
+  'listMenuItems' : IDL.Func([IDL.Text], [IDL.Vec(MenuItem)], ['query']),
+  'listPointsRules' : IDL.Func([], [IDL.Vec(PointsRule)], ['query']),
+  'listRewards' : IDL.Func([IDL.Opt(IDL.Text)], [IDL.Vec(Reward)], ['query']),
+  'listStands' : IDL.Func([], [IDL.Vec(ConcessionStand)], ['query']),
   'lockVault' : IDL.Func(
       [],
       [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
@@ -795,6 +1149,11 @@ export const idlService = IDL.Service({
   'logEncryptionEvent' : IDL.Func([EncryptionEvent], [], []),
   'logSecurityEvent' : IDL.Func([SecurityEvent], [], []),
   'logoutSession' : IDL.Func([IDL.Text], [], []),
+  'manualSetHours' : IDL.Func(
+      [IDL.Text, IDL.Float64, IDL.Text],
+      [IDL.Variant({ 'ok' : StaffCheckIn, 'err' : IDL.Text })],
+      [],
+    ),
   'markSupportMessagesRead' : IDL.Func([], [], []),
   'markTutorialCompleted' : IDL.Func([], [], []),
   'openSupportTicket' : IDL.Func(
@@ -802,7 +1161,22 @@ export const idlService = IDL.Service({
       [IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text })],
       [],
     ),
+  'placeOrder' : IDL.Func(
+      [IDL.Text, IDL.Vec(OrderItemInput), IDL.Text, DeliveryMethod],
+      [IDL.Variant({ 'ok' : FoodOrder, 'err' : IDL.Text })],
+      [],
+    ),
   'processRecurringPayments' : IDL.Func([], [], []),
+  'recordCheckIn' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Int],
+      [IDL.Variant({ 'ok' : StaffCheckIn, 'err' : IDL.Text })],
+      [],
+    ),
+  'recordCheckOut' : IDL.Func(
+      [IDL.Text, IDL.Int],
+      [IDL.Variant({ 'ok' : StaffCheckIn, 'err' : IDL.Text })],
+      [],
+    ),
   'recordDisputeRequest' : IDL.Func(
       [IDL.Int, IDL.Principal, IDL.Text],
       [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
@@ -813,9 +1187,33 @@ export const idlService = IDL.Service({
       [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
       [],
     ),
+  'recordGuestPayment' : IDL.Func(
+      [
+        IDL.Principal,
+        IDL.Nat,
+        IDL.Text,
+        IDL.Variant({ 'email' : IDL.Null, 'phone' : IDL.Null }),
+        IDL.Opt(IDL.Text),
+      ],
+      [
+        IDL.Variant({
+          'ok' : IDL.Record({
+            'guestRecordId' : IDL.Text,
+            'fanPointsAwarded' : IDL.Nat,
+          }),
+          'err' : IDL.Text,
+        }),
+      ],
+      [],
+    ),
   'recordPayout' : IDL.Func(
       [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)), IDL.Text],
       [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+      [],
+    ),
+  'redeemReward' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : RedeemedReward, 'err' : IDL.Text })],
       [],
     ),
   'rejectBusinessApplication' : IDL.Func(
@@ -824,6 +1222,11 @@ export const idlService = IDL.Service({
       [],
     ),
   'removeActiveSession' : IDL.Func([IDL.Text], [], []),
+  'removeExtendedStaff' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+      [],
+    ),
   'removePaymentMethod' : IDL.Func([IDL.Text], [], []),
   'removeStaffMember' : IDL.Func(
       [IDL.Principal],
@@ -831,6 +1234,11 @@ export const idlService = IDL.Service({
       [],
     ),
   'removeStatus' : IDL.Func([IDL.Nat], [], []),
+  'removeTipSplitRole' : IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+      [],
+    ),
   'removeWalletAddress' : IDL.Func([], [], []),
   'reportFraudAlert' : IDL.Func([FraudAlert], [], []),
   'requestAccountDeletion' : IDL.Func(
@@ -915,12 +1323,18 @@ export const idlService = IDL.Service({
     ),
   'setAppLockEnabled' : IDL.Func([IDL.Bool], [], []),
   'setBiometricSettings' : IDL.Func([BiometricSettings], [], []),
+  'setGameStandAssignment' : IDL.Func(
+      [GameStandAssignment],
+      [IDL.Variant({ 'ok' : GameStandAssignment, 'err' : IDL.Text })],
+      [],
+    ),
   'setKYCConfiguration' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'setKYCStatus' : IDL.Func(
       [IDL.Principal, KYCStatus, IDL.Opt(IDL.Text)],
       [],
       [],
     ),
+  'setPartnerBranding' : IDL.Func([PartnerBrandingConfig], [], []),
   'setPinHash' : IDL.Func([IDL.Vec(IDL.Nat8), IDL.Vec(IDL.Nat8)], [], []),
   'setSMSConfiguration' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
   'setSpendingLimits' : IDL.Func(
@@ -962,6 +1376,11 @@ export const idlService = IDL.Service({
     ),
   'submitKYC' : IDL.Func([], [], []),
   'submitRSVP' : IDL.Func([IDL.Text, IDL.Bool, IDL.Text], [], []),
+  'togglePointsRule' : IDL.Func(
+      [IDL.Text, IDL.Bool],
+      [IDL.Variant({ 'ok' : PointsRule, 'err' : IDL.Text })],
+      [],
+    ),
   'toggleRecurringPayment' : IDL.Func(
       [IDL.Nat, IDL.Bool],
       [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
@@ -972,9 +1391,44 @@ export const idlService = IDL.Service({
       [TransformationOutput],
       ['query'],
     ),
+  'updateMenuItem' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text, IDL.Nat, IDL.Text, IDL.Bool],
+      [IDL.Variant({ 'ok' : MenuItem, 'err' : IDL.Text })],
+      [],
+    ),
+  'updateOrderStatus' : IDL.Func(
+      [IDL.Text, OrderStatus],
+      [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+      [],
+    ),
   'updatePaymentMethodVerificationStatus' : IDL.Func(
       [IDL.Text, IDL.Text],
       [],
+      [],
+    ),
+  'updatePointsRule' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text, IDL.Float64, IDL.Opt(IDL.Text)],
+      [IDL.Variant({ 'ok' : PointsRule, 'err' : IDL.Text })],
+      [],
+    ),
+  'updateReward' : IDL.Func(
+      [IDL.Text, UpdateRewardParams],
+      [IDL.Variant({ 'ok' : Reward, 'err' : IDL.Text })],
+      [],
+    ),
+  'updateStand' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+      [IDL.Variant({ 'ok' : ConcessionStand, 'err' : IDL.Text })],
+      [],
+    ),
+  'upsertExtendedStaff' : IDL.Func(
+      [ExtendedStaffMember],
+      [IDL.Variant({ 'ok' : ExtendedStaffMember, 'err' : IDL.Text })],
+      [],
+    ),
+  'upsertTipSplitRole' : IDL.Func(
+      [TipSplitRole],
+      [IDL.Variant({ 'ok' : TipSplitRole, 'err' : IDL.Text })],
       [],
     ),
   'verifyPinHash' : IDL.Func(
@@ -1020,6 +1474,16 @@ export const idlFactory = ({ IDL }) => {
     'sessionId' : IDL.Text,
     'location' : IDL.Text,
   });
+  const CentAmount = IDL.Nat;
+  const MenuItem = IDL.Record({
+    'id' : IDL.Text,
+    'standId' : IDL.Text,
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+    'available' : IDL.Bool,
+    'category' : IDL.Text,
+    'priceInCents' : CentAmount,
+  });
   const PaymentMethodType = IDL.Variant({
     'bankAccount' : IDL.Null,
     'card' : IDL.Null,
@@ -1063,10 +1527,38 @@ export const idlFactory = ({ IDL }) => {
     'timestamp' : IDL.Int,
     'senderIsAdmin' : IDL.Bool,
   });
+  const TipSplitCalculation = IDL.Record({
+    'staffName' : IDL.Text,
+    'staffId' : IDL.Text,
+    'hoursWorked' : IDL.Float64,
+    'role' : IDL.Text,
+    'sharePercent' : IDL.Float64,
+    'weightedScore' : IDL.Float64,
+    'rolePoints' : IDL.Float64,
+    'payoutAmount' : IDL.Float64,
+  });
+  const TipSplitPayout = IDL.Record({
+    'id' : IDL.Text,
+    'status' : IDL.Text,
+    'standName' : IDL.Text,
+    'standId' : IDL.Text,
+    'approvedAt' : IDL.Opt(IDL.Int),
+    'approvedBy' : IDL.Opt(IDL.Text),
+    'totalPool' : IDL.Float64,
+    'calculations' : IDL.Vec(TipSplitCalculation),
+    'gameDate' : IDL.Text,
+  });
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
     'guest' : IDL.Null,
+  });
+  const StaffSection = IDL.Record({
+    'assignedAt' : IDL.Int,
+    'staffId' : IDL.Principal,
+    'sectionName' : IDL.Text,
+    'managerId' : IDL.Principal,
+    'sectionLabel' : IDL.Text,
   });
   const ShoppingItem = IDL.Record({
     'productName' : IDL.Text,
@@ -1075,10 +1567,56 @@ export const idlFactory = ({ IDL }) => {
     'priceInCents' : IDL.Nat,
     'productDescription' : IDL.Text,
   });
+  const PointsRuleType = IDL.Variant({
+    'paymentMultiplier' : IDL.Null,
+    'firstPaymentBonus' : IDL.Null,
+    'foodMultiplier' : IDL.Null,
+    'sectionMultiplier' : IDL.Null,
+    'tipMultiplier' : IDL.Null,
+    'gameDayBonus' : IDL.Null,
+  });
+  const PointsRule = IDL.Record({
+    'id' : IDL.Text,
+    'multiplier' : IDL.Float64,
+    'ruleType' : PointsRuleType,
+    'sectionName' : IDL.Opt(IDL.Text),
+    'name' : IDL.Text,
+    'createdAt' : IDL.Int,
+    'description' : IDL.Text,
+    'isActive' : IDL.Bool,
+  });
   const RecurringFrequency = IDL.Variant({
     'monthly' : IDL.Null,
     'daily' : IDL.Null,
     'weekly' : IDL.Null,
+  });
+  const RewardType = IDL.Variant({
+    'other' : IDL.Null,
+    'discountCode' : IDL.Null,
+    'concessionCredit' : IDL.Null,
+    'ticketEntry' : IDL.Null,
+  });
+  const Reward = IDL.Record({
+    'id' : IDL.Text,
+    'title' : IDL.Text,
+    'active' : IDL.Bool,
+    'expiresAt' : IDL.Opt(IDL.Int),
+    'quantityRemaining' : IDL.Opt(IDL.Nat),
+    'createdBy' : IDL.Principal,
+    'codeOrValue' : IDL.Text,
+    'description' : IDL.Text,
+    'rewardType' : RewardType,
+    'quantity' : IDL.Opt(IDL.Nat),
+    'pointsCost' : IDL.Nat,
+    'teamId' : IDL.Opt(IDL.Text),
+  });
+  const Timestamp = IDL.Int;
+  const ConcessionStand = IDL.Record({
+    'id' : IDL.Text,
+    'name' : IDL.Text,
+    'createdAt' : Timestamp,
+    'section' : IDL.Text,
+    'description' : IDL.Text,
   });
   const KYCStatus = IDL.Variant({
     'notSubmitted' : IDL.Null,
@@ -1129,6 +1667,37 @@ export const idlFactory = ({ IDL }) => {
     'not_requested' : IDL.Null,
     'finalized' : IDL.Null,
   });
+  const OrderStatus = IDL.Variant({
+    'OnTheWay' : IDL.Null,
+    'Placed' : IDL.Null,
+    'ReadyForPickup' : IDL.Null,
+    'Preparing' : IDL.Null,
+    'Cancelled' : IDL.Null,
+    'Completed' : IDL.Null,
+  });
+  const DeliveryMethod = IDL.Variant({
+    'Delivery' : IDL.Null,
+    'Pickup' : IDL.Null,
+  });
+  const UserId = IDL.Principal;
+  const OrderItem = IDL.Record({
+    'itemId' : IDL.Text,
+    'itemName' : IDL.Text,
+    'quantity' : IDL.Nat,
+    'priceInCents' : CentAmount,
+  });
+  const FoodOrder = IDL.Record({
+    'id' : IDL.Text,
+    'status' : OrderStatus,
+    'standId' : IDL.Text,
+    'createdAt' : Timestamp,
+    'deliveryMethod' : DeliveryMethod,
+    'updatedAt' : Timestamp,
+    'totalInCents' : CentAmount,
+    'customerId' : UserId,
+    'items' : IDL.Vec(OrderItem),
+    'seatNumber' : IDL.Text,
+  });
   const BusinessApplicationStatus = IDL.Variant({
     'pending' : IDL.Null,
     'approved' : IDL.Null,
@@ -1172,6 +1741,20 @@ export const idlFactory = ({ IDL }) => {
     'biometricType' : IDL.Opt(IDL.Text),
     'enabled' : IDL.Bool,
   });
+  const StaffCheckIn = IDL.Record({
+    'id' : IDL.Text,
+    'staffName' : IDL.Text,
+    'staffId' : IDL.Text,
+    'standName' : IDL.Text,
+    'standId' : IDL.Text,
+    'hoursWorked' : IDL.Opt(IDL.Float64),
+    'role' : IDL.Text,
+    'checkInTime' : IDL.Int,
+    'manualOverride' : IDL.Bool,
+    'gameDate' : IDL.Text,
+    'checkOutTime' : IDL.Opt(IDL.Int),
+    'overrideBy' : IDL.Opt(IDL.Text),
+  });
   const CompilationStatus = IDL.Record({
     'obfuscationLayer' : IDL.Text,
     'verificationTimestamp' : IDL.Int,
@@ -1192,6 +1775,33 @@ export const idlFactory = ({ IDL }) => {
     'timestamp' : IDL.Int,
     'eventType' : IDL.Text,
   });
+  const ExtendedStaffMember = IDL.Record({
+    'id' : IDL.Text,
+    'hireDate' : IDL.Int,
+    'name' : IDL.Text,
+    'section' : IDL.Text,
+    'email' : IDL.Text,
+    'employmentType' : IDL.Variant({
+      'partTime' : IDL.Null,
+      'fullTime' : IDL.Null,
+      'contractor' : IDL.Null,
+    }),
+    'notes' : IDL.Text,
+    'customRole' : IDL.Text,
+    'phone' : IDL.Text,
+    'employmentStatus' : IDL.Variant({
+      'active' : IDL.Null,
+      'inactive' : IDL.Null,
+      'suspended' : IDL.Null,
+    }),
+  });
+  const FanPoints = IDL.Record({
+    'userId' : IDL.Principal,
+    'totalEarned' : IDL.Float64,
+    'totalRedeemed' : IDL.Float64,
+    'guestContact' : IDL.Opt(IDL.Text),
+    'points' : IDL.Float64,
+  });
   const GDPRAuditEventType = IDL.Variant({
     'deletion_finalized' : IDL.Null,
     'deletion_requested' : IDL.Null,
@@ -1202,6 +1812,15 @@ export const idlFactory = ({ IDL }) => {
     'principal' : IDL.Principal,
     'timestamp' : IDL.Int,
     'eventType' : GDPRAuditEventType,
+  });
+  const GameStandAssignment = IDL.Record({
+    'id' : IDL.Text,
+    'gameStandId' : IDL.Text,
+    'staffName' : IDL.Text,
+    'staffId' : IDL.Text,
+    'defaultStandId' : IDL.Text,
+    'gameStandName' : IDL.Text,
+    'gameDate' : IDL.Text,
   });
   const InviteCode = IDL.Record({
     'created' : Time,
@@ -1246,6 +1865,16 @@ export const idlFactory = ({ IDL }) => {
     'frequency' : RecurringFrequency,
     'amount' : IDL.Nat,
   });
+  const RedeemedReward = IDL.Record({
+    'id' : IDL.Text,
+    'redeemedAt' : IDL.Int,
+    'rewardTitle' : IDL.Text,
+    'userId' : IDL.Principal,
+    'codeOrValue' : IDL.Text,
+    'rewardId' : IDL.Text,
+    'contactEmail' : IDL.Opt(IDL.Text),
+    'emailSent' : IDL.Bool,
+  });
   const StaffInviteStatus = IDL.Variant({
     'pending' : IDL.Null,
     'accepted' : IDL.Null,
@@ -1270,6 +1899,13 @@ export const idlFactory = ({ IDL }) => {
     'createdAt' : IDL.Int,
     'accountNumber' : IDL.Text,
   });
+  const PartnerBrandingConfig = IDL.Record({
+    'partnerName' : IDL.Text,
+    'primaryColor' : IDL.Text,
+    'isActive' : IDL.Bool,
+    'secondaryColor' : IDL.Text,
+    'partnerLogoUrl' : IDL.Text,
+  });
   const PayoutRecord = IDL.Record({
     'id' : IDL.Text,
     'distributions' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
@@ -1293,6 +1929,15 @@ export const idlFactory = ({ IDL }) => {
     'fromUser' : IDL.Principal,
     'amount' : IDL.Nat,
   });
+  const PointsBreakdown = IDL.Record({
+    'transactionType' : IDL.Text,
+    'finalPoints' : IDL.Float64,
+    'amountCents' : IDL.Nat,
+    'appliedRules' : IDL.Vec(
+      IDL.Tuple(IDL.Text, IDL.Float64, IDL.Opt(IDL.Text))
+    ),
+    'basePoints' : IDL.Float64,
+  });
   const SavingsDirection = IDL.Variant({
     'fromSavings' : IDL.Null,
     'toSavings' : IDL.Null,
@@ -1303,6 +1948,14 @@ export const idlFactory = ({ IDL }) => {
     'owner' : IDL.Principal,
     'timestamp' : IDL.Int,
     'amount' : IDL.Nat,
+  });
+  const SectionAnalytics = IDL.Record({
+    'sectionName' : IDL.Text,
+    'totalTips' : IDL.Nat,
+    'topStaffId' : IDL.Opt(IDL.Principal),
+    'totalAmount' : IDL.Nat,
+    'sectionLabel' : IDL.Text,
+    'staffCount' : IDL.Nat,
   });
   const SpendingLimitView = IDL.Record({
     'lastMonthReset' : IDL.Int,
@@ -1355,6 +2008,12 @@ export const idlFactory = ({ IDL }) => {
     'enabled' : IDL.Bool,
     'customSplits' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)),
   });
+  const TipSplitRole = IDL.Record({
+    'id' : IDL.Text,
+    'roleName' : IDL.Text,
+    'pointValue' : IDL.Float64,
+    'isCustom' : IDL.Bool,
+  });
   const TwoFactorSettings = IDL.Record({
     'method' : IDL.Opt(IDL.Text),
     'backupCodes' : IDL.Vec(IDL.Text),
@@ -1370,6 +2029,10 @@ export const idlFactory = ({ IDL }) => {
     'voicePrintHash' : IDL.Text,
     'lastVerified' : IDL.Opt(IDL.Int),
     'enrollmentDate' : IDL.Int,
+  });
+  const OrderItemInput = IDL.Record({
+    'itemId' : IDL.Text,
+    'quantity' : IDL.Nat,
   });
   const SearchResult = IDL.Record({
     'bio' : IDL.Text,
@@ -1395,6 +2058,15 @@ export const idlFactory = ({ IDL }) => {
     'status' : IDL.Nat,
     'body' : IDL.Vec(IDL.Nat8),
     'headers' : IDL.Vec(http_header),
+  });
+  const UpdateRewardParams = IDL.Record({
+    'title' : IDL.Opt(IDL.Text),
+    'active' : IDL.Opt(IDL.Bool),
+    'codeOrValue' : IDL.Opt(IDL.Text),
+    'description' : IDL.Opt(IDL.Text),
+    'quantity' : IDL.Opt(IDL.Nat),
+    'pointsCost' : IDL.Opt(IDL.Nat),
+    'teamId' : IDL.Opt(IDL.Text),
   });
   const PinCheckResult = IDL.Variant({
     'verified' : IDL.Null,
@@ -1437,6 +2109,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'acknowledgeVaultAlert' : IDL.Func([], [], []),
     'addActiveSession' : IDL.Func([ActiveSession], [], []),
+    'addMenuItem' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Nat, IDL.Text, IDL.Bool],
+        [IDL.Variant({ 'ok' : MenuItem, 'err' : IDL.Text })],
+        [],
+      ),
     'addPaymentMethod' : IDL.Func([PaymentMethod], [], []),
     'addStatus' : IDL.Func([Status], [], []),
     'adminCloseSupportTicket' : IDL.Func(
@@ -1464,7 +2141,17 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
         [],
       ),
+    'approveTipSplitPayout' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Int],
+        [IDL.Variant({ 'ok' : TipSplitPayout, 'err' : IDL.Text })],
+        [],
+      ),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'assignStaffSection' : IDL.Func(
+        [IDL.Principal, IDL.Text, IDL.Text],
+        [IDL.Variant({ 'ok' : StaffSection, 'err' : IDL.Text })],
+        [],
+      ),
     'assignUserRole' : IDL.Func(
         [
           IDL.Principal,
@@ -1491,6 +2178,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Nat],
         ['query'],
       ),
+    'calculateTipSplit' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Float64],
+        [IDL.Variant({ 'ok' : TipSplitPayout, 'err' : IDL.Text })],
+        [],
+      ),
     'cancelAccountDeletion' : IDL.Func(
         [],
         [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
@@ -1499,6 +2191,11 @@ export const idlFactory = ({ IDL }) => {
     'cancelMoneyRequest' : IDL.Func(
         [IDL.Nat],
         [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'cancelOrder' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
         [],
       ),
     'cancelRecurringPayment' : IDL.Func(
@@ -1516,6 +2213,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
         [],
       ),
+    'clearPartnerBranding' : IDL.Func([], [], []),
     'clearSpendingLimits' : IDL.Func(
         [],
         [IDL.Variant({ 'ok' : IDL.Null })],
@@ -1531,9 +2229,28 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Text],
         [],
       ),
+    'createPointsRule' : IDL.Func(
+        [PointsRule],
+        [IDL.Variant({ 'ok' : PointsRule, 'err' : IDL.Text })],
+        [],
+      ),
     'createRecurringPayment' : IDL.Func(
         [IDL.Principal, IDL.Nat, IDL.Text, RecurringFrequency],
         [IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text })],
+        [],
+      ),
+    'createReward' : IDL.Func(
+        [
+          IDL.Text,
+          IDL.Text,
+          IDL.Nat,
+          RewardType,
+          IDL.Text,
+          IDL.Opt(IDL.Nat),
+          IDL.Opt(IDL.Int),
+          IDL.Opt(IDL.Text),
+        ],
+        [IDL.Variant({ 'ok' : Reward, 'err' : IDL.Text })],
         [],
       ),
     'createRosterInviteLink' : IDL.Func(
@@ -1546,6 +2263,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
         [],
       ),
+    'createStand' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text],
+        [IDL.Variant({ 'ok' : ConcessionStand, 'err' : IDL.Text })],
+        [],
+      ),
     'createStripeCheckoutSession' : IDL.Func(
         [IDL.Vec(ShoppingItem), IDL.Text, IDL.Text],
         [IDL.Text],
@@ -1553,6 +2275,21 @@ export const idlFactory = ({ IDL }) => {
       ),
     'deactivateStatus' : IDL.Func([], [], []),
     'declineStaffInvite' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+        [],
+      ),
+    'deleteMenuItem' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+        [],
+      ),
+    'deleteReward' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Bool, 'err' : IDL.Text })],
+        [],
+      ),
+    'deleteStand' : IDL.Func(
         [IDL.Text],
         [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
         [],
@@ -1589,6 +2326,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getAccountDeletionStatus' : IDL.Func([], [DeletionStatus], ['query']),
+    'getActiveOrdersForManager' : IDL.Func([], [IDL.Vec(FoodOrder)], ['query']),
     'getActiveSessions' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(ActiveSession)],
@@ -1617,6 +2355,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getCheckInsForGame' : IDL.Func([IDL.Text], [IDL.Vec(StaffCheckIn)], []),
     'getCompilationStatus' : IDL.Func([], [CompilationStatus], ['query']),
     'getCurrentStatus' : IDL.Func(
         [IDL.Principal],
@@ -1629,12 +2368,23 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(EncryptionEvent)],
         ['query'],
       ),
+    'getExtendedStaff' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(ExtendedStaffMember)],
+        ['query'],
+      ),
+    'getFanPoints' : IDL.Func([IDL.Principal], [IDL.Opt(FanPoints)], ['query']),
     'getFraudAlerts' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(FraudAlert)],
         ['query'],
       ),
     'getGDPRAuditLog' : IDL.Func([], [IDL.Vec(GDPRAuditEvent)], ['query']),
+    'getGameStandAssignment' : IDL.Func(
+        [IDL.Text, IDL.Text],
+        [IDL.Opt(GameStandAssignment)],
+        ['query'],
+      ),
     'getInviteCodes' : IDL.Func([], [IDL.Vec(InviteCode)], ['query']),
     'getKYCConfigurationStatus' : IDL.Func(
         [],
@@ -1658,16 +2408,25 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getMyDisputes' : IDL.Func([], [IDL.Vec(Dispute)], ['query']),
+    'getMyFanPoints' : IDL.Func([], [IDL.Opt(FanPoints)], ['query']),
+    'getMyOrders' : IDL.Func([], [IDL.Vec(FoodOrder)], ['query']),
     'getMyRecurringPayments' : IDL.Func(
         [],
         [IDL.Vec(RecurringPayment)],
         ['query'],
       ),
+    'getMyRedeemedRewards' : IDL.Func([], [IDL.Vec(RedeemedReward)], ['query']),
     'getMyRosterInvites' : IDL.Func([], [IDL.Vec(StaffInvite)], ['query']),
     'getOrCreateDirectDepositAccount' : IDL.Func(
         [],
         [DirectDepositAccount],
         [],
+      ),
+    'getOrder' : IDL.Func([IDL.Text], [IDL.Opt(FoodOrder)], ['query']),
+    'getPartnerBranding' : IDL.Func(
+        [],
+        [IDL.Opt(PartnerBrandingConfig)],
+        ['query'],
       ),
     'getPaymentMethods' : IDL.Func(
         [IDL.Principal],
@@ -1688,6 +2447,11 @@ export const idlFactory = ({ IDL }) => {
     'getPendingRequestsReceived' : IDL.Func(
         [],
         [IDL.Vec(MoneyRequest)],
+        ['query'],
+      ),
+    'getPointsBreakdown' : IDL.Func(
+        [IDL.Nat, IDL.Text, IDL.Bool, IDL.Bool, IDL.Opt(IDL.Text)],
+        [PointsBreakdown],
         ['query'],
       ),
     'getProfessionalTips' : IDL.Func(
@@ -1732,11 +2496,22 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getRequestsReceived' : IDL.Func([], [IDL.Vec(MoneyRequest)], ['query']),
     'getRequestsSent' : IDL.Func([], [IDL.Vec(MoneyRequest)], ['query']),
+    'getReward' : IDL.Func([IDL.Text], [IDL.Opt(Reward)], ['query']),
     'getSMSConfigurationStatus' : IDL.Func([], [IDL.Bool], ['query']),
     'getSavingsBalance' : IDL.Func([], [IDL.Nat], ['query']),
     'getSavingsHistory' : IDL.Func(
         [],
         [IDL.Vec(SavingsTransaction)],
+        ['query'],
+      ),
+    'getSectionAnalytics' : IDL.Func(
+        [IDL.Principal, IDL.Opt(IDL.Int)],
+        [IDL.Vec(SectionAnalytics)],
+        ['query'],
+      ),
+    'getSectionAssignments' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(StaffSection)],
         ['query'],
       ),
     'getSecurityEvents' : IDL.Func(
@@ -1752,6 +2527,25 @@ export const idlFactory = ({ IDL }) => {
     'getSpendingLimits' : IDL.Func([], [IDL.Opt(SpendingLimitView)], ['query']),
     'getSplitById' : IDL.Func([IDL.Text], [IDL.Opt(SplitPayment)], ['query']),
     'getSplitPayments' : IDL.Func([], [IDL.Vec(SplitPayment)], ['query']),
+    'getStaffAnalytics' : IDL.Func(
+        [IDL.Principal, IDL.Opt(IDL.Int)],
+        [
+          IDL.Vec(
+            IDL.Record({
+              'staffId' : IDL.Principal,
+              'sectionName' : IDL.Opt(IDL.Text),
+              'totalTips' : IDL.Nat,
+              'totalAmount' : IDL.Nat,
+            })
+          ),
+        ],
+        ['query'],
+      ),
+    'getStaffSection' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(StaffSection)],
+        ['query'],
+      ),
     'getStaffTipTotals' : IDL.Func(
         [IDL.Opt(IDL.Int)],
         [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat))],
@@ -1766,6 +2560,12 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getSupportMessages' : IDL.Func([], [IDL.Vec(SupportMessage)], ['query']),
     'getTipPoolSettings' : IDL.Func([], [TipPoolConfig], ['query']),
+    'getTipSplitPayouts' : IDL.Func(
+        [IDL.Opt(IDL.Text), IDL.Opt(IDL.Text)],
+        [IDL.Vec(TipSplitPayout)],
+        [],
+      ),
+    'getTipSplitRoles' : IDL.Func([], [IDL.Vec(TipSplitRole)], ['query']),
     'getTips' : IDL.Func([], [IDL.Vec(Tip)], ['query']),
     'getTipsReceived' : IDL.Func([IDL.Principal], [IDL.Vec(Tip)], ['query']),
     'getTipsSent' : IDL.Func([IDL.Principal], [IDL.Vec(Tip)], ['query']),
@@ -1795,6 +2595,16 @@ export const idlFactory = ({ IDL }) => {
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'isKYCConfigured' : IDL.Func([], [IDL.Bool], ['query']),
     'isStripeConfigured' : IDL.Func([], [IDL.Bool], ['query']),
+    'linkGuestPaymentsToUser' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text })],
+        [],
+      ),
+    'listExtendedStaff' : IDL.Func([], [IDL.Vec(ExtendedStaffMember)], []),
+    'listMenuItems' : IDL.Func([IDL.Text], [IDL.Vec(MenuItem)], ['query']),
+    'listPointsRules' : IDL.Func([], [IDL.Vec(PointsRule)], ['query']),
+    'listRewards' : IDL.Func([IDL.Opt(IDL.Text)], [IDL.Vec(Reward)], ['query']),
+    'listStands' : IDL.Func([], [IDL.Vec(ConcessionStand)], ['query']),
     'lockVault' : IDL.Func(
         [],
         [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
@@ -1804,6 +2614,11 @@ export const idlFactory = ({ IDL }) => {
     'logEncryptionEvent' : IDL.Func([EncryptionEvent], [], []),
     'logSecurityEvent' : IDL.Func([SecurityEvent], [], []),
     'logoutSession' : IDL.Func([IDL.Text], [], []),
+    'manualSetHours' : IDL.Func(
+        [IDL.Text, IDL.Float64, IDL.Text],
+        [IDL.Variant({ 'ok' : StaffCheckIn, 'err' : IDL.Text })],
+        [],
+      ),
     'markSupportMessagesRead' : IDL.Func([], [], []),
     'markTutorialCompleted' : IDL.Func([], [], []),
     'openSupportTicket' : IDL.Func(
@@ -1811,7 +2626,22 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text })],
         [],
       ),
+    'placeOrder' : IDL.Func(
+        [IDL.Text, IDL.Vec(OrderItemInput), IDL.Text, DeliveryMethod],
+        [IDL.Variant({ 'ok' : FoodOrder, 'err' : IDL.Text })],
+        [],
+      ),
     'processRecurringPayments' : IDL.Func([], [], []),
+    'recordCheckIn' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Int],
+        [IDL.Variant({ 'ok' : StaffCheckIn, 'err' : IDL.Text })],
+        [],
+      ),
+    'recordCheckOut' : IDL.Func(
+        [IDL.Text, IDL.Int],
+        [IDL.Variant({ 'ok' : StaffCheckIn, 'err' : IDL.Text })],
+        [],
+      ),
     'recordDisputeRequest' : IDL.Func(
         [IDL.Int, IDL.Principal, IDL.Text],
         [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
@@ -1822,9 +2652,33 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
         [],
       ),
+    'recordGuestPayment' : IDL.Func(
+        [
+          IDL.Principal,
+          IDL.Nat,
+          IDL.Text,
+          IDL.Variant({ 'email' : IDL.Null, 'phone' : IDL.Null }),
+          IDL.Opt(IDL.Text),
+        ],
+        [
+          IDL.Variant({
+            'ok' : IDL.Record({
+              'guestRecordId' : IDL.Text,
+              'fanPointsAwarded' : IDL.Nat,
+            }),
+            'err' : IDL.Text,
+          }),
+        ],
+        [],
+      ),
     'recordPayout' : IDL.Func(
         [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat)), IDL.Text],
         [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'redeemReward' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : RedeemedReward, 'err' : IDL.Text })],
         [],
       ),
     'rejectBusinessApplication' : IDL.Func(
@@ -1833,6 +2687,11 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'removeActiveSession' : IDL.Func([IDL.Text], [], []),
+    'removeExtendedStaff' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+        [],
+      ),
     'removePaymentMethod' : IDL.Func([IDL.Text], [], []),
     'removeStaffMember' : IDL.Func(
         [IDL.Principal],
@@ -1840,6 +2699,11 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'removeStatus' : IDL.Func([IDL.Nat], [], []),
+    'removeTipSplitRole' : IDL.Func(
+        [IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+        [],
+      ),
     'removeWalletAddress' : IDL.Func([], [], []),
     'reportFraudAlert' : IDL.Func([FraudAlert], [], []),
     'requestAccountDeletion' : IDL.Func(
@@ -1924,12 +2788,18 @@ export const idlFactory = ({ IDL }) => {
       ),
     'setAppLockEnabled' : IDL.Func([IDL.Bool], [], []),
     'setBiometricSettings' : IDL.Func([BiometricSettings], [], []),
+    'setGameStandAssignment' : IDL.Func(
+        [GameStandAssignment],
+        [IDL.Variant({ 'ok' : GameStandAssignment, 'err' : IDL.Text })],
+        [],
+      ),
     'setKYCConfiguration' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'setKYCStatus' : IDL.Func(
         [IDL.Principal, KYCStatus, IDL.Opt(IDL.Text)],
         [],
         [],
       ),
+    'setPartnerBranding' : IDL.Func([PartnerBrandingConfig], [], []),
     'setPinHash' : IDL.Func([IDL.Vec(IDL.Nat8), IDL.Vec(IDL.Nat8)], [], []),
     'setSMSConfiguration' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
     'setSpendingLimits' : IDL.Func(
@@ -1971,6 +2841,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'submitKYC' : IDL.Func([], [], []),
     'submitRSVP' : IDL.Func([IDL.Text, IDL.Bool, IDL.Text], [], []),
+    'togglePointsRule' : IDL.Func(
+        [IDL.Text, IDL.Bool],
+        [IDL.Variant({ 'ok' : PointsRule, 'err' : IDL.Text })],
+        [],
+      ),
     'toggleRecurringPayment' : IDL.Func(
         [IDL.Nat, IDL.Bool],
         [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
@@ -1981,9 +2856,44 @@ export const idlFactory = ({ IDL }) => {
         [TransformationOutput],
         ['query'],
       ),
+    'updateMenuItem' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Nat, IDL.Text, IDL.Bool],
+        [IDL.Variant({ 'ok' : MenuItem, 'err' : IDL.Text })],
+        [],
+      ),
+    'updateOrderStatus' : IDL.Func(
+        [IDL.Text, OrderStatus],
+        [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+        [],
+      ),
     'updatePaymentMethodVerificationStatus' : IDL.Func(
         [IDL.Text, IDL.Text],
         [],
+        [],
+      ),
+    'updatePointsRule' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Float64, IDL.Opt(IDL.Text)],
+        [IDL.Variant({ 'ok' : PointsRule, 'err' : IDL.Text })],
+        [],
+      ),
+    'updateReward' : IDL.Func(
+        [IDL.Text, UpdateRewardParams],
+        [IDL.Variant({ 'ok' : Reward, 'err' : IDL.Text })],
+        [],
+      ),
+    'updateStand' : IDL.Func(
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Text],
+        [IDL.Variant({ 'ok' : ConcessionStand, 'err' : IDL.Text })],
+        [],
+      ),
+    'upsertExtendedStaff' : IDL.Func(
+        [ExtendedStaffMember],
+        [IDL.Variant({ 'ok' : ExtendedStaffMember, 'err' : IDL.Text })],
+        [],
+      ),
+    'upsertTipSplitRole' : IDL.Func(
+        [TipSplitRole],
+        [IDL.Variant({ 'ok' : TipSplitRole, 'err' : IDL.Text })],
         [],
       ),
     'verifyPinHash' : IDL.Func(

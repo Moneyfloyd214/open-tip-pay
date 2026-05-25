@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Settings, User } from "lucide-react";
 import type { UserProfile } from "../backend";
+import { useBranding } from "../context/BrandingContext";
 
 interface HeaderProps {
   userProfile: UserProfile | null | undefined;
@@ -22,23 +23,36 @@ export default function Header({
   onLogout,
 }: HeaderProps) {
   const photoUrl = userProfile?.photo?.getDirectURL();
+  const { brandName, poweredByText, isWhiteLabel, partnerBranding } =
+    useBranding();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy/90 backdrop-blur-xl shadow-lg shadow-black/20">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-xl shadow-lg shadow-black/20">
       <div className="container mx-auto flex items-center justify-between px-4 py-3 max-w-4xl">
         {/* Logo + wordmark */}
         <div className="flex items-center gap-2.5">
-          <img
-            src="/assets/generated/opentip-logo.dim_200x200.png"
-            alt="Open Tip Pay"
-            className="h-9 w-9 rounded-xl shadow-md ring-1 ring-teal/30"
-          />
+          {isWhiteLabel && partnerBranding?.partnerLogoUrl ? (
+            <img
+              src={partnerBranding.partnerLogoUrl}
+              alt={brandName}
+              className="h-9 w-auto max-w-[36px] rounded-xl shadow-md ring-1 ring-teal/30 object-contain"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = "none";
+              }}
+            />
+          ) : (
+            <img
+              src="/assets/generated/opentip-logo.dim_200x200.png"
+              alt="Open Tip Pay"
+              className="h-9 w-9 rounded-xl shadow-md ring-1 ring-teal/30"
+            />
+          )}
           <div className="flex flex-col leading-tight">
-            <span className="text-base font-bold tracking-tight text-white">
-              Open Tip Pay
+            <span className="text-base font-bold tracking-tight text-foreground">
+              {brandName}
             </span>
-            <span className="text-[10px] font-medium tracking-widest uppercase text-teal/70 hidden sm:block">
-              P2P Payments
+            <span className="text-[10px] font-medium tracking-widest uppercase text-teal/70">
+              {isWhiteLabel && poweredByText ? poweredByText : "P2P Payments"}
             </span>
           </div>
         </div>
@@ -56,7 +70,7 @@ export default function Header({
                 {photoUrl ? (
                   <AvatarImage src={photoUrl} alt={userProfile?.username} />
                 ) : (
-                  <AvatarFallback className="bg-navy-light text-white">
+                  <AvatarFallback className="bg-muted text-foreground">
                     <User className="h-5 w-5" />
                   </AvatarFallback>
                 )}
@@ -65,26 +79,26 @@ export default function Header({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-56 bg-navy-light/95 backdrop-blur-xl border border-white/10 shadow-2xl"
+            className="w-56 bg-card/95 backdrop-blur-xl border border-border shadow-2xl"
           >
             <div className="px-3 py-2.5">
-              <p className="text-sm font-semibold text-white truncate">
+              <p className="text-sm font-semibold text-foreground truncate">
                 {userProfile?.username ?? "User"}
               </p>
-              <p className="text-xs text-white/50 truncate">
+              <p className="text-xs text-muted-foreground truncate">
                 {userProfile?.email ?? ""}
               </p>
             </div>
-            <DropdownMenuSeparator className="bg-white/10" />
+            <DropdownMenuSeparator className="bg-border" />
             <DropdownMenuItem
               onClick={onSettingsClick}
-              className="gap-2 text-white/80 hover:text-white focus:text-white cursor-pointer"
+              className="gap-2 text-foreground/80 hover:text-foreground focus:text-foreground cursor-pointer"
               data-ocid="header.settings_menu_item"
             >
               <Settings className="h-4 w-4" />
               Settings
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="bg-white/10" />
+            <DropdownMenuSeparator className="bg-border" />
             <DropdownMenuItem
               onClick={onLogout}
               className="gap-2 text-red-400 hover:text-red-300 focus:text-red-300 cursor-pointer"

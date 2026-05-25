@@ -56,6 +56,17 @@ type UserProfile =
    username: text;
    walletAddress: opt text;
  };
+type UserId = principal;
+type UpdateRewardParams = 
+ record {
+   active: opt bool;
+   codeOrValue: opt text;
+   description: opt text;
+   pointsCost: opt nat;
+   quantity: opt nat;
+   teamId: opt text;
+   title: opt text;
+ };
 type TwoFactorSettings = 
  record {
    backupCodes: vec text;
@@ -72,6 +83,36 @@ type TransformationInput =
  record {
    context: blob;
    response: http_request_result;
+ };
+type TipSplitRole = 
+ record {
+   id: text;
+   isCustom: bool;
+   pointValue: float64;
+   roleName: text;
+ };
+type TipSplitPayout = 
+ record {
+   approvedAt: opt int;
+   approvedBy: opt text;
+   calculations: vec TipSplitCalculation;
+   gameDate: text;
+   id: text;
+   standId: text;
+   standName: text;
+   status: text;
+   totalPool: float64;
+ };
+type TipSplitCalculation = 
+ record {
+   hoursWorked: float64;
+   payoutAmount: float64;
+   role: text;
+   rolePoints: float64;
+   sharePercent: float64;
+   staffId: text;
+   staffName: text;
+   weightedScore: float64;
  };
 type TipPoolMode = 
  variant {
@@ -100,6 +141,7 @@ type Tip =
    timestamp: int;
    toUser: principal;
  };
+type Timestamp = int;
 type Time = int;
 type SupportStatus = 
  variant {
@@ -147,6 +189,14 @@ type Status =
    statusType: text;
    tableNumber: opt nat;
  };
+type StaffSection = 
+ record {
+   assignedAt: int;
+   managerId: principal;
+   sectionLabel: text;
+   sectionName: text;
+   staffId: principal;
+ };
 type StaffMemberStatus = 
  variant {
    active;
@@ -178,6 +228,21 @@ type StaffInvite =
    managerPrincipal: principal;
    method: StaffInviteMethod;
    status: StaffInviteStatus;
+ };
+type StaffCheckIn = 
+ record {
+   checkInTime: int;
+   checkOutTime: opt int;
+   gameDate: text;
+   hoursWorked: opt float64;
+   id: text;
+   manualOverride: bool;
+   overrideBy: opt text;
+   role: text;
+   staffId: text;
+   staffName: text;
+   standId: text;
+   standName: text;
  };
 type SplitPaymentStatus = 
  variant {
@@ -246,6 +311,15 @@ type SecurityEvent =
    timestamp: int;
    userId: principal;
  };
+type SectionAnalytics = 
+ record {
+   sectionLabel: text;
+   sectionName: text;
+   staffCount: nat;
+   topStaffId: opt principal;
+   totalAmount: nat;
+   totalTips: nat;
+ };
 type SearchResult = 
  record {
    bio: text;
@@ -266,12 +340,45 @@ type SavingsDirection =
    fromSavings;
    toSavings;
  };
+type RewardType = 
+ variant {
+   concessionCredit;
+   discountCode;
+   other;
+   ticketEntry;
+ };
+type Reward = 
+ record {
+   active: bool;
+   codeOrValue: text;
+   createdBy: principal;
+   description: text;
+   expiresAt: opt int;
+   id: text;
+   pointsCost: nat;
+   quantity: opt nat;
+   quantityRemaining: opt nat;
+   rewardType: RewardType;
+   teamId: opt text;
+   title: text;
+ };
 type RequestStatus = 
  variant {
    cancelled;
    declined;
    paid;
    pending;
+ };
+type RedeemedReward = 
+ record {
+   codeOrValue: text;
+   contactEmail: opt text;
+   emailSent: bool;
+   id: text;
+   redeemedAt: int;
+   rewardId: text;
+   rewardTitle: text;
+   userId: principal;
  };
 type RecurringPayment = 
  record {
@@ -299,6 +406,38 @@ type RSVP =
    inviteCode: text;
    name: text;
    timestamp: Time;
+ };
+type PointsRuleType = 
+ variant {
+   firstPaymentBonus;
+   foodMultiplier;
+   gameDayBonus;
+   paymentMultiplier;
+   sectionMultiplier;
+   tipMultiplier;
+ };
+type PointsRule = 
+ record {
+   createdAt: int;
+   description: text;
+   id: text;
+   isActive: bool;
+   multiplier: float64;
+   name: text;
+   ruleType: PointsRuleType;
+   sectionName: opt text;
+ };
+type PointsBreakdown = 
+ record {
+   amountCents: nat;
+   appliedRules: vec record {
+                       text;
+                       float64;
+                       opt text;
+                     };
+   basePoints: float64;
+   finalPoints: float64;
+   transactionType: text;
  };
 type PinCheckResult = 
  variant {
@@ -333,6 +472,35 @@ type PaymentMethod =
    methodType: PaymentMethodType;
    stripeVerificationStatus: text;
  };
+type PartnerBrandingConfig = 
+ record {
+   isActive: bool;
+   partnerLogoUrl: text;
+   partnerName: text;
+   primaryColor: text;
+   secondaryColor: text;
+ };
+type OrderStatus = 
+ variant {
+   Cancelled;
+   Completed;
+   OnTheWay;
+   Placed;
+   Preparing;
+   ReadyForPickup;
+ };
+type OrderItemInput = 
+ record {
+   itemId: text;
+   quantity: nat;
+ };
+type OrderItem = 
+ record {
+   itemId: text;
+   itemName: text;
+   priceInCents: CentAmount;
+   quantity: nat;
+ };
 type MoneyRequest = 
  record {
    amount: nat;
@@ -343,6 +511,16 @@ type MoneyRequest =
    status: RequestStatus;
    timestamp: int;
    toUser: principal;
+ };
+type MenuItem = 
+ record {
+   available: bool;
+   category: text;
+   description: text;
+   id: text;
+   name: text;
+   priceInCents: CentAmount;
+   standId: text;
  };
 type KYCStatus = 
  variant {
@@ -356,6 +534,16 @@ type InviteCode =
    code: text;
    created: Time;
    used: bool;
+ };
+type GameStandAssignment = 
+ record {
+   defaultStandId: text;
+   gameDate: text;
+   gameStandId: text;
+   gameStandName: text;
+   id: text;
+   staffId: text;
+   staffName: text;
  };
 type GDPRAuditEventType = 
  variant {
@@ -382,7 +570,49 @@ type FraudAlert =
    timestamp: int;
    userId: principal;
  };
+type FoodOrder = 
+ record {
+   createdAt: Timestamp;
+   customerId: UserId;
+   deliveryMethod: DeliveryMethod;
+   id: text;
+   items: vec OrderItem;
+   seatNumber: text;
+   standId: text;
+   status: OrderStatus;
+   totalInCents: CentAmount;
+   updatedAt: Timestamp;
+ };
+type FanPoints = 
+ record {
+   guestContact: opt text;
+   points: float64;
+   totalEarned: float64;
+   totalRedeemed: float64;
+   userId: principal;
+ };
 type ExternalBlob = blob;
+type ExtendedStaffMember = 
+ record {
+   customRole: text;
+   email: text;
+   employmentStatus: variant {
+                       active;
+                       inactive;
+                       suspended;
+                     };
+   employmentType: variant {
+                     contractor;
+                     fullTime;
+                     partTime;
+                   };
+   hireDate: int;
+   id: text;
+   name: text;
+   notes: text;
+   phone: text;
+   section: text;
+ };
 type EncryptionEvent = 
  record {
    dataType: text;
@@ -425,11 +655,24 @@ type DirectDeposit =
    status: text;
    userPrincipal: principal;
  };
+type DeliveryMethod = 
+ variant {
+   Delivery;
+   Pickup;
+ };
 type DeletionStatus = 
  variant {
    finalized;
    not_requested;
    pending: record {scheduledDeletionTime: int;};
+ };
+type ConcessionStand = 
+ record {
+   createdAt: Timestamp;
+   description: text;
+   id: text;
+   name: text;
+   section: text;
  };
 type CompilationStatus = 
  record {
@@ -437,6 +680,7 @@ type CompilationStatus =
    tooltipNote: text;
    verificationTimestamp: int;
  };
+type CentAmount = nat;
 type BusinessApplicationStatus = 
  variant {
    approved;
@@ -491,6 +735,12 @@ service : {
                                             });
   acknowledgeVaultAlert: () -> ();
   addActiveSession: (session: ActiveSession) -> ();
+  addMenuItem: (standId: text, name: text, description: text, priceInCents:
+   nat, category: text, available: bool) ->
+   (variant {
+      err: text;
+      ok: MenuItem;
+    });
   addPaymentMethod: (method: PaymentMethod) -> ();
   addStatus: (status: Status) -> ();
   adminCloseSupportTicket: (userPrincipal: principal) ->
@@ -515,7 +765,18 @@ service : {
       err: text;
       ok;
     });
+  approveTipSplitPayout: (payoutId: text, approvedBy: text, approvedAt:
+   int) -> (variant {
+              err: text;
+              ok: TipSplitPayout;
+            });
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  /// Manager-only: assign a staff member to a stadium section.
+  assignStaffSection: (staffId: principal, sectionName: text, sectionLabel:
+   text) -> (variant {
+               err: text;
+               ok: StaffSection;
+             });
   assignUserRole: (user: principal, role: variant {
                                             admin;
                                             guest;
@@ -529,6 +790,11 @@ service : {
      foreign;
      instantDeposit;
    }, amount: nat) -> (nat) query;
+  calculateTipSplit: (standId: text, gameDate: text, totalPool: float64) ->
+   (variant {
+      err: text;
+      ok: TipSplitPayout;
+    });
   cancelAccountDeletion: () -> (variant {
                                   err: text;
                                   ok;
@@ -539,6 +805,10 @@ service : {
                                              err: text;
                                              ok: text;
                                            });
+  cancelOrder: (orderId: text) -> (variant {
+                                     err: text;
+                                     ok;
+                                   });
   cancelRecurringPayment: (id: nat) -> (variant {
                                           err: text;
                                           ok;
@@ -552,6 +822,8 @@ service : {
                               err: text;
                               ok: text;
                             });
+  /// Admin-only: clear partner branding and revert to default Open Tip Pay branding.
+  clearPartnerBranding: () -> ();
   clearSpendingLimits: () -> (variant {ok;});
   /// Admin-only: immediately complete a pending deposit and credit the user's balance.
   completeDirectDeposit: (depositId: text) -> (variant {
@@ -560,11 +832,23 @@ service : {
                                                });
   createCheckoutSession: (items: vec ShoppingItem, successUrl: text,
    cancelUrl: text) -> (text);
+  createPointsRule: (rule: PointsRule) ->
+   (variant {
+      err: text;
+      ok: PointsRule;
+    });
   createRecurringPayment: (toUser: principal, amount: nat, message: text,
    frequency: RecurringFrequency) -> (variant {
                                         err: text;
                                         ok: nat;
                                       });
+  /// Admin-only: create a reward fans can redeem with Fan Points.
+  createReward: (title: text, description: text, pointsCost: nat, rewardType:
+   RewardType, codeOrValue: text, quantity: opt nat, expiresAt: opt int,
+   teamId: opt text) -> (variant {
+                           err: text;
+                           ok: Reward;
+                         });
   /// Manager: create a roster invite link (expires 72h, good for up to 50 accepts)
   createRosterInviteLink: () -> (variant {
                                    err: text;
@@ -580,6 +864,11 @@ service : {
                                    err: text;
                                    ok: text;
                                  });
+  createStand: (name: text, description: text, section: text) ->
+   (variant {
+      err: text;
+      ok: ConcessionStand;
+    });
   createStripeCheckoutSession: (items: vec ShoppingItem, successUrl: 
    text, cancelUrl: text) -> (text);
   deactivateStatus: () -> ();
@@ -588,6 +877,19 @@ service : {
                                                err: text;
                                                ok;
                                              });
+  deleteMenuItem: (itemId: text) -> (variant {
+                                       err: text;
+                                       ok;
+                                     });
+  /// Admin-only: permanently delete a reward.
+  deleteReward: (id: text) -> (variant {
+                                 err: text;
+                                 ok: bool;
+                               });
+  deleteStand: (id: text) -> (variant {
+                                err: text;
+                                ok;
+                              });
   deleteUserData: () -> (variant {
                            err: text;
                            ok;
@@ -613,6 +915,7 @@ service : {
   generateSmartReceipt: (month: nat, year: nat) -> (SmartReceipt);
   getAIQueryHistory: (user: principal) -> (vec AIQuery) query;
   getAccountDeletionStatus: () -> (DeletionStatus) query;
+  getActiveOrdersForManager: () -> (vec FoodOrder) query;
   getActiveSessions: (user: principal) -> (vec ActiveSession) query;
   getAllBusinessApplications: () ->
    (vec record {
@@ -632,14 +935,20 @@ service : {
    (opt BusinessApplicationStatus) query;
   getCallerUserProfile: () -> (opt UserProfile) query;
   getCallerUserRole: () -> (UserRole) query;
+  getCheckInsForGame: (gameDate: text) -> (vec StaffCheckIn);
   getCompilationStatus: () -> (CompilationStatus) query;
   getCurrentStatus: (user: principal) -> (opt Status) query;
   /// Returns all direct deposits (pending + completed + failed) for the caller.
   /// Lazy evaluation: any pending deposit whose clearAt <= now is auto-completed first.
   getDirectDepositHistory: () -> (vec DirectDeposit);
   getEncryptionLog: (user: principal) -> (vec EncryptionEvent) query;
+  getExtendedStaff: (id: text) -> (opt ExtendedStaffMember) query;
+  /// Return the Fan Points balance for any user (public).
+  getFanPoints: (userId: principal) -> (opt FanPoints) query;
   getFraudAlerts: (user: principal) -> (vec FraudAlert) query;
   getGDPRAuditLog: () -> (vec GDPRAuditEvent) query;
+  getGameStandAssignment: (staffId: text, gameDate: text) ->
+   (opt GameStandAssignment) query;
   getInviteCodes: () -> (vec InviteCode) query;
   getKYCConfigurationStatus: () ->
    (record {
@@ -655,13 +964,21 @@ service : {
   getManagerRoster: () -> (vec StaffMember) query;
   getMyBusinessApplication: () -> (opt BusinessApplication) query;
   getMyDisputes: () -> (vec Dispute) query;
+  /// Return the calling user's Fan Points balance.
+  getMyFanPoints: () -> (opt FanPoints) query;
+  getMyOrders: () -> (vec FoodOrder) query;
   getMyRecurringPayments: () -> (vec RecurringPayment) query;
+  /// Return all rewards the caller has redeemed.
+  getMyRedeemedRewards: () -> (vec RedeemedReward) query;
   /// Staff: get all pending invites sent TO the caller
   getMyRosterInvites: () -> (vec StaffInvite) query;
   /// Get or create the caller's virtual direct deposit account.
   /// Routing and account numbers are derived deterministically from the caller's
   /// Principal, so they are stable across calls and canister upgrades.
   getOrCreateDirectDepositAccount: () -> (DirectDepositAccount);
+  getOrder: (orderId: text) -> (opt FoodOrder) query;
+  /// Public query: returns the stored partner branding config, or null if not set.
+  getPartnerBranding: () -> (opt PartnerBrandingConfig) query;
   getPaymentMethods: (user: principal) -> (vec PaymentMethod) query;
   /// Manager: get full payout history
   getPayoutHistory: () -> (vec PayoutRecord) query;
@@ -674,6 +991,9 @@ service : {
   getPendingDirectDeposits: () -> (vec DirectDeposit) query;
   /// Returns only PENDING money requests addressed to the caller, newest first.
   getPendingRequestsReceived: () -> (vec MoneyRequest) query;
+  getPointsBreakdown: (amountCents: nat, transactionType: text, isGameDay:
+   bool, isFirstPayment: bool, sectionName: opt text) ->
+   (PointsBreakdown) query;
   getProfessionalTips: (user: principal) -> (vec Tip) query;
   getPublicCurrentStatus: (user: principal) -> (opt Status) query;
   getPublicProfile: (username: text) ->
@@ -698,9 +1018,16 @@ service : {
   getRequestsReceived: () -> (vec MoneyRequest) query;
   /// Returns all money requests sent BY the caller, newest first.
   getRequestsSent: () -> (vec MoneyRequest) query;
+  /// Return a single reward by ID.
+  getReward: (id: text) -> (opt Reward) query;
   getSMSConfigurationStatus: () -> (bool) query;
   getSavingsBalance: () -> (nat) query;
   getSavingsHistory: () -> (vec SavingsTransaction) query;
+  /// Return tip volume aggregated by stadium section for a manager.
+  getSectionAnalytics: (managerId: principal, since: opt int) ->
+   (vec SectionAnalytics) query;
+  /// Return all section assignments for a manager.
+  getSectionAssignments: (managerId: principal) -> (vec StaffSection) query;
   getSecurityEvents: (user: principal) -> (vec SecurityEvent) query;
   getSmartReceipt: (user: principal, month: nat, year: nat) ->
    (opt SmartReceipt) query;
@@ -709,6 +1036,17 @@ service : {
   getSplitById: (splitId: text) -> (opt SplitPayment) query;
   /// Returns all split payments where caller is the initiator or a participant.
   getSplitPayments: () -> (vec SplitPayment) query;
+  /// Return per-staff tip summary for a manager's roster.
+  getStaffAnalytics: (managerId: principal, since: opt int) ->
+   (vec
+     record {
+       sectionName: opt text;
+       staffId: principal;
+       totalAmount: nat;
+       totalTips: nat;
+     }) query;
+  /// Return the section assignment for a staff member.
+  getStaffSection: (staffId: principal) -> (opt StaffSection) query;
   /// Manager: get summed tips received per staff member since an optional timestamp, sorted descending
   getStaffTipTotals: (since: opt int) -> (vec record {
                                                 principal;
@@ -720,6 +1058,9 @@ service : {
   getSupportMessages: () -> (vec SupportMessage) query;
   /// Manager: get current tip pool settings
   getTipPoolSettings: () -> (TipPoolConfig) query;
+  getTipSplitPayouts: (standId: opt text, gameDate: opt text) ->
+   (vec TipSplitPayout);
+  getTipSplitRoles: () -> (vec TipSplitRole) query;
   getTips: () -> (vec Tip) query;
   getTipsReceived: (user: principal) -> (vec Tip) query;
   getTipsSent: (user: principal) -> (vec Tip) query;
@@ -737,6 +1078,18 @@ service : {
   isCallerAdmin: () -> (bool) query;
   isKYCConfigured: () -> (bool) query;
   isStripeConfigured: () -> (bool) query;
+  /// Link prior guest payment points to the caller's account by matching contactInfo.
+  linkGuestPaymentsToUser: (contactInfo: text) ->
+   (variant {
+      err: text;
+      ok: nat;
+    });
+  listExtendedStaff: () -> (vec ExtendedStaffMember);
+  listMenuItems: (standId: text) -> (vec MenuItem) query;
+  listPointsRules: () -> (vec PointsRule) query;
+  /// List all active rewards, optionally filtered by teamId.
+  listRewards: (teamId: opt text) -> (vec Reward) query;
+  listStands: () -> (vec ConcessionStand) query;
   lockVault: () -> (variant {
                       err: text;
                       ok: text;
@@ -745,6 +1098,11 @@ service : {
   logEncryptionEvent: (event: EncryptionEvent) -> ();
   logSecurityEvent: (event: SecurityEvent) -> ();
   logoutSession: (sessionId: text) -> ();
+  manualSetHours: (checkInId: text, hoursWorked: float64, overrideBy:
+   text) -> (variant {
+               err: text;
+               ok: StaffCheckIn;
+             });
   markSupportMessagesRead: () -> ();
   markTutorialCompleted: () -> ();
   openSupportTicket: (subject: text, firstMessage: text) ->
@@ -752,8 +1110,25 @@ service : {
       err: text;
       ok: nat;
     });
+  placeOrder: (standId: text, items: vec OrderItemInput, seatNumber: 
+   text, deliveryMethod: DeliveryMethod) ->
+   (variant {
+      err: text;
+      ok: FoodOrder;
+    });
   /// Admin-only: execute all due recurring payments.
   processRecurringPayments: () -> ();
+  recordCheckIn: (staffId: text, staffName: text, role: text, standId: 
+   text, standName: text, gameDate: text, checkInTime: int) ->
+   (variant {
+      err: text;
+      ok: StaffCheckIn;
+    });
+  recordCheckOut: (checkInId: text, checkOutTime: int) ->
+   (variant {
+      err: text;
+      ok: StaffCheckIn;
+    });
   recordDisputeRequest: (transactionTimestamp: int, counterpartyPrincipal:
    principal, reason: text) -> (variant {
                                   err: text;
@@ -763,6 +1138,21 @@ service : {
                                 err: text;
                                 ok;
                               });
+  /// Record a guest (non-app) payment and award Fan Points to the recipient.
+  /// The guest provides a phone number or email so points can be linked later.
+  /// sectionName: optional stadium section of the recipient (enables section multiplier rules).
+  recordGuestPayment: (recipientId: principal, amount: nat, contactInfo:
+   text, contactType: variant {
+                        email;
+                        phone;
+                      }, sectionName: opt text) ->
+   (variant {
+      err: text;
+      ok: record {
+            fanPointsAwarded: nat;
+            guestRecordId: text;
+          };
+    });
   /// Manager: record a payout distribution (does NOT move funds — manager controls external settlement)
   recordPayout: (distributions: vec record {
                                       principal;
@@ -772,12 +1162,21 @@ service : {
       err: text;
       ok: text;
     });
+  /// Redeem a reward by spending Fan Points. The redeemed code appears here and is stored on-chain.
+  redeemReward: (rewardId: text) -> (variant {
+                                       err: text;
+                                       ok: RedeemedReward;
+                                     });
   rejectBusinessApplication: (applicant: principal, reason: opt text) ->
    (variant {
       err: text;
       ok;
     });
   removeActiveSession: (sessionId: text) -> ();
+  removeExtendedStaff: (id: text) -> (variant {
+                                        err: text;
+                                        ok;
+                                      });
   removePaymentMethod: (methodId: text) -> ();
   /// Manager: remove a staff member from the roster
   removeStaffMember: (staffPrincipal: principal) -> (variant {
@@ -785,6 +1184,10 @@ service : {
                                                        ok;
                                                      });
   removeStatus: (index: nat) -> ();
+  removeTipSplitRole: (roleId: text) -> (variant {
+                                           err: text;
+                                           ok;
+                                         });
   removeWalletAddress: () -> ();
   reportFraudAlert: (alert: FraudAlert) -> ();
   requestAccountDeletion: () ->
@@ -863,9 +1266,17 @@ service : {
   /// set if the feature is re-enabled later.
   setAppLockEnabled: (enabled: bool) -> ();
   setBiometricSettings: (settings: BiometricSettings) -> ();
+  setGameStandAssignment: (assignment: GameStandAssignment) ->
+   (variant {
+      err: text;
+      ok: GameStandAssignment;
+    });
   setKYCConfiguration: (apiKey: text, provider: text) -> ();
   setKYCStatus: (user: principal, status: KYCStatus, providerReference:
    opt text) -> ();
+  /// Admin-only: set or replace the active partner branding configuration.
+  /// Rejects with a trap if the caller is not an admin.
+  setPartnerBranding: (config: PartnerBrandingConfig) -> ();
   setPinHash: (salt: blob, hash: blob) -> ();
   setSMSConfiguration: (accountSid: text, authToken: text, fromPhone:
    text) -> ();
@@ -906,13 +1317,55 @@ service : {
                                                });
   submitKYC: () -> ();
   submitRSVP: (name: text, attending: bool, inviteCode: text) -> ();
+  togglePointsRule: (id: text, active: bool) ->
+   (variant {
+      err: text;
+      ok: PointsRule;
+    });
   toggleRecurringPayment: (id: nat, enabled: bool) ->
    (variant {
       err: text;
       ok;
     });
   transform: (input: TransformationInput) -> (TransformationOutput) query;
+  updateMenuItem: (itemId: text, name: text, description: text, priceInCents:
+   nat, category: text, available: bool) ->
+   (variant {
+      err: text;
+      ok: MenuItem;
+    });
+  updateOrderStatus: (orderId: text, status: OrderStatus) ->
+   (variant {
+      err: text;
+      ok;
+    });
   updatePaymentMethodVerificationStatus: (methodId: text, status: text) -> ();
+  updatePointsRule: (id: text, name: text, description: text, multiplier:
+   float64, sectionName: opt text) -> (variant {
+                                         err: text;
+                                         ok: PointsRule;
+                                       });
+  /// Admin-only: full update of a reward (title, description, pointsCost, codeOrValue, quantity, teamId, active).
+  updateReward: (id: text, params: UpdateRewardParams) ->
+   (variant {
+      err: text;
+      ok: Reward;
+    });
+  updateStand: (id: text, name: text, description: text, section: text) ->
+   (variant {
+      err: text;
+      ok: ConcessionStand;
+    });
+  upsertExtendedStaff: (member: ExtendedStaffMember) ->
+   (variant {
+      err: text;
+      ok: ExtendedStaffMember;
+    });
+  upsertTipSplitRole: (role: TipSplitRole) ->
+   (variant {
+      err: text;
+      ok: TipSplitRole;
+    });
   verifyPinHash: (salt: blob, hash: blob) -> (PinCheckResult);
   verifyWithdrawalOTP: (challengeId: text, otp: text) ->
    (variant {

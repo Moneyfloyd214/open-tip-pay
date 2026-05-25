@@ -3,11 +3,13 @@ import { useEffect, useRef } from "react";
 interface QRCodeGeneratorProps {
   value: string;
   size?: number;
+  onCanvasReady?: (canvas: HTMLCanvasElement) => void;
 }
 
 export default function QRCodeGenerator({
   value,
   size = 200,
+  onCanvasReady,
 }: QRCodeGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -18,12 +20,7 @@ export default function QRCodeGenerator({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Simple QR code generation using a library loaded via CDN
-    const script = document.createElement("script");
-    script.src =
-      "https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js";
-    script.async = true;
-    script.onload = () => {
+    const renderQR = () => {
       // @ts-ignore - QRCode is loaded from CDN
       if (window.QRCode) {
         // @ts-ignore
@@ -35,14 +32,36 @@ export default function QRCodeGenerator({
             light: "#FFFFFF",
           },
         });
+        onCanvasReady?.(canvas);
       }
     };
+
+    // If the library is already loaded (e.g. sheet was opened before), render immediately
+    // @ts-ignore
+    if (window.QRCode) {
+      renderQR();
+      return;
+    }
+
+    // Otherwise inject the script once and render on load
+    const script = document.createElement("script");
+    script.src =
+      "https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js";
+    script.async = true;
+    script.onload = renderQR;
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      // Only remove if it hasn't finished loading yet (avoid removing after renderQR ran)
+      if (!script.dataset.loaded) {
+        try {
+          document.body.removeChild(script);
+        } catch (_) {
+          /* already removed */
+        }
+      }
     };
-  }, [value, size]);
+  }, [value, size, onCanvasReady]);
 
   return <canvas ref={canvasRef} className="rounded-lg" />;
 }

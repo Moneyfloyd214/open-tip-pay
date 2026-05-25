@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useInternetIdentity } from "@caffeineai/core-infrastructure";
 import { Loader2, PlayCircle, Shield, Smartphone, Zap } from "lucide-react";
+import { useBranding } from "../context/BrandingContext";
 import { useDemoMode } from "../context/DemoContext";
 
 const FEATURES = [
@@ -12,11 +13,17 @@ const FEATURES = [
 export default function LoginPage() {
   const { login, loginStatus } = useInternetIdentity();
   const { enterDemoMode } = useDemoMode();
+  const {
+    brandName,
+    poweredByText,
+    isWhiteLabel,
+    isLoading: brandingLoading,
+  } = useBranding();
   const isLoggingIn = loginStatus === "logging-in";
 
   return (
     <div
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-navy-dark px-4 py-12"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 py-12"
       data-testid="login-page-ready"
     >
       {/* Ambient background orbs — reduced blur for lower-end device paint perf */}
@@ -42,13 +49,22 @@ export default function LoginPage() {
 
           {/* Wordmark */}
           <div className="space-y-2">
-            <h1 className="text-5xl font-bold tracking-tight text-white drop-shadow-lg">
-              Open Tip Pay
-            </h1>
+            {brandingLoading ? (
+              <div className="h-12 w-48 animate-pulse rounded-lg bg-muted/50 mx-auto" />
+            ) : (
+              <h1 className="text-5xl font-bold tracking-tight text-foreground drop-shadow-lg">
+                {brandName}
+              </h1>
+            )}
+            {isWhiteLabel && poweredByText && !brandingLoading && (
+              <p className="text-xs font-medium tracking-wide text-muted-foreground/60">
+                {poweredByText}
+              </p>
+            )}
             <p className="text-lg font-medium tracking-wide text-teal-light">
               Universal P2P Payment Platform
             </p>
-            <p className="mx-auto max-w-xs text-sm leading-relaxed text-white/65">
+            <p className="mx-auto max-w-xs text-sm leading-relaxed text-muted-foreground">
               Send money, pay friends, split bills — instantly and securely.
             </p>
           </div>
@@ -67,14 +83,16 @@ export default function LoginPage() {
             <PlayCircle className="mr-2 h-4 w-4" />
             Skip to Demo
           </Button>
-          <p className="text-[11px] text-white/25">
+          <p className="text-[11px] text-muted-foreground/50">
             Explore with sample data · No sign-in required
           </p>
 
           <div className="relative flex items-center gap-3 py-1">
-            <div className="h-px flex-1 bg-white/10" />
-            <span className="text-[11px] text-white/30">or sign in</span>
-            <div className="h-px flex-1 bg-white/10" />
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-[11px] text-muted-foreground/50">
+              or sign in
+            </span>
+            <div className="h-px flex-1 bg-border" />
           </div>
 
           <Button
@@ -95,7 +113,7 @@ export default function LoginPage() {
               "Get Started"
             )}
           </Button>
-          <p className="text-xs text-white/35">
+          <p className="text-xs text-muted-foreground/50">
             Secured by Internet Identity · No password required
           </p>
         </div>
@@ -111,8 +129,8 @@ export default function LoginPage() {
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal/15">
                   <Icon className="h-4 w-4 text-teal" aria-hidden="true" />
                 </div>
-                <p className="text-xs font-semibold text-white">{label}</p>
-                <p className="text-[10px] leading-tight text-white/45">
+                <p className="text-xs font-semibold text-foreground">{label}</p>
+                <p className="text-[10px] leading-tight text-muted-foreground/60">
                   {desc}
                 </p>
               </div>
@@ -121,8 +139,9 @@ export default function LoginPage() {
         </div>
 
         {/* Subtle footer */}
-        <p className="text-[11px] text-white/25">
-          © {new Date().getFullYear()} Open Tip Pay
+        <p className="text-[11px] text-muted-foreground/50">
+          © {new Date().getFullYear()}{" "}
+          {isWhiteLabel && !brandingLoading ? brandName : "Open Tip Pay"}
         </p>
       </div>
     </div>

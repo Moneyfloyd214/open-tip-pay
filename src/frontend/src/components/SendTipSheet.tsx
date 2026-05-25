@@ -255,7 +255,7 @@ export default function SendTipSheet({
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent
           side="bottom"
-          className="h-[90vh] bg-navy border-t-2 border-teal/30"
+          className="h-[90vh] bg-card border-t-2 border-teal/30"
         >
           <div className="flex items-center justify-center h-full">
             <Loader2 className="h-8 w-8 animate-spin text-teal" />
@@ -269,7 +269,7 @@ export default function SendTipSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] bg-navy border-t-2 border-teal/30 overflow-y-auto"
+        className="h-[90vh] bg-card border-t-2 border-teal/30 overflow-y-auto"
       >
         <SheetHeader className="mb-6">
           <SheetTitle className="text-white text-2xl">
@@ -284,7 +284,7 @@ export default function SendTipSheet({
 
         <div className="space-y-6">
           {/* Recipient Info */}
-          <div className="flex items-center gap-4 p-4 bg-navy-light/50 rounded-xl border border-teal/20">
+          <div className="flex items-center gap-4 p-4 bg-card/50 rounded-xl border border-teal/20">
             <Avatar className="h-16 w-16 border-2 border-teal">
               {recipientProfile.photo ? (
                 <AvatarImage
@@ -292,7 +292,7 @@ export default function SendTipSheet({
                   alt={recipientProfile.username}
                 />
               ) : (
-                <AvatarFallback className="bg-navy text-white text-lg">
+                <AvatarFallback className="bg-muted text-foreground text-lg">
                   {recipientProfile.username.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
               )}
@@ -371,8 +371,8 @@ export default function SendTipSheet({
                 variant={paymentType === "fiat" ? "default" : "outline"}
                 className={`flex-1 ${
                   paymentType === "fiat"
-                    ? "bg-teal hover:bg-teal/90 text-white"
-                    : "bg-navy-light/50 border-teal/30 text-white hover:bg-navy-light"
+                    ? "bg-teal hover:bg-teal/90 text-foreground"
+                    : "bg-card/50 border-teal/30 text-white hover:bg-navy-light"
                 }`}
               >
                 <DollarSign className="mr-2 h-4 w-4" />
@@ -383,8 +383,8 @@ export default function SendTipSheet({
                 variant={paymentType === "crypto" ? "default" : "outline"}
                 className={`flex-1 ${
                   paymentType === "crypto"
-                    ? "bg-teal hover:bg-teal/90 text-white"
-                    : "bg-navy-light/50 border-teal/30 text-white hover:bg-navy-light"
+                    ? "bg-teal hover:bg-teal/90 text-foreground"
+                    : "bg-card/50 border-teal/30 text-white hover:bg-navy-light"
                 }`}
               >
                 <Wallet className="mr-2 h-4 w-4" />
@@ -416,7 +416,7 @@ export default function SendTipSheet({
           {paymentType === "fiat" && (
             <div className="space-y-2">
               <Label className="text-white">Pay with</Label>
-              <div className="flex gap-2 p-1 bg-navy-light/40 rounded-xl border border-white/10">
+              <div className="flex gap-2 p-1 bg-card/40 rounded-xl border border-border">
                 {PAYMENT_METHOD_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}
@@ -458,7 +458,7 @@ export default function SendTipSheet({
                     key={preset}
                     onClick={() => handlePresetAmount(preset)}
                     variant="outline"
-                    className="bg-navy-light/50 border-teal/30 text-white hover:bg-teal hover:text-white"
+                    className="bg-card/50 border-teal/30 text-white hover:bg-teal hover:text-white"
                   >
                     ${preset}
                   </Button>
@@ -466,7 +466,7 @@ export default function SendTipSheet({
               </div>
             )}
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                 {paymentType === "fiat" ? "$" : "ETH"}
               </span>
               <Input
@@ -474,7 +474,7 @@ export default function SendTipSheet({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="pl-8 bg-navy-light/50 border-teal/30 text-white placeholder:text-white/40"
+                className="pl-8 bg-card/50 border-teal/30 text-white placeholder:text-white/40"
                 disabled={paymentType === "crypto"}
               />
             </div>
@@ -509,7 +509,7 @@ export default function SendTipSheet({
               maxLength={MAX_MESSAGE_LENGTH}
               aria-required="true"
               data-ocid="send_tip.message_textarea"
-              className={`bg-navy-light/50 text-white placeholder:text-white/40 min-h-[80px] transition-colors duration-200 ${
+              className={`bg-card/50 text-white placeholder:text-white/40 min-h-[80px] transition-colors duration-200 ${
                 messageError
                   ? "border-red-400 focus:border-red-400 border-2"
                   : "border-teal/30"
@@ -536,7 +536,7 @@ export default function SendTipSheet({
           </div>
 
           {/* Sending as a Tip toggle — secondary option for service workers */}
-          <div className="p-4 bg-navy-light/40 rounded-xl border border-white/10 space-y-3">
+          <div className="p-4 bg-card/40 rounded-xl border border-border space-y-3">
             <label
               className="flex items-center gap-3 cursor-pointer"
               htmlFor="sending-as-tip-toggle"
@@ -589,14 +589,14 @@ export default function SendTipSheet({
                     <Button
                       onClick={handleDismissOnboarding}
                       size="sm"
-                      className="mt-3 w-full bg-teal hover:bg-teal/90 text-white"
+                      className="mt-3 w-full bg-teal hover:bg-teal/90 text-foreground"
                     >
                       Got it
                     </Button>
                   </div>
                 )}
 
-                <div className="flex items-center justify-between p-3 bg-navy-light/50 rounded-xl border border-teal/20">
+                <div className="flex items-center justify-between p-3 bg-card/50 rounded-xl border border-teal/20">
                   <div className="flex items-center gap-3">
                     <img
                       src="/assets/generated/briefcase-icon.dim_32x32.png"
@@ -607,7 +607,7 @@ export default function SendTipSheet({
                       <Label className="text-white font-medium">
                         Job Completed
                       </Label>
-                      <p className="text-xs text-white/60">
+                      <p className="text-xs text-muted-foreground">
                         Mark as a professional service payment
                       </p>
                     </div>

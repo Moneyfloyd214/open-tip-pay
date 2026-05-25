@@ -4,16 +4,43 @@ import {
   useInternetIdentity,
 } from "@caffeineai/core-infrastructure";
 import { RefreshCw, ShieldAlert } from "lucide-react";
-import { ThemeProvider } from "next-themes";
 import { Component, type ReactNode, useEffect, useRef, useState } from "react";
+import { Suspense, lazy } from "react";
 import AppLockGate from "./components/AppLockGate";
+import OnboardingSlides from "./components/OnboardingSlides";
+import { BrandingProvider } from "./context/BrandingContext";
 import { DemoProvider, useDemoMode } from "./context/DemoContext";
 import { getAppLockEnabled } from "./hooks/useAppLock";
 import { useGetCallerUserProfile } from "./hooks/useQueries";
 import DashboardPage from "./pages/DashboardPage";
+import FanOrderHistoryPage from "./pages/FanOrderHistoryPage";
 import LoginPage from "./pages/LoginPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import RecoverySetupPage from "./pages/RecoverySetupPage";
+
+// Public routes — loaded lazily so they don't bloat the main bundle
+const GuestPaymentPage = lazy(() => import("./pages/GuestPaymentPage"));
+const FanPointsPage = lazy(() => import("./pages/FanPointsPage"));
+const KitchenDisplayPage = lazy(() => import("./pages/KitchenDisplayPage"));
+const FanOrderHistoryPageLazy = lazy(
+  () => import("./pages/FanOrderHistoryPage"),
+);
+
+// ─── Public route matcher ─────────────────────────────────────────────────────
+// Checks window.location.pathname for the two public routes before entering
+// the authenticated app shell.  Returns the matched path prefix or null.
+function matchPublicRoute():
+  | { route: "pay"; userId: string }
+  | { route: "rewards" }
+  | { route: "kitchen" }
+  | null {
+  const path = window.location.pathname;
+  const payMatch = path.match(/^\/pay\/([^/]+)/);
+  if (payMatch) return { route: "pay", userId: payMatch[1] };
+  if (path.startsWith("/rewards")) return { route: "rewards" };
+  if (path.startsWith("/kitchen")) return { route: "kitchen" };
+  return null;
+}
 
 // ─── Feature Flags ────────────────────────────────────────────────────────────
 /** Set to true when ready to enable the recovery phrase + backup device flow
@@ -30,7 +57,7 @@ const PROFILE_FETCH_TIMEOUT_MS = 2_000;
 // ─── Branded loading screen ───────────────────────────────────────────────────
 function LoadingScreen({ message }: { message: string }) {
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-6 bg-navy-dark">
+    <div className="flex h-screen flex-col items-center justify-center gap-6 bg-background">
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden="true"
@@ -48,7 +75,7 @@ function LoadingScreen({ message }: { message: string }) {
           }}
         />
         <div className="flex flex-col items-center gap-2">
-          <p className="text-xl font-bold text-white">Open Tip Pay</p>
+          <p className="text-xl font-bold text-foreground">Open Tip Pay</p>
           <div className="relative mt-1 flex h-10 w-10 items-center justify-center">
             <div className="absolute inset-0 rounded-full border-2 border-teal/15" />
             <div
@@ -56,7 +83,7 @@ function LoadingScreen({ message }: { message: string }) {
               aria-hidden="true"
             />
           </div>
-          <p className="text-sm text-white/55">{message}</p>
+          <p className="text-sm text-muted-foreground">{message}</p>
         </div>
       </div>
     </div>
@@ -72,7 +99,7 @@ function RecoveryScreen({
   description: string;
 }) {
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-7 bg-navy-dark px-6 text-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-7 bg-background px-6 text-center">
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden="true"
@@ -95,8 +122,8 @@ function RecoveryScreen({
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="text-lg font-bold text-white">{title}</p>
-          <p className="max-w-xs text-sm leading-relaxed text-white/55">
+          <p className="text-lg font-bold text-foreground">{title}</p>
+          <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
             {description}
           </p>
         </div>
@@ -114,7 +141,7 @@ function RecoveryScreen({
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="text-xs text-white/35 underline underline-offset-2 hover:text-white/55"
+          className="text-xs text-muted-foreground/60 underline underline-offset-2 hover:text-muted-foreground"
         >
           Reload page
         </button>
@@ -127,7 +154,8 @@ function RecoveryScreen({
 // All hooks that call useInternetIdentity() live here, safely inside the provider.
 function AuthContent() {
   const { identity, loginStatus } = useInternetIdentity();
-  const { isDemoMode } = useDemoMode();
+  const { isDemoMode, demoOnboardingDone, setDemoOnboardingDone } =
+    useDemoMode();
   const {
     data: userProfile,
     isLoading: profileLoading,
@@ -136,6 +164,11 @@ function AuthContent() {
   } = useGetCallerUserProfile();
 
   const isAuthenticated = !!identity;
+
+  // Intro slideshow for real users (shown once, before profile creation)
+  const [onboardingSlidesDone, setOnboardingSlidesDone] = useState(
+    () => localStorage.getItem("onboardingDone") === "true",
+  );
 
   // Recovery setup state (persisted in localStorage)
   const [recoverySetupDone, setRecoverySetupDone] = useState(
@@ -174,6 +207,18 @@ function AuthContent() {
 
   // ── Demo mode: bypass all auth entirely ────────────────────────────────────
   if (isDemoMode) {
+    if (!demoOnboardingDone) {
+      return (
+        <OnboardingSlides onComplete={() => setDemoOnboardingDone(true)} />
+      );
+    }
+    if (window.location.pathname.startsWith("/order-history")) {
+      return (
+        <Suspense fallback={<LoadingScreen message="Loading…" />}>
+          <FanOrderHistoryPageLazy />
+        </Suspense>
+      );
+    }
     const appLockEnabled = getAppLockEnabled();
     return appLockEnabled ? (
       <AppLockGate>
@@ -215,7 +260,19 @@ function AuthContent() {
     );
   }
 
-  // ── Onboarding ─────────────────────────────────────────────────────────────
+  // ── Intro slideshow (first-time real users, shown before profile creation) ──
+  if (!onboardingSlidesDone) {
+    return (
+      <OnboardingSlides
+        onComplete={() => {
+          localStorage.setItem("onboardingDone", "true");
+          setOnboardingSlidesDone(true);
+        }}
+      />
+    );
+  }
+
+  // ── Onboarding (profile creation) ─────────────────────────────────────────
   const showOnboarding = isFetched && !userProfile && !profileTimedOut;
   if (showOnboarding) {
     return <OnboardingPage />;
@@ -236,6 +293,15 @@ function AuthContent() {
           setRecoverySetupDone(true);
         }}
       />
+    );
+  }
+
+  // ── Order History ──────────────────────────────────────────────────────────
+  if (window.location.pathname.startsWith("/order-history")) {
+    return (
+      <Suspense fallback={<LoadingScreen message="Loading…" />}>
+        <FanOrderHistoryPageLazy />
+      </Suspense>
     );
   }
 
@@ -271,14 +337,10 @@ class IIProviderBoundary extends Component<
     if (this.state.crashed) {
       // Render LoginPage without II context — demo mode still works
       return (
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-        >
+        <>
           <LoginPage />
           <Toaster />
-        </ThemeProvider>
+        </>
       );
     }
     return this.props.children;
@@ -290,25 +352,46 @@ class IIProviderBoundary extends Component<
 //   DemoProvider
 //   └── IIProviderBoundary        ← catches II init crashes gracefully
 //       └── InternetIdentityProvider  ← ALWAYS mounted, never conditional
-//           └── ThemeProvider
-//               └── AuthContent   ← decides what to show based on state
+//           └── BrandingProvider  ← inside II so useActor() is valid; inside Demo so useDemoMode() is valid
+//                   └── AuthContent   ← decides what to show based on state
 //
 // InternetIdentityProvider is NEVER inside a conditional branch. This guarantees
 // that useInternetIdentity() can never be called outside the provider boundary,
 // regardless of demo mode, env state, or any other runtime condition.
 export default function App() {
+  // Force dark mode always — this app is dark-only, no theme switching
+  useEffect(() => {
+    document.documentElement.classList.add("dark");
+  }, []);
+  // Public routes bypass the full auth shell entirely
+  const publicRoute = matchPublicRoute();
+  if (publicRoute) {
+    return (
+      <DemoProvider>
+        <BrandingProvider>
+          <Suspense fallback={<LoadingScreen message="Loading…" />}>
+            {publicRoute.route === "pay" ? (
+              <GuestPaymentPage />
+            ) : publicRoute.route === "kitchen" ? (
+              <KitchenDisplayPage />
+            ) : (
+              <FanPointsPage />
+            )}
+          </Suspense>
+          <Toaster />
+        </BrandingProvider>
+      </DemoProvider>
+    );
+  }
+
   return (
     <DemoProvider>
       <IIProviderBoundary>
         <InternetIdentityProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-          >
+          <BrandingProvider>
             <AuthContent />
             <Toaster />
-          </ThemeProvider>
+          </BrandingProvider>
         </InternetIdentityProvider>
       </IIProviderBoundary>
     </DemoProvider>

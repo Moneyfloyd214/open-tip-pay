@@ -18,6 +18,21 @@ import MixinAuthorization "mo:caffeineai-authorization/MixinAuthorization";
 import MixinObjectStorage "mo:caffeineai-object-storage/Mixin";
 import InviteLinksModule "mo:caffeineai-invite-links/invite-links-module";
 import Nat8 "mo:core/Nat8";
+import FanPointsTypes "types/fanpoints";
+import FanPointsAPI "mixins/fanpoints-api";
+import StaffTypes "types/staff";
+import StaffAPI "mixins/staff-api";
+import FoodOrderingTypes "types/food-ordering";
+import FoodOrderingAPI "mixins/food-ordering-api";
+import Float "mo:core/Float";
+import TipSplitTypes "types/tip-split";
+import TipSplitAPI "mixins/tip-split-api";
+
+
+
+
+
+
 
 
 
@@ -29,6 +44,19 @@ actor {
 
   // InviteLinks system state
   let inviteLinksState = InviteLinksModule.initState();
+
+  // Food ordering state
+  let concessionStands = Map.empty<Text, FoodOrderingTypes.ConcessionStand>();
+  let menuItems = Map.empty<Text, FoodOrderingTypes.MenuItem>();
+  let foodOrders = Map.empty<Text, FoodOrderingTypes.FoodOrder>();
+  let foodOrderingState = { var nextFoodOrderSeq : Nat = 0 };
+  include FoodOrderingAPI(
+    concessionStands,
+    menuItems,
+    foodOrders,
+    accessControlState,
+    foodOrderingState,
+  );
 
   public type UserProfile = {
     username : Text;
@@ -407,6 +435,62 @@ actor {
   // ─── Savings Pocket ───────────────────────────────────────────────────────────
   let savingsBalances = Map.empty<Principal, Nat>();
   var nextSavingsTxId : Nat = 0;
+
+  // ─── Fan Points state ─────────────────────────────────────────────────────────────
+  let fanPointsMap = Map.empty<Principal, FanPointsTypes.FanPoints>();
+  let guestPaymentRecords = List.empty<FanPointsTypes.GuestPaymentRecord>();
+  let rewardsMap = Map.empty<Text, FanPointsTypes.Reward>();
+  let redeemedRewardsMap = Map.empty<Principal, List.List<FanPointsTypes.RedeemedReward>>();
+  let sectionAssignmentsMap = Map.empty<Principal, FanPointsTypes.StaffSection>();
+  let fanPointsState = { var nextGuestRecordId : Nat = 0; var nextRewardId : Nat = 0; var nextRedeemedId : Nat = 0 };
+  // Fractional Point Engine — rules storage
+  let pointsRulesMap = Map.empty<Text, FanPointsTypes.PointsRule>();
+  // Extended staff roster — richer HR-style fields beyond principal+status
+  let extendedStaffMap = Map.empty<Text, StaffTypes.ExtendedStaffMember>();
+
+  // ─── Seed default points rules ────────────────────────────────────────────────
+  if (pointsRulesMap.size() == 0) {
+    let defaultRules : [FanPointsTypes.PointsRule] = [
+      { id="rule-tip"; name="Stadium Staff Tip Bonus"; description="Earn extra points for tipping Colts staff"; ruleType=#tipMultiplier; multiplier=1.5; isActive=true; createdAt=0; sectionName=null },
+      { id="rule-food"; name="Food Order Points"; description="Points for every food order"; ruleType=#foodMultiplier; multiplier=1.0; isActive=true; createdAt=0; sectionName=null },
+      { id="rule-payment"; name="General Payment Points"; description="Points for general payments"; ruleType=#paymentMultiplier; multiplier=0.75; isActive=true; createdAt=0; sectionName=null },
+      { id="rule-gameday"; name="Game Day Bonus"; description="1.25x multiplier on all game day transactions"; ruleType=#gameDayBonus; multiplier=1.25; isActive=true; createdAt=0; sectionName=null },
+      { id="rule-first"; name="First Payment Bonus"; description="2x points on your very first payment"; ruleType=#firstPaymentBonus; multiplier=2.0; isActive=true; createdAt=0; sectionName=null },
+    ];
+    for (rule in defaultRules.vals()) {
+      pointsRulesMap.add(rule.id, rule);
+    };
+  };
+
+  // ─── Seed demo rewards catalog ────────────────────────────────────────────────
+  if (rewardsMap.size() == 0) {
+    let demoRewards : [FanPointsTypes.Reward] = [
+      { id="reward-1"; title="10% Colts Pro Shop Discount"; description="Save 10% on any merchandise at the Colts Pro Shop - valid this season"; pointsCost=250; rewardType=#discountCode; codeOrValue="COLTS-SHOP-10"; quantity=?100; quantityRemaining=?100; expiresAt=null; active=true; createdBy=Principal.fromText("aaaaa-aa"); teamId=?"colts" },
+      { id="reward-2"; title="Free Large Pepsi"; description="Complimentary large Pepsi at any Lucas Oil concession stand - sponsored by Pepsi"; pointsCost=150; rewardType=#concessionCredit; codeOrValue="PEPSI-FREE-2026"; quantity=?500; quantityRemaining=?500; expiresAt=null; active=true; createdBy=Principal.fromText("aaaaa-aa"); teamId=?"colts" },
+      { id="reward-3"; title="Free Hot Dog + Chips Combo"; description="One free hot dog and chips combo at any general concession stand"; pointsCost=200; rewardType=#concessionCredit; codeOrValue="HOTDOG-COMBO"; quantity=?300; quantityRemaining=?300; expiresAt=null; active=true; createdBy=Principal.fromText("aaaaa-aa"); teamId=?"colts" },
+      { id="reward-4"; title="Suite Level Upgrade Entry"; description="Enter to win a suite-level seat upgrade for an upcoming Colts home game"; pointsCost=800; rewardType=#ticketEntry; codeOrValue="SUITE-UPGRADE"; quantity=?20; quantityRemaining=?20; expiresAt=null; active=true; createdBy=Principal.fromText("aaaaa-aa"); teamId=?"colts" },
+      { id="reward-5"; title="Signed Colts Jersey Giveaway"; description="Enter for a chance to win an officially signed Colts player jersey"; pointsCost=1200; rewardType=#ticketEntry; codeOrValue="JERSEY-WIN-2026"; quantity=?10; quantityRemaining=?10; expiresAt=null; active=true; createdBy=Principal.fromText("aaaaa-aa"); teamId=?"colts" },
+      { id="reward-6"; title="VIP Field Experience Entry"; description="Enter to win an exclusive pre-game field access pass for one Colts home game"; pointsCost=2000; rewardType=#other; codeOrValue="VIP-FIELD-PASS"; quantity=?5; quantityRemaining=?5; expiresAt=null; active=true; createdBy=Principal.fromText("aaaaa-aa"); teamId=?"colts" },
+    ];
+    for (reward in demoRewards.vals()) {
+      rewardsMap.add(reward.id, reward);
+    };
+  };
+
+  // ─── Seed demo extended staff roster ─────────────────────────────────────────
+  if (extendedStaffMap.size() == 0) {
+    let demoStaff : [StaffTypes.ExtendedStaffMember] = [
+      { id="staff-1"; name="Marcus Williams"; customRole="Suite Runner"; employmentType=#fullTime; employmentStatus=#active; section="Section 102"; phone="317-555-0101"; email="marcus.w@colts-staff.com"; hireDate=1672531200000000000; notes="Lead suite runner for premium section" },
+      { id="staff-2"; name="DeShawn Carter"; customRole="Valet"; employmentType=#partTime; employmentStatus=#active; section="VIP Entrance"; phone="317-555-0102"; email="deshawn.c@colts-staff.com"; hireDate=1680307200000000000; notes="Weekend and game day only" },
+      { id="staff-3"; name="Tyler Brooks"; customRole="Concession Staff"; employmentType=#fullTime; employmentStatus=#active; section="Section 115"; phone="317-555-0103"; email="tyler.b@colts-staff.com"; hireDate=1672531200000000000; notes="Lucas Oil Grill station" },
+      { id="staff-4"; name="Angela Martinez"; customRole="Usher"; employmentType=#partTime; employmentStatus=#active; section="Section 108"; phone="317-555-0104"; email="angela.m@colts-staff.com"; hireDate=1685577600000000000; notes="Lower bowl section" },
+      { id="staff-5"; name="Jordan Reed"; customRole="VIP Attendant"; employmentType=#contractor; employmentStatus=#active; section="VIP Club Level"; phone="317-555-0105"; email="jordan.r@colts-staff.com"; hireDate=1690848000000000000; notes="Club level hospitality" },
+      { id="staff-6"; name="Keisha Thompson"; customRole="Fan Experience"; employmentType=#fullTime; employmentStatus=#active; section="Section 120"; phone="317-555-0106"; email="keisha.t@colts-staff.com"; hireDate=1672531200000000000; notes="Fan engagement lead" },
+    ];
+    for (member in demoStaff.vals()) {
+      extendedStaffMap.add(member.id, member);
+    };
+  };
 
   public type SavingsDirection = { #toSavings; #fromSavings };
   public type SavingsTransaction = {
@@ -6125,6 +6209,369 @@ actor {
       case (null) { null };
       case (?(principal, _)) { ?principal };
     };
+  };
+
+  // ─── White-Label / Partner Branding ───────────────────────────────────────────
+
+  public type PartnerBrandingConfig = {
+    partnerName : Text;
+    partnerLogoUrl : Text;
+    primaryColor : Text;
+    secondaryColor : Text;
+    isActive : Bool;
+  };
+
+  var partnerBrandingConfig : ?PartnerBrandingConfig = null;
+
+  /// Admin-only: set or replace the active partner branding configuration.
+  /// Rejects with a trap if the caller is not an admin.
+  public shared ({ caller }) func setPartnerBranding(config : PartnerBrandingConfig) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can set partner branding");
+    };
+    partnerBrandingConfig := ?config;
+  };
+
+  /// Public query: returns the stored partner branding config, or null if not set.
+  public query func getPartnerBranding() : async ?PartnerBrandingConfig {
+    partnerBrandingConfig;
+  };
+
+  /// Admin-only: clear partner branding and revert to default Open Tip Pay branding.
+  public shared ({ caller }) func clearPartnerBranding() : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can clear partner branding");
+    };
+    partnerBrandingConfig := null;
+  };  // end clearPartnerBranding
+
+  // ─── Fan Points public API ──────────────────────────────────────────────────────
+
+  /// Record a guest (non-app) payment and award Fan Points to the recipient.
+  /// The guest provides a phone number or email so points can be linked later.
+  /// sectionName: optional stadium section of the recipient (enables section multiplier rules).
+  public shared func recordGuestPayment(
+    recipientId : Principal,
+    amount : Nat,
+    contactInfo : Text,
+    contactType : { #phone; #email },
+    sectionName : ?Text,
+  ) : async { #ok : { guestRecordId : Text; fanPointsAwarded : Nat }; #err : Text } {
+    FanPointsAPI.recordGuestPayment(
+      guestPaymentRecords,
+      fanPointsMap,
+      recipientId,
+      amount,
+      contactInfo,
+      contactType,
+      fanPointsState,
+      sectionName,
+    );
+  };
+
+  /// Return the calling user's Fan Points balance.
+  public query ({ caller }) func getMyFanPoints() : async ?FanPointsTypes.FanPoints {
+    FanPointsAPI.getMyFanPoints(fanPointsMap, caller);
+  };
+
+  /// Return the Fan Points balance for any user (public).
+  public query func getFanPoints(userId : Principal) : async ?FanPointsTypes.FanPoints {
+    FanPointsAPI.getFanPoints(fanPointsMap, userId);
+  };
+
+  /// Link prior guest payment points to the caller's account by matching contactInfo.
+  public shared ({ caller }) func linkGuestPaymentsToUser(
+    contactInfo : Text,
+  ) : async { #ok : Nat; #err : Text } {
+    FanPointsAPI.linkGuestPaymentsToUser(guestPaymentRecords, fanPointsMap, contactInfo, caller);
+  };
+
+  /// Return all rewards the caller has redeemed.
+  public query ({ caller }) func getMyRedeemedRewards() : async [FanPointsTypes.RedeemedReward] {
+    FanPointsAPI.getMyRedeemedRewards(redeemedRewardsMap, caller);
+  };
+
+  /// Redeem a reward by spending Fan Points. The redeemed code appears here and is stored on-chain.
+  public shared ({ caller }) func redeemReward(
+    rewardId : Text,
+  ) : async { #ok : FanPointsTypes.RedeemedReward; #err : Text } {
+    FanPointsAPI.redeemReward(
+      rewardsMap,
+      redeemedRewardsMap,
+      fanPointsMap,
+      caller,
+      rewardId,
+      fanPointsState,
+    );
+  };
+
+  /// Admin-only: create a reward fans can redeem with Fan Points.
+  public shared ({ caller }) func createReward(
+    title : Text,
+    description : Text,
+    pointsCost : Nat,
+    rewardType : FanPointsTypes.RewardType,
+    codeOrValue : Text,
+    quantity : ?Nat,
+    expiresAt : ?Int,
+    teamId : ?Text,
+  ) : async { #ok : FanPointsTypes.Reward; #err : Text } {
+    FanPointsAPI.createReward(
+      rewardsMap,
+      caller,
+      AccessControl.isAdmin(accessControlState, caller),
+      title,
+      description,
+      pointsCost,
+      rewardType,
+      codeOrValue,
+      quantity,
+      expiresAt,
+      teamId,
+      fanPointsState,
+    );
+  };
+
+  /// Admin-only: full update of a reward (title, description, pointsCost, codeOrValue, quantity, teamId, active).
+  public shared ({ caller }) func updateReward(
+    id : Text,
+    params : FanPointsTypes.UpdateRewardParams,
+  ) : async { #ok : FanPointsTypes.Reward; #err : Text } {
+    FanPointsAPI.updateReward(
+      rewardsMap,
+      caller,
+      AccessControl.isAdmin(accessControlState, caller),
+      id,
+      params,
+    );
+  };
+
+  /// Admin-only: permanently delete a reward.
+  public shared ({ caller }) func deleteReward(
+    id : Text,
+  ) : async { #ok : Bool; #err : Text } {
+    FanPointsAPI.deleteReward(
+      rewardsMap,
+      caller,
+      AccessControl.isAdmin(accessControlState, caller),
+      id,
+    );
+  };
+
+  /// List all active rewards, optionally filtered by teamId.
+  public query func listRewards(teamId : ?Text) : async [FanPointsTypes.Reward] {
+    FanPointsAPI.listRewards(rewardsMap, teamId);
+  };
+
+  /// Return a single reward by ID.
+  public query func getReward(id : Text) : async ?FanPointsTypes.Reward {
+    FanPointsAPI.getReward(rewardsMap, id);
+  };
+
+  /// Manager-only: assign a staff member to a stadium section.
+  public shared ({ caller }) func assignStaffSection(
+    staffId : Principal,
+    sectionName : Text,
+    sectionLabel : Text,
+  ) : async { #ok : FanPointsTypes.StaffSection; #err : Text } {
+    let isManager = AccessControl.isAdmin(accessControlState, caller)
+      or (switch (staffRosters.get(caller)) { case (?_) { true }; case (null) { false } });
+    FanPointsAPI.assignStaffSection(
+      sectionAssignmentsMap,
+      caller,
+      isManager,
+      staffId,
+      sectionName,
+      sectionLabel,
+    );
+  };
+
+  /// Return the section assignment for a staff member.
+  public query func getStaffSection(staffId : Principal) : async ?FanPointsTypes.StaffSection {
+    FanPointsAPI.getStaffSection(sectionAssignmentsMap, staffId);
+  };
+
+  /// Return all section assignments for a manager.
+  public query func getSectionAssignments(managerId : Principal) : async [FanPointsTypes.StaffSection] {
+    FanPointsAPI.getSectionAssignments(sectionAssignmentsMap, managerId);
+  };
+
+  /// Return tip volume aggregated by stadium section for a manager.
+  public query ({ caller }) func getSectionAnalytics(
+    managerId : Principal,
+    since : ?Int,
+  ) : async [FanPointsTypes.SectionAnalytics] {
+    if (not AccessControl.isAdmin(accessControlState, caller) and not Principal.equal(caller, managerId)) {
+      Runtime.trap("Unauthorized: Only managers can view section analytics");
+    };
+    let tipEntries = tips.map<Tip, FanPointsAPI.TipEntry>(
+      func(t : Tip) : FanPointsAPI.TipEntry {
+        { fromUser = t.fromUser; toUser = t.toUser; amount = t.amount; timestamp = t.timestamp }
+      }
+    );
+    FanPointsAPI.getSectionAnalytics(sectionAssignmentsMap, tipEntries, managerId, since);
+  };
+
+  /// Return per-staff tip summary for a manager's roster.
+  public query ({ caller }) func getStaffAnalytics(
+    managerId : Principal,
+    since : ?Int,
+  ) : async [{ staffId : Principal; totalTips : Nat; totalAmount : Nat; sectionName : ?Text }] {
+    if (not AccessControl.isAdmin(accessControlState, caller) and not Principal.equal(caller, managerId)) {
+      Runtime.trap("Unauthorized: Only managers can view staff analytics");
+    };
+    let tipEntries = tips.map<Tip, FanPointsAPI.TipEntry>(
+      func(t : Tip) : FanPointsAPI.TipEntry {
+        { fromUser = t.fromUser; toUser = t.toUser; amount = t.amount; timestamp = t.timestamp }
+      }
+    );
+    FanPointsAPI.getStaffAnalytics(sectionAssignmentsMap, staffRosters, tipEntries, managerId, since);
+  };
+
+  // ─── Fractional Point Engine public API ──────────────────────────────────────
+
+  public query func listPointsRules() : async [FanPointsTypes.PointsRule] {
+    FanPointsAPI.listPointsRules(pointsRulesMap);
+  };
+
+  public shared(msg) func createPointsRule(rule : FanPointsTypes.PointsRule) : async { #ok : FanPointsTypes.PointsRule; #err : Text } {
+    FanPointsAPI.createPointsRule(pointsRulesMap, AccessControl.isAdmin(accessControlState, msg.caller), rule);
+  };
+
+  public shared(msg) func updatePointsRule(id : Text, name : Text, description : Text, multiplier : Float, sectionName : ?Text) : async { #ok : FanPointsTypes.PointsRule; #err : Text } {
+    FanPointsAPI.updatePointsRule(pointsRulesMap, AccessControl.isAdmin(accessControlState, msg.caller), id, name, description, multiplier, sectionName);
+  };
+
+  public shared(msg) func togglePointsRule(id : Text, active : Bool) : async { #ok : FanPointsTypes.PointsRule; #err : Text } {
+    FanPointsAPI.togglePointsRule(pointsRulesMap, AccessControl.isAdmin(accessControlState, msg.caller), id, active);
+  };
+
+  public query func getPointsBreakdown(amountCents : Nat, transactionType : Text, isGameDay : Bool, isFirstPayment : Bool, sectionName : ?Text) : async FanPointsTypes.PointsBreakdown {
+    FanPointsAPI.getPointsBreakdown(pointsRulesMap, amountCents, transactionType, isGameDay, isFirstPayment, sectionName);
+  };
+
+  // ─── Tip-Split state ─────────────────────────────────────────────────────────
+  let staffCheckIns = Map.empty<Text, TipSplitTypes.StaffCheckIn>();
+  let gameStandAssignments = Map.empty<Text, TipSplitTypes.GameStandAssignment>();
+  let tipSplitRoles = Map.empty<Text, TipSplitTypes.TipSplitRole>();
+  let tipSplitPayouts = Map.empty<Text, TipSplitTypes.TipSplitPayout>();
+
+  // ─── Extended Staff Roster public API ────────────────────────────────────────
+
+  public shared(msg) func upsertExtendedStaff(member : StaffTypes.ExtendedStaffMember) : async { #ok : StaffTypes.ExtendedStaffMember; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    StaffAPI.upsertExtendedStaff(extendedStaffMap, authorized, member);
+  };
+
+  public shared(msg) func listExtendedStaff() : async [StaffTypes.ExtendedStaffMember] {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    StaffAPI.listExtendedStaff(extendedStaffMap, authorized);
+  };
+
+  public query func getExtendedStaff(id : Text) : async ?StaffTypes.ExtendedStaffMember {
+    StaffAPI.getExtendedStaff(extendedStaffMap, id);
+  };
+
+  public shared(msg) func removeExtendedStaff(id : Text) : async { #ok; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    StaffAPI.removeExtendedStaff(extendedStaffMap, authorized, id);
+  };
+
+  // ─── Tip-Split public API stubs ───────────────────────────────────────────────
+
+  public shared(msg) func recordCheckIn(
+    staffId : Text,
+    staffName : Text,
+    role : Text,
+    standId : Text,
+    standName : Text,
+    gameDate : Text,
+    checkInTime : Int,
+  ) : async { #ok : TipSplitTypes.StaffCheckIn; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.recordCheckIn(staffCheckIns, authorized, staffId, staffName, role, standId, standName, gameDate, checkInTime);
+  };
+
+  public shared(msg) func recordCheckOut(
+    checkInId : Text,
+    checkOutTime : Int,
+  ) : async { #ok : TipSplitTypes.StaffCheckIn; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.recordCheckOut(staffCheckIns, authorized, checkInId, checkOutTime);
+  };
+
+  public shared(msg) func manualSetHours(
+    checkInId : Text,
+    hoursWorked : Float,
+    overrideBy : Text,
+  ) : async { #ok : TipSplitTypes.StaffCheckIn; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.manualSetHours(staffCheckIns, authorized, checkInId, hoursWorked, overrideBy);
+  };
+
+  public shared(msg) func getCheckInsForGame(
+    gameDate : Text,
+  ) : async [TipSplitTypes.StaffCheckIn] {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.getCheckInsForGame(staffCheckIns, authorized, gameDate);
+  };
+
+  public query func getGameStandAssignment(
+    staffId : Text,
+    gameDate : Text,
+  ) : async ?TipSplitTypes.GameStandAssignment {
+    TipSplitAPI.getGameStandAssignment(gameStandAssignments, staffId, gameDate);
+  };
+
+  public shared(msg) func setGameStandAssignment(
+    assignment : TipSplitTypes.GameStandAssignment,
+  ) : async { #ok : TipSplitTypes.GameStandAssignment; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.setGameStandAssignment(gameStandAssignments, authorized, assignment);
+  };
+
+  public query func getTipSplitRoles() : async [TipSplitTypes.TipSplitRole] {
+    TipSplitAPI.getTipSplitRoles(tipSplitRoles);
+  };
+
+  public shared(msg) func upsertTipSplitRole(
+    role : TipSplitTypes.TipSplitRole,
+  ) : async { #ok : TipSplitTypes.TipSplitRole; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.upsertTipSplitRole(tipSplitRoles, authorized, role);
+  };
+
+  public shared(msg) func removeTipSplitRole(
+    roleId : Text,
+  ) : async { #ok; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.removeTipSplitRole(tipSplitRoles, authorized, roleId);
+  };
+
+  public shared(msg) func calculateTipSplit(
+    standId : Text,
+    gameDate : Text,
+    totalPool : Float,
+  ) : async { #ok : TipSplitTypes.TipSplitPayout; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.calculateTipSplit(staffCheckIns, tipSplitRoles, gameStandAssignments, tipSplitPayouts, authorized, standId, gameDate, totalPool);
+  };
+
+  public shared(msg) func approveTipSplitPayout(
+    payoutId : Text,
+    approvedBy : Text,
+    approvedAt : Int,
+  ) : async { #ok : TipSplitTypes.TipSplitPayout; #err : Text } {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.approveTipSplitPayout(tipSplitPayouts, authorized, payoutId, approvedBy, approvedAt);
+  };
+
+  public shared(msg) func getTipSplitPayouts(
+    standId : ?Text,
+    gameDate : ?Text,
+  ) : async [TipSplitTypes.TipSplitPayout] {
+    let authorized = AccessControl.isAdmin(accessControlState, msg.caller);
+    TipSplitAPI.getTipSplitPayouts(tipSplitPayouts, authorized, standId, gameDate);
   };
 
 };
