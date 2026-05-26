@@ -1,5 +1,5 @@
-import { r as reactExports, j as jsxRuntimeExports } from "./index-DgPXBAnq.js";
-import { g as createLucideIcon, u as useDemoMode, h as useBranding, n as useUpdateOrderStatus, o as useGetActiveOrdersForManager, j as DEMO_ACTIVE_ORDER, m as DEMO_STANDS, p as RefreshCw, L as LogOut, O as OrderStatus, l as ue } from "./App-BpOiggIL.js";
+import { r as reactExports, j as jsxRuntimeExports } from "./index-DrIOJRxg.js";
+import { g as createLucideIcon, u as useDemoMode, h as useBranding, n as useUpdateOrderStatus, o as useGetActiveOrdersForManager, j as DEMO_ACTIVE_ORDER, m as DEMO_STANDS, R as RefreshCw, L as LogOut, O as OrderStatus, l as ue } from "./App-BuPOeQmh.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *

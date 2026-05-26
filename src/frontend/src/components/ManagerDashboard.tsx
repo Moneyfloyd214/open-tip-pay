@@ -303,7 +303,7 @@ export default function ManagerDashboard({ onClose }: ManagerDashboardProps) {
     },
     {
       id: "badges" as const,
-      label: "Badge Generator",
+      label: "QR Code Generator",
       icon: <IdCard className="h-4 w-4" />,
     },
     {

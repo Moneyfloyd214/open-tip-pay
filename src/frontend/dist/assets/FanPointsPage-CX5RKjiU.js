@@ -1,92 +1,80 @@
-import { r as reactExports, j as jsxRuntimeExports } from "./index-DgPXBAnq.js";
-import { R as RewardType, u as useDemoMode, a as useGetMyFanPoints, b as useListRewards, c as useGetMyRedeemedRewards, d as useRedeemReward, D as DEMO_PLAID_MERCHANTS, e as DEMO_POINTS_RULES, f as DEMO_POINT_TRANSACTIONS } from "./App-BpOiggIL.js";
+import { r as reactExports, j as jsxRuntimeExports } from "./index-DrIOJRxg.js";
+import { u as useDemoMode, a as useGetMyFanPoints, b as useListRewards, c as useGetMyRedeemedRewards, d as useRedeemReward, D as DEMO_PLAID_MERCHANTS, e as DEMO_POINTS_RULES, f as DEMO_POINT_TRANSACTIONS } from "./App-BuPOeQmh.js";
+const mockPrincipal = { isAnonymous: () => false, toText: () => "aaaaa-aa" };
 const DEMO_REWARDS = [
   {
     id: "reward-1",
-    title: "10% Colts Pro Shop Discount",
-    description: "Save 10% on any merchandise at the Colts Pro Shop — valid this season",
-    pointsCost: BigInt(250),
-    rewardType: RewardType.discountCode,
-    codeOrValue: "COLTS-SHOP-10",
-    quantity: BigInt(100),
-    quantityRemaining: BigInt(100),
-    expiresAt: void 0,
+    title: "Colts Pro Shop 10% Off",
     active: true,
-    createdBy: { _isPrincipal: true, toText: () => "aaaaa-aa", toUint8Array: () => new Uint8Array([0]), compareTo: () => 0 },
-    teamId: "colts"
+    quantityRemaining: BigInt(50),
+    createdBy: mockPrincipal,
+    codeOrValue: "COLTS10",
+    description: "10% off your next Colts Pro Shop purchase",
+    rewardType: "discountCode",
+    quantity: BigInt(100),
+    pointsCost: BigInt(500)
   },
   {
     id: "reward-2",
-    title: "Free Large Pepsi",
-    description: "Complimentary large Pepsi at any Lucas Oil concession stand — sponsored by Pepsi",
-    pointsCost: BigInt(150),
-    rewardType: RewardType.concessionCredit,
-    codeOrValue: "PEPSI-FREE-2026",
-    quantity: BigInt(500),
-    quantityRemaining: BigInt(500),
-    expiresAt: void 0,
+    title: "Free Hot Dog",
     active: true,
-    createdBy: { _isPrincipal: true, toText: () => "aaaaa-aa", toUint8Array: () => new Uint8Array([0]), compareTo: () => 0 },
-    teamId: "colts"
+    quantityRemaining: BigInt(25),
+    createdBy: mockPrincipal,
+    codeOrValue: "FREEHDOG",
+    description: "Redeem for a free hot dog at any concession stand",
+    rewardType: "concessionCredit",
+    quantity: BigInt(50),
+    pointsCost: BigInt(250)
   },
   {
     id: "reward-3",
-    title: "Free Hot Dog + Chips Combo",
-    description: "One free hot dog and chips combo at any general concession stand",
-    pointsCost: BigInt(200),
-    rewardType: RewardType.concessionCredit,
-    codeOrValue: "HOTDOG-COMBO",
-    quantity: BigInt(300),
-    quantityRemaining: BigInt(300),
-    expiresAt: void 0,
-    active: true,
-    createdBy: { _isPrincipal: true, toText: () => "aaaaa-aa", toUint8Array: () => new Uint8Array([0]), compareTo: () => 0 },
-    teamId: "colts"
+    title: "Suite Upgrade Entry",
+    active: false,
+    quantityRemaining: BigInt(5),
+    createdBy: mockPrincipal,
+    codeOrValue: "SUITE2025",
+    description: "Enter to win a suite upgrade for a Colts home game",
+    rewardType: "ticketEntry",
+    quantity: BigInt(10),
+    pointsCost: BigInt(1e3)
   },
   {
     id: "reward-4",
-    title: "Suite Level Upgrade Entry",
-    description: "Enter to win a suite-level seat upgrade for an upcoming Colts home game",
-    pointsCost: BigInt(800),
-    rewardType: RewardType.ticketEntry,
-    codeOrValue: "SUITE-UPGRADE",
-    quantity: BigInt(20),
-    quantityRemaining: BigInt(20),
-    expiresAt: void 0,
+    title: "Signed Jersey Giveaway",
     active: true,
-    createdBy: { _isPrincipal: true, toText: () => "aaaaa-aa", toUint8Array: () => new Uint8Array([0]), compareTo: () => 0 },
-    teamId: "colts"
+    quantityRemaining: BigInt(2),
+    createdBy: mockPrincipal,
+    codeOrValue: "JERSEY25",
+    description: "Win an autographed Colts jersey",
+    rewardType: "ticketEntry",
+    quantity: BigInt(5),
+    pointsCost: BigInt(2e3)
   },
   {
     id: "reward-5",
-    title: "Signed Colts Jersey Giveaway",
-    description: "Enter for a chance to win an officially signed Colts player jersey",
-    pointsCost: BigInt(1200),
-    rewardType: RewardType.ticketEntry,
-    codeOrValue: "JERSEY-WIN-2026",
-    quantity: BigInt(10),
-    quantityRemaining: BigInt(10),
-    expiresAt: void 0,
+    title: "Free Pepsi (Sponsored)",
     active: true,
-    createdBy: { _isPrincipal: true, toText: () => "aaaaa-aa", toUint8Array: () => new Uint8Array([0]), compareTo: () => 0 },
-    teamId: "colts"
+    quantityRemaining: BigInt(100),
+    createdBy: mockPrincipal,
+    codeOrValue: "PEPSI100",
+    description: "Compliments of Pepsi — free 32oz Pepsi at any stand",
+    rewardType: "concessionCredit",
+    quantity: BigInt(100),
+    pointsCost: BigInt(100)
   },
   {
     id: "reward-6",
-    title: "VIP Field Experience Entry",
-    description: "Enter to win an exclusive pre-game field access pass for one Colts home game",
-    pointsCost: BigInt(2e3),
-    rewardType: RewardType.other,
-    codeOrValue: "VIP-FIELD-PASS",
-    quantity: BigInt(5),
-    quantityRemaining: BigInt(5),
-    expiresAt: void 0,
+    title: "VIP Field Pass",
     active: true,
-    createdBy: { _isPrincipal: true, toText: () => "aaaaa-aa", toUint8Array: () => new Uint8Array([0]), compareTo: () => 0 },
-    teamId: "colts"
+    quantityRemaining: BigInt(0),
+    createdBy: mockPrincipal,
+    codeOrValue: "VIP2025",
+    description: "Access to field level after the game",
+    rewardType: "other",
+    quantity: BigInt(3),
+    pointsCost: BigInt(5e3)
   }
 ];
-BigInt(Date.now()) * BigInt(1e6);
 function FanPointsPage() {
   const { isDemoMode } = useDemoMode();
   const { data: fanPoints, isLoading: fanPointsLoading } = useGetMyFanPoints();
@@ -115,22 +103,78 @@ function FanPointsPage() {
     const seedTransactions = [
       {
         id: "seed_1",
-        merchantName: "Club Level Grill",
-        amount: 14.5,
-        multiplier: 2,
-        pts: Number.parseFloat((14.5 * 2 * 1.25).toFixed(3)),
-        timestamp: new Date(Date.now() - 12e4).toLocaleTimeString()
+        merchantName: "Lucas Oil Valet",
+        amount: 25,
+        multiplier: 1,
+        pts: Number.parseFloat((25 * 1 * 1.25).toFixed(3)),
+        timestamp: new Date(Date.now() - 6e5).toLocaleTimeString()
       },
       {
         id: "seed_2",
+        merchantName: "Seat Upgrade Kiosk",
+        amount: 45,
+        multiplier: 1.25,
+        pts: Number.parseFloat((45 * 1.25 * 1.25).toFixed(3)),
+        timestamp: new Date(Date.now() - 48e4).toLocaleTimeString()
+      },
+      {
+        id: "seed_3",
+        merchantName: "Colts Team Store",
+        amount: 68.99,
+        multiplier: 2,
+        pts: Number.parseFloat((68.99 * 2 * 1.25).toFixed(3)),
+        timestamp: new Date(Date.now() - 36e4).toLocaleTimeString()
+      },
+      {
+        id: "seed_4",
+        merchantName: "Field Level Bar",
+        amount: 18.5,
+        multiplier: 2.5,
+        pts: Number.parseFloat((18.5 * 2.5 * 1.25).toFixed(3)),
+        timestamp: new Date(Date.now() - 24e4).toLocaleTimeString()
+      },
+      {
+        id: "seed_5",
+        merchantName: "Club Level Restaurant",
+        amount: 32,
+        multiplier: 2,
+        pts: Number.parseFloat((32 * 2 * 1.25).toFixed(3)),
+        timestamp: new Date(Date.now() - 18e4).toLocaleTimeString()
+      },
+      {
+        id: "seed_6",
+        merchantName: "Event Parking Lot B (VIP)",
+        amount: 40,
+        multiplier: 1,
+        pts: Number.parseFloat((40 * 1 * 1.25).toFixed(3)),
+        timestamp: new Date(Date.now() - 12e4).toLocaleTimeString()
+      },
+      {
+        id: "seed_7",
         merchantName: "End Zone Concessions",
         amount: 8.99,
         multiplier: 1.5,
         pts: Number.parseFloat((8.99 * 1.5 * 1.25).toFixed(3)),
+        timestamp: new Date(Date.now() - 9e4).toLocaleTimeString()
+      },
+      {
+        id: "seed_8",
+        merchantName: "Halftime Zone Bar",
+        amount: 14,
+        multiplier: 1.75,
+        pts: Number.parseFloat((14 * 1.75 * 1.25).toFixed(3)),
         timestamp: new Date(Date.now() - 6e4).toLocaleTimeString()
       },
       {
-        id: "seed_3",
+        id: "seed_9",
+        merchantName: "Stadium Gift Shop",
+        amount: 22.5,
+        multiplier: 1.5,
+        pts: Number.parseFloat((22.5 * 1.5 * 1.25).toFixed(3)),
+        timestamp: new Date(Date.now() - 3e4).toLocaleTimeString()
+      },
+      {
+        id: "seed_10",
         merchantName: "Gate A Snack Stand",
         amount: 5.49,
         multiplier: 1.25,

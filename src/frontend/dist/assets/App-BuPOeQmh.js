@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/GuestPaymentPage-DfgL27K_.js","assets/index-DgPXBAnq.js","assets/index-VMmcxl28.css","assets/FanPointsPage-Bw44ExFi.js","assets/KitchenDisplayPage-D-YpCC9a.js","assets/FanOrderHistoryPage-DpqYyrMg.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/GuestPaymentPage-C3G5X7UA.js","assets/index-DrIOJRxg.js","assets/index-DyWpWZ6R.css","assets/FanPointsPage-CX5RKjiU.js","assets/KitchenDisplayPage-DHGeIX_2.js","assets/FanOrderHistoryPage-BWQNZq9V.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -19,7 +19,7 @@ var __privateWrapper = (obj, member, setter, getter) => ({
   }
 });
 var _client, _currentQuery, _currentQueryInitialState, _currentResult, _currentResultState, _currentResultOptions, _currentThenable, _selectError, _selectFn, _selectResult, _lastQueryWithDefinedData, _staleTimeoutId, _refetchIntervalId, _currentRefetchInterval, _trackedProps, _QueryObserver_instances, executeFetch_fn, updateStaleTimeout_fn, computeRefetchInterval_fn, updateRefetchInterval_fn, updateTimers_fn, clearStaleTimeout_fn, clearRefetchInterval_fn, updateQuery_fn, notify_fn, _a2, _client2, _currentResult2, _currentMutation, _mutateOptions, _MutationObserver_instances, updateResult_fn, notify_fn2, _b, _disableTimeVerification, _agent, _inner, _expirationTime, _rawKey, _derKey, _c, _currentInterval, _randomizationFactor, _multiplier, _maxInterval, _startTime, _maxElapsedTime, _maxIterations, _date, _count, _rootKeyPromise, _shouldFetchRootKey, _timeDiffMsecs, _hasSyncedTime, _syncTimePromise, _shouldSyncTime, _identity, _fetch, _fetchOptions, _callOptions, _credentials, _retryTimes, _backoffStrategy, _maxIngressExpiryInMinutes, _HttpAgent_instances, maxIngressExpiryInMs_get, _queryPipeline, _updatePipeline, _subnetKeys, _verifyQuerySignatures, requestAndRetryQuery_fn, requestAndRetry_fn, _verifyQueryResponse, asyncGuard_fn, rootKeyGuard_fn, syncTimeGuard_fn, _rawKey2, _derKey2, _publicKey, _privateKey, _inner2, _delegation, _options;
-import { S as Subscribable, p as pendingThenable, b as resolveEnabled, s as shallowEqualObjects, c as resolveStaleTime, n as noop$1, e as environmentManager, i as isValidTimeout, t as timeUntilStale, d as timeoutManager, f as focusManager, g as fetchState, h as replaceData, k as notifyManager, l as hashKey, m as getDefaultState, r as reactExports, o as shouldThrowError, u as useQueryClient, R as React$1, q as ReactDOM, j as jsxRuntimeExports, _ as __vitePreload, v as React$2, w as reactDomExports } from "./index-DgPXBAnq.js";
+import { S as Subscribable, p as pendingThenable, b as resolveEnabled, s as shallowEqualObjects, c as resolveStaleTime, n as noop$1, e as environmentManager, i as isValidTimeout, t as timeUntilStale, d as timeoutManager, f as focusManager, g as fetchState, h as replaceData, k as notifyManager, l as hashKey, m as getDefaultState, r as reactExports, o as shouldThrowError, u as useQueryClient, R as React$1, q as ReactDOM, j as jsxRuntimeExports, _ as __vitePreload, v as React$2, w as reactDomExports } from "./index-DrIOJRxg.js";
 var QueryObserver = (_a2 = class extends Subscribable {
   constructor(client, options) {
     super();
@@ -13791,7 +13791,7 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1H = [
+const __iconNode$1J = [
   [
     "path",
     {
@@ -13800,7 +13800,29 @@ const __iconNode$1H = [
     }
   ]
 ];
-const Activity = createLucideIcon("activity", __iconNode$1H);
+const Activity = createLucideIcon("activity", __iconNode$1J);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1I = [
+  ["path", { d: "M17 7 7 17", key: "15tmo1" }],
+  ["path", { d: "M17 17H7V7", key: "1org7z" }]
+];
+const ArrowDownLeft = createLucideIcon("arrow-down-left", __iconNode$1I);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1H = [
+  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
+  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+];
+const ArrowLeft = createLucideIcon("arrow-left", __iconNode$1H);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -13808,10 +13830,10 @@ const Activity = createLucideIcon("activity", __iconNode$1H);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1G = [
-  ["path", { d: "M17 7 7 17", key: "15tmo1" }],
-  ["path", { d: "M17 17H7V7", key: "1org7z" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowDownLeft = createLucideIcon("arrow-down-left", __iconNode$1G);
+const ArrowRight = createLucideIcon("arrow-right", __iconNode$1G);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -13819,10 +13841,10 @@ const ArrowDownLeft = createLucideIcon("arrow-down-left", __iconNode$1G);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1F = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+  ["path", { d: "M7 7h10v10", key: "1tivn9" }],
+  ["path", { d: "M7 17 17 7", key: "1vkiza" }]
 ];
-const ArrowLeft = createLucideIcon("arrow-left", __iconNode$1F);
+const ArrowUpRight = createLucideIcon("arrow-up-right", __iconNode$1F);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -13830,28 +13852,6 @@ const ArrowLeft = createLucideIcon("arrow-left", __iconNode$1F);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1E = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
-];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode$1E);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$1D = [
-  ["path", { d: "M7 7h10v10", key: "1tivn9" }],
-  ["path", { d: "M7 17 17 7", key: "1vkiza" }]
-];
-const ArrowUpRight = createLucideIcon("arrow-up-right", __iconNode$1D);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$1C = [
   ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
   [
     "path",
@@ -13861,25 +13861,25 @@ const __iconNode$1C = [
     }
   ]
 ];
-const Bell = createLucideIcon("bell", __iconNode$1C);
+const Bell = createLucideIcon("bell", __iconNode$1E);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1B = [
+const __iconNode$1D = [
   ["path", { d: "M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16", key: "jecpp" }],
   ["rect", { width: "20", height: "14", x: "2", y: "6", rx: "2", key: "i6l2r4" }]
 ];
-const Briefcase = createLucideIcon("briefcase", __iconNode$1B);
+const Briefcase = createLucideIcon("briefcase", __iconNode$1D);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1A = [
+const __iconNode$1C = [
   ["path", { d: "M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z", key: "1b4qmf" }],
   ["path", { d: "M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2", key: "i71pzd" }],
   ["path", { d: "M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2", key: "10jefs" }],
@@ -13888,14 +13888,14 @@ const __iconNode$1A = [
   ["path", { d: "M10 14h4", key: "kelpxr" }],
   ["path", { d: "M10 18h4", key: "1ulq68" }]
 ];
-const Building2 = createLucideIcon("building-2", __iconNode$1A);
+const Building2 = createLucideIcon("building-2", __iconNode$1C);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1z = [
+const __iconNode$1B = [
   ["rect", { width: "16", height: "20", x: "4", y: "2", rx: "2", key: "1nb95v" }],
   ["line", { x1: "8", x2: "16", y1: "6", y2: "6", key: "x4nwl0" }],
   ["line", { x1: "16", x2: "16", y1: "14", y2: "18", key: "wjye3r" }],
@@ -13907,14 +13907,14 @@ const __iconNode$1z = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M8 18h.01", key: "lrp35t" }]
 ];
-const Calculator = createLucideIcon("calculator", __iconNode$1z);
+const Calculator = createLucideIcon("calculator", __iconNode$1B);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1y = [
+const __iconNode$1A = [
   ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["path", { d: "M8 2v4", key: "1cmpym" }],
@@ -13922,14 +13922,14 @@ const __iconNode$1y = [
   ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
   ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
 ];
-const CalendarClock = createLucideIcon("calendar-clock", __iconNode$1y);
+const CalendarClock = createLucideIcon("calendar-clock", __iconNode$1A);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1x = [
+const __iconNode$1z = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -13941,27 +13941,27 @@ const __iconNode$1x = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("calendar-days", __iconNode$1x);
+const CalendarDays = createLucideIcon("calendar-days", __iconNode$1z);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1w = [
+const __iconNode$1y = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
   ["path", { d: "M3 10h18", key: "8toen8" }]
 ];
-const Calendar = createLucideIcon("calendar", __iconNode$1w);
+const Calendar = createLucideIcon("calendar", __iconNode$1y);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1v = [
+const __iconNode$1x = [
   [
     "path",
     {
@@ -13971,52 +13971,75 @@ const __iconNode$1v = [
   ],
   ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
 ];
-const Camera = createLucideIcon("camera", __iconNode$1v);
+const Camera = createLucideIcon("camera", __iconNode$1x);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1u = [
+const __iconNode$1w = [
   ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
   ["path", { d: "M18 17V9", key: "2bz60n" }],
   ["path", { d: "M13 17V5", key: "1frdt8" }],
   ["path", { d: "M8 17v-3", key: "17ska0" }]
 ];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$1u);
+const ChartColumn = createLucideIcon("chart-column", __iconNode$1w);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1t = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$1t);
+const __iconNode$1v = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$1v);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1s = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$1s);
+const __iconNode$1u = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$1u);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1r = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$1r);
+const __iconNode$1t = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$1t);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1q = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$1q);
+const __iconNode$1s = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = createLucideIcon("chevron-up", __iconNode$1s);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1r = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$1r);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1q = [
+  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
+  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
+];
+const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$1q);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14025,10 +14048,9 @@ const ChevronUp = createLucideIcon("chevron-up", __iconNode$1q);
  */
 const __iconNode$1p = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$1p);
+const CircleCheck = createLucideIcon("circle-check", __iconNode$1p);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14036,10 +14058,11 @@ const CircleAlert = createLucideIcon("circle-alert", __iconNode$1p);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1o = [
-  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
-  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3", key: "1u773s" }],
+  ["path", { d: "M12 17h.01", key: "p32p05" }]
 ];
-const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$1o);
+const CircleHelp = createLucideIcon("circle-help", __iconNode$1o);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14048,9 +14071,9 @@ const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$1o);
  */
 const __iconNode$1n = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["polygon", { points: "10 8 16 12 10 16 10 8", key: "1cimsy" }]
 ];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$1n);
+const CirclePlay = createLucideIcon("circle-play", __iconNode$1n);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14059,10 +14082,10 @@ const CircleCheck = createLucideIcon("circle-check", __iconNode$1n);
  */
 const __iconNode$1m = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3", key: "1u773s" }],
-  ["path", { d: "M12 17h.01", key: "p32p05" }]
+  ["path", { d: "M8 12h8", key: "1wcyev" }],
+  ["path", { d: "M12 8v8", key: "napkw2" }]
 ];
-const CircleHelp = createLucideIcon("circle-help", __iconNode$1m);
+const CirclePlus = createLucideIcon("circle-plus", __iconNode$1m);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14071,21 +14094,18 @@ const CircleHelp = createLucideIcon("circle-help", __iconNode$1m);
  */
 const __iconNode$1l = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["polygon", { points: "10 8 16 12 10 16 10 8", key: "1cimsy" }]
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const CirclePlay = createLucideIcon("circle-play", __iconNode$1l);
+const CircleX = createLucideIcon("circle-x", __iconNode$1l);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1k = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M8 12h8", key: "1wcyev" }],
-  ["path", { d: "M12 8v8", key: "napkw2" }]
-];
-const CirclePlus = createLucideIcon("circle-plus", __iconNode$1k);
+const __iconNode$1k = [["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]];
+const Circle = createLucideIcon("circle", __iconNode$1k);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14094,18 +14114,21 @@ const CirclePlus = createLucideIcon("circle-plus", __iconNode$1k);
  */
 const __iconNode$1j = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
 ];
-const CircleX = createLucideIcon("circle-x", __iconNode$1j);
+const Clock = createLucideIcon("clock", __iconNode$1j);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1i = [["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]];
-const Circle = createLucideIcon("circle", __iconNode$1i);
+const __iconNode$1i = [
+  ["path", { d: "m18 16 4-4-4-4", key: "1inbqp" }],
+  ["path", { d: "m6 8-4 4 4 4", key: "15zrgr" }],
+  ["path", { d: "m14.5 4-5 16", key: "e7oirm" }]
+];
+const CodeXml = createLucideIcon("code-xml", __iconNode$1i);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14113,10 +14136,10 @@ const Circle = createLucideIcon("circle", __iconNode$1i);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1h = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Clock = createLucideIcon("clock", __iconNode$1h);
+const Copy = createLucideIcon("copy", __iconNode$1h);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14124,11 +14147,22 @@ const Clock = createLucideIcon("clock", __iconNode$1h);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1g = [
-  ["path", { d: "m18 16 4-4-4-4", key: "1inbqp" }],
-  ["path", { d: "m6 8-4 4 4 4", key: "15zrgr" }],
-  ["path", { d: "m14.5 4-5 16", key: "e7oirm" }]
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }],
+  ["path", { d: "M17 20v2", key: "1rnc9c" }],
+  ["path", { d: "M17 2v2", key: "11trls" }],
+  ["path", { d: "M2 12h2", key: "1t8f8n" }],
+  ["path", { d: "M2 17h2", key: "7oei6x" }],
+  ["path", { d: "M2 7h2", key: "asdhe0" }],
+  ["path", { d: "M20 12h2", key: "1q8mjw" }],
+  ["path", { d: "M20 17h2", key: "1fpfkl" }],
+  ["path", { d: "M20 7h2", key: "1o8tra" }],
+  ["path", { d: "M7 20v2", key: "4gnj0m" }],
+  ["path", { d: "M7 2v2", key: "1i4yhu" }],
+  ["rect", { x: "4", y: "4", width: "16", height: "16", rx: "2", key: "1vbyd7" }],
+  ["rect", { x: "8", y: "8", width: "8", height: "8", rx: "1", key: "z9xiuo" }]
 ];
-const CodeXml = createLucideIcon("code-xml", __iconNode$1g);
+const Cpu = createLucideIcon("cpu", __iconNode$1g);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14136,10 +14170,10 @@ const CodeXml = createLucideIcon("code-xml", __iconNode$1g);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1f = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
+  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
 ];
-const Copy = createLucideIcon("copy", __iconNode$1f);
+const CreditCard = createLucideIcon("credit-card", __iconNode$1f);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14147,10 +14181,11 @@ const Copy = createLucideIcon("copy", __iconNode$1f);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1e = [
-  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
-  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
 ];
-const CreditCard = createLucideIcon("credit-card", __iconNode$1e);
+const Database = createLucideIcon("database", __iconNode$1e);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14158,11 +14193,10 @@ const CreditCard = createLucideIcon("credit-card", __iconNode$1e);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1d = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
+  ["line", { x1: "12", x2: "12", y1: "2", y2: "22", key: "7eqyqh" }],
+  ["path", { d: "M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6", key: "1b0p4s" }]
 ];
-const Database = createLucideIcon("database", __iconNode$1d);
+const DollarSign = createLucideIcon("dollar-sign", __iconNode$1d);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14170,10 +14204,11 @@ const Database = createLucideIcon("database", __iconNode$1d);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1c = [
-  ["line", { x1: "12", x2: "12", y1: "2", y2: "22", key: "7eqyqh" }],
-  ["path", { d: "M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6", key: "1b0p4s" }]
+  ["path", { d: "M12 15V3", key: "m9g1x1" }],
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
 ];
-const DollarSign = createLucideIcon("dollar-sign", __iconNode$1c);
+const Download = createLucideIcon("download", __iconNode$1c);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14181,18 +14216,6 @@ const DollarSign = createLucideIcon("dollar-sign", __iconNode$1c);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1b = [
-  ["path", { d: "M12 15V3", key: "m9g1x1" }],
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
-];
-const Download = createLucideIcon("download", __iconNode$1b);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$1a = [
   [
     "path",
     {
@@ -14210,14 +14233,14 @@ const __iconNode$1a = [
   ],
   ["path", { d: "m2 2 20 20", key: "1ooewy" }]
 ];
-const EyeOff = createLucideIcon("eye-off", __iconNode$1a);
+const EyeOff = createLucideIcon("eye-off", __iconNode$1b);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$19 = [
+const __iconNode$1a = [
   [
     "path",
     {
@@ -14227,7 +14250,19 @@ const __iconNode$19 = [
   ],
   ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const Eye = createLucideIcon("eye", __iconNode$19);
+const Eye = createLucideIcon("eye", __iconNode$1a);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$19 = [
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "m9 15 2 2 4-4", key: "1grp1n" }]
+];
+const FileCheck = createLucideIcon("file-check", __iconNode$19);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14237,9 +14272,10 @@ const Eye = createLucideIcon("eye", __iconNode$19);
 const __iconNode$18 = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "m9 15 2 2 4-4", key: "1grp1n" }]
+  ["path", { d: "M12 18v-6", key: "17g6i2" }],
+  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
 ];
-const FileCheck = createLucideIcon("file-check", __iconNode$18);
+const FileDown = createLucideIcon("file-down", __iconNode$18);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14249,10 +14285,12 @@ const FileCheck = createLucideIcon("file-check", __iconNode$18);
 const __iconNode$17 = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 18v-6", key: "17g6i2" }],
-  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+  ["path", { d: "M8 13h2", key: "yr2amv" }],
+  ["path", { d: "M14 13h2", key: "un5t4a" }],
+  ["path", { d: "M8 17h2", key: "2yhykz" }],
+  ["path", { d: "M14 17h2", key: "10kma7" }]
 ];
-const FileDown = createLucideIcon("file-down", __iconNode$17);
+const FileSpreadsheet = createLucideIcon("file-spreadsheet", __iconNode$17);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14262,12 +14300,11 @@ const FileDown = createLucideIcon("file-down", __iconNode$17);
 const __iconNode$16 = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M8 13h2", key: "yr2amv" }],
-  ["path", { d: "M14 13h2", key: "un5t4a" }],
-  ["path", { d: "M8 17h2", key: "2yhykz" }],
-  ["path", { d: "M14 17h2", key: "10kma7" }]
+  ["path", { d: "M10 9H8", key: "b1mrlr" }],
+  ["path", { d: "M16 13H8", key: "t4e002" }],
+  ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileSpreadsheet = createLucideIcon("file-spreadsheet", __iconNode$16);
+const FileText = createLucideIcon("file-text", __iconNode$16);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14275,20 +14312,6 @@ const FileSpreadsheet = createLucideIcon("file-spreadsheet", __iconNode$16);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$15 = [
-  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
-  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M10 9H8", key: "b1mrlr" }],
-  ["path", { d: "M16 13H8", key: "t4e002" }],
-  ["path", { d: "M16 17H8", key: "z1uh3a" }]
-];
-const FileText = createLucideIcon("file-text", __iconNode$15);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$14 = [
   ["path", { d: "M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4", key: "1nerag" }],
   ["path", { d: "M14 13.12c0 2.38 0 6.38-1 8.88", key: "o46ks0" }],
   ["path", { d: "M17.29 21.02c.12-.6.43-2.3.5-3.02", key: "ptglia" }],
@@ -14299,14 +14322,14 @@ const __iconNode$14 = [
   ["path", { d: "M8.65 22c.21-.66.45-1.32.57-2", key: "13wd9y" }],
   ["path", { d: "M9 6.8a6 6 0 0 1 9 5.2v2", key: "1fr1j5" }]
 ];
-const Fingerprint = createLucideIcon("fingerprint", __iconNode$14);
+const Fingerprint = createLucideIcon("fingerprint", __iconNode$15);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$13 = [
+const __iconNode$14 = [
   [
     "path",
     {
@@ -14315,7 +14338,18 @@ const __iconNode$13 = [
     }
   ]
 ];
-const Funnel = createLucideIcon("funnel", __iconNode$13);
+const Funnel = createLucideIcon("funnel", __iconNode$14);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$13 = [
+  ["path", { d: "m12 14 4-4", key: "9kzdfg" }],
+  ["path", { d: "M3.34 19a10 10 0 1 1 17.32 0", key: "19p75a" }]
+];
+const Gauge = createLucideIcon("gauge", __iconNode$13);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14323,10 +14357,11 @@ const Funnel = createLucideIcon("funnel", __iconNode$13);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$12 = [
-  ["path", { d: "m12 14 4-4", key: "9kzdfg" }],
-  ["path", { d: "M3.34 19a10 10 0 1 1 17.32 0", key: "19p75a" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20", key: "13o1zl" }],
+  ["path", { d: "M2 12h20", key: "9i4pu4" }]
 ];
-const Gauge = createLucideIcon("gauge", __iconNode$12);
+const Globe = createLucideIcon("globe", __iconNode$12);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14334,18 +14369,6 @@ const Gauge = createLucideIcon("gauge", __iconNode$12);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$11 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20", key: "13o1zl" }],
-  ["path", { d: "M2 12h20", key: "9i4pu4" }]
-];
-const Globe = createLucideIcon("globe", __iconNode$11);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$10 = [
   ["path", { d: "m11 17 2 2a1 1 0 1 0 3-3", key: "efffak" }],
   [
     "path",
@@ -14358,14 +14381,14 @@ const __iconNode$10 = [
   ["path", { d: "M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3", key: "1uvwmv" }],
   ["path", { d: "M3 4h8", key: "1ep09j" }]
 ];
-const Handshake = createLucideIcon("handshake", __iconNode$10);
+const Handshake = createLucideIcon("handshake", __iconNode$11);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$$ = [
+const __iconNode$10 = [
   [
     "path",
     {
@@ -14374,7 +14397,21 @@ const __iconNode$$ = [
     }
   ]
 ];
-const Heart = createLucideIcon("heart", __iconNode$$);
+const Heart = createLucideIcon("heart", __iconNode$10);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$$ = [
+  ["path", { d: "M16 10h2", key: "8sgtl7" }],
+  ["path", { d: "M16 14h2", key: "epxaof" }],
+  ["path", { d: "M6.17 15a3 3 0 0 1 5.66 0", key: "n6f512" }],
+  ["circle", { cx: "9", cy: "11", r: "2", key: "yxgjnd" }],
+  ["rect", { x: "2", y: "5", width: "20", height: "14", rx: "2", key: "qneu4z" }]
+];
+const IdCard = createLucideIcon("id-card", __iconNode$$);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14382,13 +14419,11 @@ const Heart = createLucideIcon("heart", __iconNode$$);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$_ = [
-  ["path", { d: "M16 10h2", key: "8sgtl7" }],
-  ["path", { d: "M16 14h2", key: "epxaof" }],
-  ["path", { d: "M6.17 15a3 3 0 0 1 5.66 0", key: "n6f512" }],
-  ["circle", { cx: "9", cy: "11", r: "2", key: "yxgjnd" }],
-  ["rect", { x: "2", y: "5", width: "20", height: "14", rx: "2", key: "qneu4z" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
 ];
-const IdCard = createLucideIcon("id-card", __iconNode$_);
+const Info = createLucideIcon("info", __iconNode$_);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14396,31 +14431,30 @@ const IdCard = createLucideIcon("id-card", __iconNode$_);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$Z = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 16v-4", key: "1dtifu" }],
-  ["path", { d: "M12 8h.01", key: "e9boi3" }]
-];
-const Info = createLucideIcon("info", __iconNode$Z);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$Y = [
   ["path", { d: "M9 17H7A5 5 0 0 1 7 7h2", key: "8i5ue5" }],
   ["path", { d: "M15 7h2a5 5 0 1 1 0 10h-2", key: "1b9ql8" }],
   ["line", { x1: "8", x2: "16", y1: "12", y2: "12", key: "1jonct" }]
 ];
-const Link2 = createLucideIcon("link-2", __iconNode$Y);
+const Link2 = createLucideIcon("link-2", __iconNode$Z);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$X = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$X);
+const __iconNode$Y = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$Y);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$X = [
+  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+  ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1", key: "1mm8w8" }]
+];
+const LockOpen = createLucideIcon("lock-open", __iconNode$X);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14429,9 +14463,9 @@ const LoaderCircle = createLucideIcon("loader-circle", __iconNode$X);
  */
 const __iconNode$W = [
   ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1", key: "1mm8w8" }]
+  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
 ];
-const LockOpen = createLucideIcon("lock-open", __iconNode$W);
+const Lock = createLucideIcon("lock", __iconNode$W);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14439,10 +14473,11 @@ const LockOpen = createLucideIcon("lock-open", __iconNode$W);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$V = [
-  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
+  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
+  ["path", { d: "M21 12H9", key: "dn1m92" }],
+  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
 ];
-const Lock = createLucideIcon("lock", __iconNode$V);
+const LogOut = createLucideIcon("log-out", __iconNode$V);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14450,18 +14485,6 @@ const Lock = createLucideIcon("lock", __iconNode$V);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$U = [
-  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
-  ["path", { d: "M21 12H9", key: "dn1m92" }],
-  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
-];
-const LogOut = createLucideIcon("log-out", __iconNode$U);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$T = [
   [
     "path",
     {
@@ -14471,7 +14494,17 @@ const __iconNode$T = [
   ],
   ["circle", { cx: "12", cy: "10", r: "3", key: "ilqhr7" }]
 ];
-const MapPin = createLucideIcon("map-pin", __iconNode$T);
+const MapPin = createLucideIcon("map-pin", __iconNode$U);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$T = [
+  ["path", { d: "M7.9 20A9 9 0 1 0 4 16.1L2 22Z", key: "vv11sd" }]
+];
+const MessageCircle = createLucideIcon("message-circle", __iconNode$T);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -14479,16 +14512,6 @@ const MapPin = createLucideIcon("map-pin", __iconNode$T);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$S = [
-  ["path", { d: "M7.9 20A9 9 0 1 0 4 16.1L2 22Z", key: "vv11sd" }]
-];
-const MessageCircle = createLucideIcon("message-circle", __iconNode$S);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$R = [
   ["line", { x1: "2", x2: "22", y1: "2", y2: "22", key: "a6p6uj" }],
   ["path", { d: "M18.89 13.23A7.12 7.12 0 0 0 19 12v-2", key: "80xlxr" }],
   ["path", { d: "M5 10v2a7 7 0 0 0 12 5", key: "p2k8kg" }],
@@ -14496,27 +14519,40 @@ const __iconNode$R = [
   ["path", { d: "M9 9v3a3 3 0 0 0 5.12 2.12", key: "r2i35w" }],
   ["line", { x1: "12", x2: "12", y1: "19", y2: "22", key: "x3vr5v" }]
 ];
-const MicOff = createLucideIcon("mic-off", __iconNode$R);
+const MicOff = createLucideIcon("mic-off", __iconNode$S);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$Q = [
+const __iconNode$R = [
   ["path", { d: "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z", key: "131961" }],
   ["path", { d: "M19 10v2a7 7 0 0 1-14 0v-2", key: "1vc78b" }],
   ["line", { x1: "12", x2: "12", y1: "19", y2: "22", key: "x3vr5v" }]
 ];
-const Mic = createLucideIcon("mic", __iconNode$Q);
+const Mic = createLucideIcon("mic", __iconNode$R);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$P = [["path", { d: "M5 12h14", key: "1ays0h" }]];
-const Minus = createLucideIcon("minus", __iconNode$P);
+const __iconNode$Q = [["path", { d: "M5 12h14", key: "1ays0h" }]];
+const Minus = createLucideIcon("minus", __iconNode$Q);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$P = [
+  ["path", { d: "M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8", key: "10dyio" }],
+  ["path", { d: "M10 19v-3.96 3.15", key: "1irgej" }],
+  ["path", { d: "M7 19h5", key: "qswx4l" }],
+  ["rect", { width: "6", height: "10", x: "16", y: "12", rx: "2", key: "1egngj" }]
+];
+const MonitorSmartphone = createLucideIcon("monitor-smartphone", __iconNode$P);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -15535,7 +15571,7 @@ const RecurringFrequency = Variant({
   "daily": Null,
   "weekly": Null
 });
-const RewardType$1 = Variant({
+const RewardType = Variant({
   "other": Null,
   "discountCode": Null,
   "concessionCredit": Null,
@@ -15550,7 +15586,7 @@ const Reward = Record({
   "createdBy": Principal2,
   "codeOrValue": Text,
   "description": Text,
-  "rewardType": RewardType$1,
+  "rewardType": RewardType,
   "quantity": Opt(Nat),
   "pointsCost": Nat,
   "teamId": Opt(Text)
@@ -16188,7 +16224,7 @@ Service({
       Text,
       Text,
       Nat,
-      RewardType$1,
+      RewardType,
       Text,
       Opt(Nat),
       Opt(Int),
@@ -18389,13 +18425,6 @@ var PaymentMethodType = /* @__PURE__ */ ((PaymentMethodType2) => {
   PaymentMethodType2["card"] = "card";
   return PaymentMethodType2;
 })(PaymentMethodType || {});
-var RewardType = /* @__PURE__ */ ((RewardType2) => {
-  RewardType2["other"] = "other";
-  RewardType2["discountCode"] = "discountCode";
-  RewardType2["concessionCredit"] = "concessionCredit";
-  RewardType2["ticketEntry"] = "ticketEntry";
-  return RewardType2;
-})(RewardType || {});
 var SplitParticipantStatus = /* @__PURE__ */ ((SplitParticipantStatus2) => {
   SplitParticipantStatus2["Paid"] = "Paid";
   SplitParticipantStatus2["Accepted"] = "Accepted";
@@ -23328,6 +23357,118 @@ const DEMO_PLAID_MERCHANTS = [
     category: "Snacks",
     location: "Gate A Entrance",
     multiplier: 1.25,
+    isActive: true
+  },
+  {
+    id: "merch-9",
+    name: "Lucas Oil Valet",
+    category: "Valet",
+    location: "Stadium Entrance",
+    multiplier: 1,
+    isActive: true
+  },
+  {
+    id: "merch-10",
+    name: "VIP Valet Service",
+    category: "Valet",
+    location: "VIP Entrance",
+    multiplier: 1.5,
+    isActive: true
+  },
+  {
+    id: "merch-11",
+    name: "Ticketing Kiosk",
+    category: "Ticketing",
+    location: "Gate A Ticketing",
+    multiplier: 0.75,
+    isActive: true
+  },
+  {
+    id: "merch-12",
+    name: "Seat Upgrade Kiosk",
+    category: "Ticketing",
+    location: "Gate C Ticketing",
+    multiplier: 1.25,
+    isActive: true
+  },
+  {
+    id: "merch-13",
+    name: "Colts Team Store",
+    category: "ProShop",
+    location: "Main Concourse",
+    multiplier: 2,
+    isActive: true
+  },
+  {
+    id: "merch-14",
+    name: "Colts Pro Shop Express",
+    category: "ProShop",
+    location: "Upper Deck",
+    multiplier: 1.75,
+    isActive: true
+  },
+  {
+    id: "merch-15",
+    name: "Stadium Gift Shop",
+    category: "Merchandise",
+    location: "Gate B",
+    multiplier: 1.5,
+    isActive: true
+  },
+  {
+    id: "merch-16",
+    name: "Field Level Bar",
+    category: "Drinks",
+    location: "Field Level",
+    multiplier: 2.5,
+    isActive: true
+  },
+  {
+    id: "merch-17",
+    name: "Club Level Restaurant",
+    category: "Food",
+    location: "Club Level",
+    multiplier: 2,
+    isActive: true
+  },
+  {
+    id: "merch-18",
+    name: "Upper Deck Grill",
+    category: "Food",
+    location: "Upper Deck",
+    multiplier: 1.25,
+    isActive: true
+  },
+  {
+    id: "merch-19",
+    name: "Halftime Zone Bar",
+    category: "Drinks",
+    location: "Section 108",
+    multiplier: 1.75,
+    isActive: true
+  },
+  {
+    id: "merch-20",
+    name: "Event Parking Lot A",
+    category: "ParkingUpgrade",
+    location: "Lot A",
+    multiplier: 0.5,
+    isActive: true
+  },
+  {
+    id: "merch-21",
+    name: "Event Parking Lot B (VIP)",
+    category: "ParkingUpgrade",
+    location: "VIP Lot B",
+    multiplier: 1,
+    isActive: true
+  },
+  {
+    id: "merch-22",
+    name: "Stadium ATM / Services",
+    category: "Services",
+    location: "Various Locations",
+    multiplier: 0.25,
     isActive: true
   }
 ];
@@ -35510,13 +35651,19 @@ function StandsMerchantsTab() {
     Drinks: "bg-blue-500/20 text-blue-300",
     Merchandise: "bg-purple-500/20 text-purple-300",
     Parking: "bg-gray-500/20 text-gray-300",
-    Snacks: "bg-yellow-500/20 text-yellow-300"
+    Snacks: "bg-yellow-500/20 text-yellow-300",
+    Valet: "bg-cyan-500/20 text-cyan-300",
+    Ticketing: "bg-indigo-500/20 text-indigo-300",
+    Entertainment: "bg-pink-500/20 text-pink-300",
+    Services: "bg-slate-500/20 text-slate-300",
+    ProShop: "bg-teal-500/20 text-teal-300",
+    ParkingUpgrade: "bg-emerald-500/20 text-emerald-300"
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-bold text-white", children: "Stands & Merchants" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-white/60", children: "Manage concession stands and set Fan Point multipliers for each location." })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-white/60", children: "Manage all stadium vendors and services. Fans earn points when their linked card is used at any active location." })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
@@ -35600,7 +35747,13 @@ function StandsMerchantsTab() {
                 /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Drinks", children: "Drinks" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Merchandise", children: "Merchandise" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Parking", children: "Parking" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Snacks", children: "Snacks" })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Snacks", children: "Snacks" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Valet", children: "Valet" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Ticketing", children: "Ticketing" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Entertainment", children: "Entertainment" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Services", children: "Services" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "ProShop", children: "Pro Shop" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "ParkingUpgrade", children: "Parking Upgrade" })
               ]
             }
           )
@@ -40055,7 +40208,7 @@ function BalanceCard({ balance }) {
     )
   ] });
 }
-const STEPS = [
+const STEPS$1 = [
   {
     icon: Users,
     title: "Add Your Staff",
@@ -40078,10 +40231,10 @@ function BusinessOnboarding({
   onOpenManagerPortal
 }) {
   const [step, setStep] = reactExports.useState(0);
-  const current = STEPS[step];
+  const current = STEPS$1[step];
   const Icon2 = current.icon;
-  const isLast = step === STEPS.length - 1;
-  const total = STEPS.length;
+  const isLast = step === STEPS$1.length - 1;
+  const total = STEPS$1.length;
   const handleDismiss = () => {
     localStorage.setItem("businessOnboardingDone", "true");
     setStep(0);
@@ -40117,7 +40270,7 @@ function BusinessOnboarding({
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-5 pt-1", "data-ocid": "business-onboarding.dialog", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 justify-center", children: [
-            STEPS.map((s2, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+            STEPS$1.map((s2, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
                 className: `h-1.5 rounded-full transition-all duration-300 ${i === step ? "w-8 bg-teal" : i < step ? "w-3 bg-teal/40" : "w-3 bg-muted/50"}`
@@ -47176,7 +47329,7 @@ function BadgeGenerator() {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { id: "badge-print-root", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "no-print flex items-center justify-between mb-5", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-bold text-foreground", children: "Badge Generator" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-bold text-foreground", children: "QR Code Generator" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground mt-0.5", children: "Print QR codes for stands and staff badges" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -47201,7 +47354,7 @@ function BadgeGenerator() {
             "data-ocid": "badge-generator.staff_tab",
             onClick: () => setActiveSubTab("staff"),
             className: `flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${activeSubTab === "staff" ? "bg-teal/20 text-teal border border-teal/40 shadow-sm shadow-teal/10" : "text-muted-foreground hover:text-foreground hover:bg-muted/30 border border-transparent"}`,
-            children: "Badge Generator - Staff"
+            children: "QR Code Generator - Staff"
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -47211,10 +47364,11 @@ function BadgeGenerator() {
             "data-ocid": "badge-generator.stands_tab",
             onClick: () => setActiveSubTab("stands"),
             className: `flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${activeSubTab === "stands" ? "bg-teal/20 text-teal border border-teal/40 shadow-sm shadow-teal/10" : "text-muted-foreground hover:text-foreground hover:bg-muted/30 border border-transparent"}`,
-            children: "Badge Generator - Stands"
+            children: "QR Code Generator - Stadium Operations"
           }
         )
       ] }),
+      activeSubTab === "stands" && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "no-print text-sm text-muted-foreground text-center mb-4", children: "Create QR codes for Concession Stands, Valet, Team Stores, Guest Services, Premium Suites, Gate Security, and additional stadium amenities" }),
       activeSubTab === "staff" && /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "print-section-label text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3", children: "Staff Badges" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "badge-grid grid grid-cols-2 sm:grid-cols-3 gap-4", children: DEMO_STAFF.map((staff, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -47252,7 +47406,7 @@ function BadgeGenerator() {
         )) })
       ] }),
       activeSubTab === "stands" && /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "print-section-label text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3", children: "Stand QR Codes" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "print-section-label text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3", children: "QR Code Generator - Stadium Operations" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "badge-grid grid grid-cols-1 sm:grid-cols-3 gap-4", children: visibleStands.map((stand, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "div",
           {
@@ -49084,7 +49238,7 @@ function TipSplitSection() {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: "bg-gray-800/50 border border-gray-700 rounded-xl p-5 space-y-5",
+      className: "bg-white/5 border border-white/10 rounded-xl p-5 space-y-5",
       "data-ocid": "tip-split-section",
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-1", children: [
@@ -50007,7 +50161,7 @@ function ManagerDashboard({ onClose }) {
     },
     {
       id: "badges",
-      label: "Badge Generator",
+      label: "QR Code Generator",
       icon: /* @__PURE__ */ jsxRuntimeExports.jsx(IdCard, { className: "h-4 w-4" })
     },
     {
@@ -52855,7 +53009,7 @@ function PlaidCardLinking() {
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center border border-teal/20", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { className: "h-5 w-5 text-teal" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white font-semibold text-sm", children: "Connect Your Card" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white/50 text-xs", children: "Earn Fan Points on every stadium purchase" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white/50 text-xs", children: "Earn points anywhere in the stadium" })
             ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -52907,7 +53061,7 @@ function PlaidCardLinking() {
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-5 py-5", children: [
                 step === 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white/70 text-sm mb-4", children: "Select your bank to securely link your card and earn Fan Points automatically at the stadium." }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white/70 text-sm mb-4", children: "Select your bank to securely link your card and earn Fan Points automatically everywhere inside Lucas Oil Stadium — parking, valet, food, drinks, merchandise, ticketing, and more." }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-2 gap-2", children: BANKS.map((bank) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
                     "button",
                     {
@@ -52945,11 +53099,11 @@ function PlaidCardLinking() {
                   /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-16 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { className: "h-8 w-8 text-green-400" }) }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white font-bold text-lg", children: "Card Linked!" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white/60 text-sm mt-1", children: "You'll now earn Fan Points automatically on every stadium purchase." })
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-white/60 text-sm mt-1", children: "Your card is now linked. Earn Fan Points at every purchase inside Lucas Oil Stadium — parking, valet, merchandise, food, drinks, ticketing upgrades, and more." })
                   ] }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full bg-teal/10 border border-teal/20 rounded-lg px-4 py-3 flex items-center gap-2", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { className: "h-4 w-4 text-teal shrink-0" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-teal text-xs font-medium", children: "Points will appear in your Fan Points balance after each qualifying purchase." })
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-teal text-xs font-medium", children: "Points appear in your Fan Points balance after every qualifying purchase — anywhere in the stadium." })
                   ] })
                 ] })
               ] })
@@ -56502,7 +56656,7 @@ function EmptyState$1({ icon, message: message2, description }) {
     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: description })
   ] });
 }
-const BENEFITS = [
+const BENEFITS$1 = [
   {
     icon: Users,
     title: "Manager Portal",
@@ -56543,7 +56697,7 @@ function BusinessLandingPage({
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold text-foreground", children: "Upgrade to Business" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-white/60 leading-relaxed max-w-xs mx-auto", children: "Unlock professional tools for managing tips, staff, and payments across your entire organization." })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 gap-3", children: BENEFITS.map((benefit) => {
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 gap-3", children: BENEFITS$1.map((benefit) => {
       const Icon2 = benefit.icon;
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "div",
@@ -56577,7 +56731,7 @@ function BusinessLandingPage({
     /* @__PURE__ */ jsxRuntimeExports.jsx(PartnerWithUsSection, {})
   ] });
 }
-const ORG_TYPES = [
+const ORG_TYPES$1 = [
   "NFL Team",
   "NBA Team",
   "MLB Team",
@@ -56708,7 +56862,7 @@ function PartnerWithUsSection() {
                     children: "Select organization type…"
                   }
                 ),
-                ORG_TYPES.map((t) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                ORG_TYPES$1.map((t) => /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "option",
                   {
                     value: t,
@@ -65677,11 +65831,802 @@ function OnboardingPage() {
     )
   ] }) });
 }
-const GuestPaymentPage = reactExports.lazy(() => __vitePreload(() => import("./GuestPaymentPage-DfgL27K_.js"), true ? __vite__mapDeps([0,1,2]) : void 0));
-const FanPointsPage = reactExports.lazy(() => __vitePreload(() => import("./FanPointsPage-Bw44ExFi.js"), true ? __vite__mapDeps([3,1,2]) : void 0));
-const KitchenDisplayPage = reactExports.lazy(() => __vitePreload(() => import("./KitchenDisplayPage-D-YpCC9a.js"), true ? __vite__mapDeps([4,1,2]) : void 0));
+const ORG_TYPES = [
+  "NFL Team",
+  "NBA Team",
+  "MLB Team",
+  "NHL Team",
+  "MLS Team",
+  "Arena / Venue",
+  "Corporate Event",
+  "Other"
+];
+const BENEFITS = [
+  {
+    icon: Globe,
+    title: "White-Label Branding",
+    description: "Your logo, your colors, your name — everywhere. Fans see 'Colts Tip Pay powered by Open Tip Pay', not a generic app."
+  },
+  {
+    icon: Star,
+    title: "Fan Points Loyalty Engine",
+    description: "Fractional point engine with section multipliers, merchant bonuses, and card-linked rewards. Turn every transaction into loyalty."
+  },
+  {
+    icon: Zap,
+    title: "Instant Tipping Infrastructure",
+    description: "Staff QR badge tipping, stand pool collection, automated split engine. Tips reach staff wallets in real time."
+  },
+  {
+    icon: ShoppingCart,
+    title: "In-Seat Food Ordering",
+    description: "Fans browse the digital menu, pay, and track their order by seat. Kitchen display + delivery routing included."
+  },
+  {
+    icon: ChartColumn,
+    title: "Real-Time Analytics",
+    description: "Live operations dashboard: sales per stand, peak times, staffing alerts, and multi-game benchmark comparisons."
+  },
+  {
+    icon: Cpu,
+    title: "POS Integration",
+    description: "Connects to Toast, Square, and SkyTab. Tips auto-populate from register closings — no manager data entry needed."
+  }
+];
+const STEPS = [
+  {
+    number: "01",
+    title: "We Brand It For You",
+    description: "We configure the app with your team's name, colors, and logo in under a week. Every screen reflects your brand identity.",
+    icon: Sparkles
+  },
+  {
+    number: "02",
+    title: "Your Fans & Staff Use It",
+    description: "Fans tip staff via QR codes, order food in-seat, earn points everywhere they spend. Staff check in, track earnings, get paid.",
+    icon: MonitorSmartphone
+  },
+  {
+    number: "03",
+    title: "You Get Data & Payouts",
+    description: "Real-time ops dashboard, game-by-game analytics, automated payouts, and compliance-ready exports. Full visibility, zero overhead.",
+    icon: TrendingUp
+  }
+];
+const COLTS_STATS = [
+  { value: "$48,200", label: "Tips Processed Last Game" },
+  { value: "127,400", label: "Fan Points Earned" },
+  { value: "3,840", label: "In-Seat Orders" },
+  { value: "94%", label: "Staff Satisfaction Rate" }
+];
+function PartnerNav({ onGetStarted }) {
+  const [scrolled, setScrolled] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "nav",
+    {
+      className: `fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "frosted-glass border-b border-teal/10 shadow-lg shadow-black/20" : "bg-transparent"}`,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "a",
+          {
+            href: "/",
+            className: "flex items-center gap-2 group",
+            "aria-label": "Open Tip Pay home",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "img",
+                {
+                  src: "/assets/generated/opentip-logo.dim_200x200.png",
+                  alt: "Open Tip Pay",
+                  className: "h-8 w-8 rounded-xl shadow-md ring-1 ring-teal/20 transition-transform group-hover:scale-105",
+                  onError: (e) => {
+                    e.currentTarget.style.display = "none";
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-bold text-foreground sm:text-base", children: "Open Tip Pay" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "a",
+            {
+              href: "/",
+              className: "hidden text-sm text-muted-foreground transition-colors hover:text-teal sm:inline-block",
+              "data-ocid": "partner.back_to_app_link",
+              children: "← Back to App"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              onClick: onGetStarted,
+              className: "partner-cta-button px-4 py-2 text-sm",
+              "data-ocid": "partner.nav_get_started_button",
+              children: "Get Started"
+            }
+          )
+        ] })
+      ] })
+    }
+  );
+}
+function HeroSection({
+  onExplore,
+  onContact
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "section",
+    {
+      className: "partner-hero-bg relative flex min-h-screen items-center justify-center overflow-hidden pt-16",
+      "data-ocid": "partner.hero_section",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: "pointer-events-none absolute inset-0",
+            style: {
+              backgroundImage: "url('/assets/generated/partner-hero-bg.dim_1200x600.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              opacity: 0.35
+            },
+            "aria-hidden": "true"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            className: "pointer-events-none absolute inset-0 overflow-hidden",
+            "aria-hidden": "true",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -left-32 top-20 h-96 w-96 rounded-full bg-teal/8 blur-[120px]" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -right-32 bottom-20 h-80 w-80 rounded-full bg-teal/6 blur-[100px]" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute left-1/2 top-1/3 h-64 w-64 -translate-x-1/2 rounded-full bg-gold/5 blur-[80px]" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 mx-auto max-w-4xl px-4 py-20 text-center sm:px-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 inline-flex items-center gap-2 rounded-full border border-teal/30 bg-teal/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-teal", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-block h-1.5 w-1.5 rounded-full bg-teal" }),
+            "White-Label Sports Payments"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "fade-in-up mb-6 text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl", children: [
+            "Power Your Stadium",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-teal", children: "With White-Label Payments" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "fade-in-up mx-auto mb-10 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg", children: "Give your fans, staff, and operations team a fully branded payment and loyalty platform — tipping, food ordering, Fan Points, and real-time analytics — all powered by Open Tip Pay under your name." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center justify-center gap-3 sm:flex-row", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                type: "button",
+                onClick: onExplore,
+                className: "partner-cta-button w-full px-8 py-3.5 text-base font-bold sm:w-auto",
+                "data-ocid": "partner.hero_explore_button",
+                children: [
+                  "Explore Partnership",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { className: "ml-1 inline-block h-4 w-4" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                onClick: onContact,
+                className: "w-full rounded-lg border border-teal/30 bg-teal/5 px-8 py-3.5 text-base font-semibold text-teal transition-all duration-200 hover:border-teal/50 hover:bg-teal/10 sm:w-auto",
+                "data-ocid": "partner.hero_contact_button",
+                children: "Contact Us"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4", children: [
+            { stat: "3×", label: "Faster Staff Payouts" },
+            { stat: "48%", label: "More Fan Engagement" },
+            { stat: "Real-Time", label: "Analytics Dashboard" },
+            { stat: "Zero", label: "POS Manual Entry" }
+          ].map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "partner-highlight text-center", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "partner-highlight-stat", children: item.stat }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "partner-highlight-label", children: item.label })
+          ] }, item.label)) })
+        ] })
+      ]
+    }
+  );
+}
+function BenefitsSection() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "section",
+    {
+      className: "relative bg-background py-20",
+      id: "benefits",
+      "data-ocid": "partner.benefits_section",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-6xl px-4 sm:px-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-12 text-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-header mb-3", children: "Why Partner" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-3xl font-black tracking-tight text-foreground sm:text-4xl", children: "Unlock the Power of Open Tip Pay" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-3 text-muted-foreground", children: "Everything a modern stadium needs — branded, deployed, and running in weeks." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3", children: BENEFITS.map((benefit) => {
+          const Icon2 = benefit.icon;
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: "partner-benefit-card",
+              "data-ocid": `partner.benefit_card.${benefit.title.toLowerCase().replace(/\s+/g, "_")}`,
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "partner-benefit-icon", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { className: "h-6 w-6", "aria-hidden": "true" }) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "partner-benefit-title", children: benefit.title }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "partner-benefit-description", children: benefit.description })
+              ]
+            },
+            benefit.title
+          );
+        }) })
+      ] })
+    }
+  );
+}
+function HowItWorksSection() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "section",
+    {
+      className: "relative py-20",
+      style: { background: "rgba(26, 43, 60, 0.2)" },
+      id: "how-it-works",
+      "data-ocid": "partner.how_it_works_section",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-5xl px-4 sm:px-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-12 text-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-header mb-3", children: "How It Works" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-3xl font-black tracking-tight text-foreground sm:text-4xl", children: [
+            "Up and Running in Weeks,",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-teal", children: " Not Months" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 gap-6 md:grid-cols-3", children: STEPS.map((step, i) => {
+          const Icon2 = step.icon;
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: "relative flex flex-col items-center text-center",
+              children: [
+                i < STEPS.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "div",
+                  {
+                    className: "pointer-events-none absolute left-[calc(50%+4rem)] top-8 hidden h-px w-[calc(100%_-_2rem)] bg-gradient-to-r from-teal/40 to-transparent md:block",
+                    "aria-hidden": "true"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-5 flex flex-col items-center gap-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex h-16 w-16 items-center justify-center rounded-2xl border border-teal/30 bg-teal/10 shadow-lg shadow-teal/10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { className: "h-7 w-7 text-teal", "aria-hidden": "true" }) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-teal text-[10px] font-black text-navy", children: step.number })
+                ] }) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "mb-2 text-lg font-bold text-foreground", children: step.title }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed text-muted-foreground", children: step.description })
+              ]
+            },
+            step.number
+          );
+        }) })
+      ] })
+    }
+  );
+}
+function ColtsShowcaseSection() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "section",
+    {
+      className: "relative bg-background py-20",
+      id: "showcase",
+      "data-ocid": "partner.showcase_section",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-5xl px-4 sm:px-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-12 text-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-header mb-3", children: "Live Example" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-3xl font-black tracking-tight text-foreground sm:text-4xl", children: [
+            "See It In Action:",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-teal", children: " Colts Tip Pay" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-3 text-muted-foreground", children: "Already running at Lucas Oil Stadium — powered by Open Tip Pay." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "overflow-hidden rounded-2xl border border-teal/20 glassmorphism", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: "flex items-center gap-4 border-b border-white/10 px-6 py-4",
+              style: { background: "rgba(0, 36, 94, 0.6)" },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "div",
+                  {
+                    className: "flex h-11 w-11 items-center justify-center rounded-xl text-2xl font-black",
+                    style: { background: "rgba(255, 255, 255, 0.08)" },
+                    "aria-hidden": "true",
+                    children: "🐴"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-foreground", children: "Colts Tip Pay" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: "powered by Open Tip Pay" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ml-auto flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-3 py-0.5 text-xs font-semibold text-success", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { className: "h-2.5 w-2.5", "aria-hidden": "true" }),
+                    "Live"
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rounded-full border border-gold/30 bg-gold/10 px-3 py-0.5 text-xs font-semibold text-gold", children: "NFL · Lucas Oil" })
+                ] })
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-2 gap-px bg-white/5 md:grid-cols-4", children: COLTS_STATS.map((s2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: "bg-navy px-5 py-6 text-center",
+              "data-ocid": `partner.colts_stat.${s2.label.toLowerCase().replace(/\s+/g, "_")}`,
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl font-black text-teal sm:text-3xl", children: s2.value }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-1 text-xs text-muted-foreground", children: s2.label })
+              ]
+            },
+            s2.label
+          )) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-wrap gap-2 px-6 py-5", children: [
+            "Fan Points Engine",
+            "QR Badge Tipping",
+            "In-Seat Ordering",
+            "Real-Time Analytics",
+            "POS Integration",
+            "Volunteer Org Routing",
+            "Blended Payouts",
+            "3rd Quarter Cutoff"
+          ].map((feat) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "span",
+            {
+              className: "flex items-center gap-1 rounded-full border border-teal/20 bg-teal/8 px-3 py-1 text-xs font-medium text-teal",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { className: "h-3 w-3", "aria-hidden": "true" }),
+                feat
+              ]
+            },
+            feat
+          )) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 gap-4 border-t border-white/5 p-6 sm:grid-cols-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "col-span-1 rounded-xl border border-white/8 bg-navy-light p-4 sm:col-span-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-3 text-xs font-semibold uppercase tracking-wider text-teal/70", children: "Live Stand Performance" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: [
+                { stand: "Club Level Bar", amount: "$12,400", pct: 92 },
+                { stand: "Lucas Oil Grill", amount: "$9,800", pct: 76 },
+                { stand: "End Zone Bites", amount: "$7,200", pct: 58 },
+                { stand: "Colts Fan Eats", amount: "$5,100", pct: 42 }
+              ].map((row) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-32 truncate text-xs text-muted-foreground", children: row.stand }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 overflow-hidden rounded-full bg-white/5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "div",
+                  {
+                    className: "h-2 rounded-full bg-teal",
+                    style: { width: `${row.pct}%` },
+                    "aria-hidden": "true"
+                  }
+                ) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-16 text-right text-xs font-bold text-foreground", children: row.amount })
+              ] }, row.stand)) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-gold/20 bg-navy-light p-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-3 text-xs font-semibold uppercase tracking-wider text-gold/70", children: "Fan Points Earned" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                [
+                  { label: "Card-Linked", pts: "84,200" },
+                  { label: "In-App Tips", pts: "28,400" },
+                  { label: "Food Orders", pts: "14,800" }
+                ].map((row) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "div",
+                  {
+                    className: "flex items-center justify-between",
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-muted-foreground", children: row.label }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-bold text-gold", children: row.pts })
+                    ]
+                  },
+                  row.label
+                )),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 rounded-lg border border-gold/20 bg-gold/5 p-2 text-center", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-muted-foreground", children: "Total Earned" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-black text-gold", children: "127,400 pts" })
+                ] })
+              ] })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 rounded-xl border border-teal/20 bg-teal/5 p-5", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-start gap-3 sm:flex-row sm:items-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-teal/30 bg-teal/10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { className: "h-5 w-5 text-teal", "aria-hidden": "true" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-foreground", children: "Fans Earn Points Everywhere in the Stadium" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-0.5 text-sm text-muted-foreground", children: "Link a card once — earn Fan Points at concessions, valet, parking, the pro shop, ticketing upgrades, and every other vendor. No app required at point of purchase." })
+          ] })
+        ] }) })
+      ] })
+    }
+  );
+}
+function InquiryFormSection({
+  formRef
+}) {
+  const [form, setForm] = reactExports.useState({
+    orgName: "",
+    contactName: "",
+    email: "",
+    orgType: "",
+    message: ""
+  });
+  const [errors, setErrors] = reactExports.useState({});
+  const [submitted, setSubmitted] = reactExports.useState(false);
+  const validate = () => {
+    const e = {};
+    if (!form.orgName.trim()) e.orgName = "Organization name is required";
+    if (!form.contactName.trim()) e.contactName = "Contact name is required";
+    if (!form.email.trim()) {
+      e.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      e.email = "Enter a valid email address";
+    }
+    if (!form.orgType) e.orgType = "Please select an organization type";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+    const inquiry = {
+      id: `partner-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      orgName: form.orgName.trim(),
+      contactName: form.contactName.trim(),
+      email: form.email.trim(),
+      orgType: form.orgType,
+      message: form.message.trim(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      status: "pending"
+    };
+    try {
+      const existing = JSON.parse(
+        localStorage.getItem("partnershipInquiries") ?? "[]"
+      );
+      localStorage.setItem(
+        "partnershipInquiries",
+        JSON.stringify([...existing, inquiry])
+      );
+    } catch {
+    }
+    setSubmitted(true);
+  };
+  const field = (key) => ({
+    value: form[key],
+    onChange: (e) => setForm((prev) => ({ ...prev, [key]: e.target.value })),
+    onBlur: () => setErrors((prev) => ({ ...prev, [key]: void 0 }))
+  });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "section",
+    {
+      ref: formRef,
+      id: "inquiry-form",
+      className: "relative py-20",
+      style: { background: "rgba(26, 43, 60, 0.25)" },
+      "data-ocid": "partner.form_section",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto max-w-2xl px-4 sm:px-6", children: !submitted ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-10 text-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-header mb-3", children: "Get In Touch" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-3xl font-black tracking-tight text-foreground sm:text-4xl", children: [
+            "Ready to Partner",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-teal", children: " With Us?" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-3 text-muted-foreground", children: "Tell us about your organization and we'll reach out within 24 hours." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "form",
+          {
+            onSubmit: handleSubmit,
+            noValidate: true,
+            className: "partner-cta-container space-y-5",
+            "data-ocid": "partner.inquiry_form",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "orgName", className: "partner-form-label", children: [
+                  "Organization Name ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-teal", children: "*" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    id: "orgName",
+                    type: "text",
+                    placeholder: "e.g. Indianapolis Colts",
+                    className: "partner-form-input",
+                    autoComplete: "organization",
+                    "data-ocid": "partner.org_name_input",
+                    "aria-describedby": errors.orgName ? "orgName-error" : void 0,
+                    "aria-invalid": !!errors.orgName,
+                    ...field("orgName")
+                  }
+                ),
+                errors.orgName && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    id: "orgName-error",
+                    className: "mt-1 text-xs text-destructive",
+                    "data-ocid": "partner.org_name_field_error",
+                    children: errors.orgName
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "contactName", className: "partner-form-label", children: [
+                  "Contact Name ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-teal", children: "*" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    id: "contactName",
+                    type: "text",
+                    placeholder: "Your full name",
+                    className: "partner-form-input",
+                    autoComplete: "name",
+                    "data-ocid": "partner.contact_name_input",
+                    "aria-describedby": errors.contactName ? "contactName-error" : void 0,
+                    "aria-invalid": !!errors.contactName,
+                    ...field("contactName")
+                  }
+                ),
+                errors.contactName && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    id: "contactName-error",
+                    className: "mt-1 text-xs text-destructive",
+                    "data-ocid": "partner.contact_name_field_error",
+                    children: errors.contactName
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "email", className: "partner-form-label", children: [
+                  "Email Address ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-teal", children: "*" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    id: "email",
+                    type: "email",
+                    placeholder: "you@yourorg.com",
+                    className: "partner-form-input",
+                    autoComplete: "email",
+                    "data-ocid": "partner.email_input",
+                    "aria-describedby": errors.email ? "email-error" : void 0,
+                    "aria-invalid": !!errors.email,
+                    ...field("email")
+                  }
+                ),
+                errors.email && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    id: "email-error",
+                    className: "mt-1 text-xs text-destructive",
+                    "data-ocid": "partner.email_field_error",
+                    children: errors.email
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "orgType", className: "partner-form-label", children: [
+                  "Organization Type ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-teal", children: "*" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "select",
+                  {
+                    id: "orgType",
+                    className: "partner-form-input",
+                    "data-ocid": "partner.org_type_select",
+                    "aria-describedby": errors.orgType ? "orgType-error" : void 0,
+                    "aria-invalid": !!errors.orgType,
+                    ...field("orgType"),
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", disabled: true, children: "Select your organization type" }),
+                      ORG_TYPES.map((t) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: t, children: t }, t))
+                    ]
+                  }
+                ),
+                errors.orgType && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    id: "orgType-error",
+                    className: "mt-1 text-xs text-destructive",
+                    "data-ocid": "partner.org_type_field_error",
+                    children: errors.orgType
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "message", className: "partner-form-label", children: [
+                  "Message",
+                  " ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-normal text-muted-foreground", children: "(optional)" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "textarea",
+                  {
+                    id: "message",
+                    rows: 4,
+                    placeholder: "Tell us about your venue, fan base, or what you're looking for…",
+                    className: "partner-form-input resize-none",
+                    "data-ocid": "partner.message_textarea",
+                    ...field("message")
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  type: "submit",
+                  className: "partner-cta-button w-full py-3.5 text-base font-bold",
+                  "data-ocid": "partner.submit_button",
+                  children: "Submit Partnership Inquiry"
+                }
+              )
+            ]
+          }
+        )
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          className: "partner-cta-container text-center",
+          "data-ocid": "partner.form_success_state",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full border border-success/30 bg-success/10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              CircleCheck,
+              {
+                className: "h-8 w-8 text-success",
+                "aria-hidden": "true"
+              }
+            ) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "partner-cta-title", children: "We Got Your Inquiry!" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "partner-cta-subtitle", children: [
+              "Thanks,",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "text-foreground", children: form.contactName }),
+              "! Someone from the Open Tip Pay partnerships team will reach out to",
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { className: "text-teal", children: [
+                " ",
+                form.email
+              ] }),
+              " within 24 hours."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 rounded-xl border border-teal/20 bg-teal/5 px-6 py-4 text-left", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2 text-sm font-bold text-foreground", children: "What to expect next:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "space-y-1.5 text-sm text-muted-foreground", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    CircleCheck,
+                    {
+                      className: "h-4 w-4 shrink-0 text-teal",
+                      "aria-hidden": "true"
+                    }
+                  ),
+                  "A brief discovery call to understand your needs"
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    CircleCheck,
+                    {
+                      className: "h-4 w-4 shrink-0 text-teal",
+                      "aria-hidden": "true"
+                    }
+                  ),
+                  "A custom demo with your branding applied"
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    CircleCheck,
+                    {
+                      className: "h-4 w-4 shrink-0 text-teal",
+                      "aria-hidden": "true"
+                    }
+                  ),
+                  "A deployment timeline and pricing proposal"
+                ] })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "a",
+              {
+                href: "/",
+                className: "partner-cta-button inline-block",
+                "data-ocid": "partner.success_back_to_app_link",
+                children: "Explore the Live Demo →"
+              }
+            )
+          ]
+        }
+      ) })
+    }
+  );
+}
+function PartnerFooter() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "footer",
+    {
+      className: "border-t border-white/8 bg-navy py-8",
+      "data-ocid": "partner.footer",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-center sm:flex-row sm:px-6 sm:text-left", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
+          "© ",
+          (/* @__PURE__ */ new Date()).getFullYear(),
+          " Open Tip Pay. All rights reserved."
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4 text-sm text-muted-foreground", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/", className: "transition-colors hover:text-teal", children: "Back to App" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { "aria-hidden": "true", children: "·" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "a",
+            {
+              href: `https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== "undefined" ? window.location.hostname : "")}`,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "transition-colors hover:text-teal",
+              children: "Built with caffeine.ai"
+            }
+          )
+        ] })
+      ] })
+    }
+  );
+}
+function PartnerWithUsPage() {
+  const formRef = reactExports.useRef(null);
+  const benefitsRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    document.documentElement.classList.add("dark");
+  }, []);
+  const scrollToForm = () => {
+    var _a3;
+    return (_a3 = formRef.current) == null ? void 0 : _a3.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const scrollToBenefits = () => {
+    var _a3;
+    return (_a3 = benefitsRef.current) == null ? void 0 : _a3.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      className: "min-h-screen bg-background text-foreground",
+      "data-ocid": "partner.page",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(PartnerNav, { onGetStarted: scrollToForm }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(HeroSection, { onExplore: scrollToBenefits, onContact: scrollToForm }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { ref: benefitsRef, children: /* @__PURE__ */ jsxRuntimeExports.jsx(BenefitsSection, {}) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(HowItWorksSection, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ColtsShowcaseSection, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(InquiryFormSection, { formRef })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(PartnerFooter, {})
+      ]
+    }
+  );
+}
+const GuestPaymentPage = reactExports.lazy(() => __vitePreload(() => import("./GuestPaymentPage-C3G5X7UA.js"), true ? __vite__mapDeps([0,1,2]) : void 0));
+const FanPointsPage = reactExports.lazy(() => __vitePreload(() => import("./FanPointsPage-CX5RKjiU.js"), true ? __vite__mapDeps([3,1,2]) : void 0));
+const KitchenDisplayPage = reactExports.lazy(() => __vitePreload(() => import("./KitchenDisplayPage-DHGeIX_2.js"), true ? __vite__mapDeps([4,1,2]) : void 0));
 const FanOrderHistoryPageLazy = reactExports.lazy(
-  () => __vitePreload(() => import("./FanOrderHistoryPage-DpqYyrMg.js"), true ? __vite__mapDeps([5,1,2]) : void 0)
+  () => __vitePreload(() => import("./FanOrderHistoryPage-BWQNZq9V.js"), true ? __vite__mapDeps([5,1,2]) : void 0)
 );
 function matchPublicRoute() {
   const path = window.location.pathname;
@@ -65689,6 +66634,7 @@ function matchPublicRoute() {
   if (payMatch) return { route: "pay", userId: payMatch[1] };
   if (path.startsWith("/rewards")) return { route: "rewards" };
   if (path.startsWith("/kitchen")) return { route: "kitchen" };
+  if (path.startsWith("/partner")) return { route: "partner" };
   return null;
 }
 const II_DEADLINE_MS = 3e3;
@@ -65909,7 +66855,7 @@ function App() {
   const publicRoute = matchPublicRoute();
   if (publicRoute) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(DemoProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(BrandingProvider, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(LoadingScreen, { message: "Loading…" }), children: publicRoute.route === "pay" ? /* @__PURE__ */ jsxRuntimeExports.jsx(GuestPaymentPage, {}) : publicRoute.route === "kitchen" ? /* @__PURE__ */ jsxRuntimeExports.jsx(KitchenDisplayPage, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FanPointsPage, {}) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(LoadingScreen, { message: "Loading…" }), children: publicRoute.route === "pay" ? /* @__PURE__ */ jsxRuntimeExports.jsx(GuestPaymentPage, {}) : publicRoute.route === "kitchen" ? /* @__PURE__ */ jsxRuntimeExports.jsx(KitchenDisplayPage, {}) : publicRoute.route === "partner" ? /* @__PURE__ */ jsxRuntimeExports.jsx(PartnerWithUsPage, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FanPointsPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, {})
     ] }) });
   }
@@ -65927,7 +66873,7 @@ export {
   DEMO_PLAID_MERCHANTS as D,
   LogOut as L,
   OrderStatus as O,
-  RewardType as R,
+  RefreshCw as R,
   ShoppingBag as S,
   useGetMyFanPoints as a,
   useListRewards as b,
@@ -65944,7 +66890,6 @@ export {
   DEMO_STANDS$1 as m,
   useUpdateOrderStatus as n,
   useGetActiveOrdersForManager as o,
-  RefreshCw as p,
-  App$1 as q,
+  App$1 as p,
   useDemoMode as u
 };

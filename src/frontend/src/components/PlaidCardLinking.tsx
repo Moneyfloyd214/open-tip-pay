@@ -158,7 +158,7 @@ export function PlaidCardLinking() {
                 Connect Your Card
               </p>
               <p className="text-white/50 text-xs">
-                Earn Fan Points on every stadium purchase
+                Earn points anywhere in the stadium
               </p>
             </div>
           </div>
@@ -213,7 +213,9 @@ export function PlaidCardLinking() {
                 <>
                   <p className="text-white/70 text-sm mb-4">
                     Select your bank to securely link your card and earn Fan
-                    Points automatically at the stadium.
+                    Points automatically everywhere inside Lucas Oil Stadium —
+                    parking, valet, food, drinks, merchandise, ticketing, and
+                    more.
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     {BANKS.map((bank) => (
@@ -261,15 +263,16 @@ export function PlaidCardLinking() {
                   <div className="text-center">
                     <p className="text-white font-bold text-lg">Card Linked!</p>
                     <p className="text-white/60 text-sm mt-1">
-                      You'll now earn Fan Points automatically on every stadium
-                      purchase.
+                      Your card is now linked. Earn Fan Points at every purchase
+                      inside Lucas Oil Stadium — parking, valet, merchandise,
+                      food, drinks, ticketing upgrades, and more.
                     </p>
                   </div>
                   <div className="w-full bg-teal/10 border border-teal/20 rounded-lg px-4 py-3 flex items-center gap-2">
                     <Zap className="h-4 w-4 text-teal shrink-0" />
                     <p className="text-teal text-xs font-medium">
-                      Points will appear in your Fan Points balance after each
-                      qualifying purchase.
+                      Points appear in your Fan Points balance after every
+                      qualifying purchase — anywhere in the stadium.
                     </p>
                   </div>
                 </div>

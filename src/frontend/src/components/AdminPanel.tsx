@@ -1207,6 +1207,12 @@ function StandsMerchantsTab() {
     Merchandise: "bg-purple-500/20 text-purple-300",
     Parking: "bg-gray-500/20 text-gray-300",
     Snacks: "bg-yellow-500/20 text-yellow-300",
+    Valet: "bg-cyan-500/20 text-cyan-300",
+    Ticketing: "bg-indigo-500/20 text-indigo-300",
+    Entertainment: "bg-pink-500/20 text-pink-300",
+    Services: "bg-slate-500/20 text-slate-300",
+    ProShop: "bg-teal-500/20 text-teal-300",
+    ParkingUpgrade: "bg-emerald-500/20 text-emerald-300",
   };
 
   return (
@@ -1215,8 +1221,8 @@ function StandsMerchantsTab() {
         <div>
           <h3 className="text-lg font-bold text-white">Stands & Merchants</h3>
           <p className="text-sm text-white/60">
-            Manage concession stands and set Fan Point multipliers for each
-            location.
+            Manage all stadium vendors and services. Fans earn points when their
+            linked card is used at any active location.
           </p>
         </div>
         <button
@@ -1292,6 +1298,12 @@ function StandsMerchantsTab() {
                 <option value="Merchandise">Merchandise</option>
                 <option value="Parking">Parking</option>
                 <option value="Snacks">Snacks</option>
+                <option value="Valet">Valet</option>
+                <option value="Ticketing">Ticketing</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Services">Services</option>
+                <option value="ProShop">Pro Shop</option>
+                <option value="ParkingUpgrade">Parking Upgrade</option>
               </select>
             </div>
             <div>

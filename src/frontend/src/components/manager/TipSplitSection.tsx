@@ -643,7 +643,7 @@ export default function TipSplitSection() {
 
   return (
     <div
-      className="bg-gray-800/50 border border-gray-700 rounded-xl p-5 space-y-5"
+      className="bg-white/5 border border-white/10 rounded-xl p-5 space-y-5"
       data-ocid="tip-split-section"
     >
       <div className="flex items-center gap-2 mb-1">

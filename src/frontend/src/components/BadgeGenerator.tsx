@@ -154,7 +154,7 @@ export default function BadgeGenerator() {
         <div className="no-print flex items-center justify-between mb-5">
           <div>
             <h2 className="text-lg font-bold text-foreground">
-              Badge Generator
+              QR Code Generator
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               Print QR codes for stands and staff badges
@@ -183,7 +183,7 @@ export default function BadgeGenerator() {
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/30 border border-transparent"
             }`}
           >
-            Badge Generator - Staff
+            QR Code Generator - Staff
           </button>
           <button
             type="button"
@@ -195,9 +195,18 @@ export default function BadgeGenerator() {
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/30 border border-transparent"
             }`}
           >
-            Badge Generator - Stands
+            QR Code Generator - Stadium Operations
           </button>
         </div>
+
+        {/* Stands subtitle — visible only on stands sub-tab */}
+        {activeSubTab === "stands" && (
+          <p className="no-print text-sm text-muted-foreground text-center mb-4">
+            Create QR codes for Concession Stands, Valet, Team Stores, Guest
+            Services, Premium Suites, Gate Security, and additional stadium
+            amenities
+          </p>
+        )}
 
         {/* ── Staff Badges ───────────────────────────────────────────────── */}
         {activeSubTab === "staff" && (
@@ -264,7 +273,7 @@ export default function BadgeGenerator() {
         {activeSubTab === "stands" && (
           <section>
             <p className="print-section-label text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
-              Stand QR Codes
+              QR Code Generator - Stadium Operations
             </p>
             <div className="badge-grid grid grid-cols-1 sm:grid-cols-3 gap-4">
               {visibleStands.map((stand, i) => (

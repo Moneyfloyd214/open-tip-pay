@@ -14310,7 +14310,7 @@ const renderDeadlineTimer = setTimeout(() => {
 (async () => {
   let AppComponent = null;
   try {
-    const mod = await __vitePreload(() => import("./App-BpOiggIL.js").then((n) => n.q), true ? [] : void 0);
+    const mod = await __vitePreload(() => import("./App-BuPOeQmh.js").then((n) => n.p), true ? [] : void 0);
     AppComponent = mod.default;
   } catch (importErr) {
     console.error(

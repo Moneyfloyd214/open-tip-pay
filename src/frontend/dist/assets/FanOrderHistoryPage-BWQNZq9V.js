@@ -1,5 +1,5 @@
-import { j as jsxRuntimeExports, r as reactExports } from "./index-DgPXBAnq.js";
-import { g as createLucideIcon, h as useBranding, u as useDemoMode, i as useGetMyOrders, j as DEMO_ACTIVE_ORDER, k as DeliveryMethod, O as OrderStatus, A as ArrowLeft, S as ShoppingBag, l as ue, m as DEMO_STANDS } from "./App-BpOiggIL.js";
+import { j as jsxRuntimeExports, r as reactExports } from "./index-DrIOJRxg.js";
+import { g as createLucideIcon, h as useBranding, u as useDemoMode, i as useGetMyOrders, j as DEMO_ACTIVE_ORDER, k as DeliveryMethod, O as OrderStatus, A as ArrowLeft, S as ShoppingBag, l as ue, m as DEMO_STANDS } from "./App-BuPOeQmh.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *

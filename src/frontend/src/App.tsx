@@ -16,6 +16,7 @@ import DashboardPage from "./pages/DashboardPage";
 import FanOrderHistoryPage from "./pages/FanOrderHistoryPage";
 import LoginPage from "./pages/LoginPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import PartnerWithUsPage from "./pages/PartnerWithUsPage";
 import RecoverySetupPage from "./pages/RecoverySetupPage";
 
 // Public routes — loaded lazily so they don't bloat the main bundle
@@ -33,12 +34,15 @@ function matchPublicRoute():
   | { route: "pay"; userId: string }
   | { route: "rewards" }
   | { route: "kitchen" }
+  | { route: "partner" }
   | null {
   const path = window.location.pathname;
   const payMatch = path.match(/^\/pay\/([^/]+)/);
   if (payMatch) return { route: "pay", userId: payMatch[1] };
   if (path.startsWith("/rewards")) return { route: "rewards" };
   if (path.startsWith("/kitchen")) return { route: "kitchen" };
+  if (path.startsWith("/partner")) return { route: "partner" };
+
   return null;
 }
 
@@ -374,6 +378,8 @@ export default function App() {
               <GuestPaymentPage />
             ) : publicRoute.route === "kitchen" ? (
               <KitchenDisplayPage />
+            ) : publicRoute.route === "partner" ? (
+              <PartnerWithUsPage />
             ) : (
               <FanPointsPage />
             )}

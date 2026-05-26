@@ -125,7 +125,13 @@ export type MerchantCategory =
   | "Drinks"
   | "Merchandise"
   | "Parking"
-  | "Snacks";
+  | "Snacks"
+  | "Valet"
+  | "Ticketing"
+  | "Entertainment"
+  | "Services"
+  | "ProShop"
+  | "ParkingUpgrade";
 
 export interface PlaidMerchant {
   id: string;
