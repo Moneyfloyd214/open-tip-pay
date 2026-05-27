@@ -2,14 +2,19 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
+export type UserRole = "fan" | "staff" | "manager" | "admin";
+
 export interface Profile {
   id: string;
   email: string;
   full_name: string;
   avatar_url: string;
-  role: "worker" | "employer" | "admin";
+  role: UserRole;
   phone: string;
   bio: string;
+  stripe_connect_account_id: string;
+  stripe_connect_status: "not_connected" | "pending" | "active";
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -19,7 +24,11 @@ interface AuthContextValue {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>;
+  isFan: boolean;
+  isStaff: boolean;
+  isManager: boolean;
+  isAdmin: boolean;
+  signUp: (email: string, password: string, fullName: string, role?: UserRole) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -72,13 +81,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  async function signUp(email: string, password: string, fullName: string) {
-    const { error } = await supabase.auth.signUp({
+  async function signUp(email: string, password: string, fullName: string, role: UserRole = "fan") {
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: fullName } },
     });
     if (error) return { error: error.message };
+    // Set role after profile is auto-created
+    if (data.user) {
+      await supabase.from("profiles").update({ role }).eq("id", data.user.id);
+    }
     return { error: null };
   }
 
@@ -92,8 +105,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   }
 
+  const isFan = profile?.role === "fan";
+  const isStaff = profile?.role === "staff";
+  const isManager = profile?.role === "manager";
+  const isAdmin = profile?.role === "admin";
+
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, isFan, isStaff, isManager, isAdmin, signUp, signIn, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
