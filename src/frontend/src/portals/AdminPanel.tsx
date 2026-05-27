@@ -1,400 +1,632 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { Shield, Users, ChartBar as BarChart3, DollarSign, LogOut, Loader as Loader2, TrendingUp, Activity, Award, CircleCheck as CheckCircle } from "lucide-react";
+import { Shield, Users, ChartBar as BarChart3, DollarSign, LogOut, Loader as Loader2, TrendingUp, Star, Plus, X, Check, CreditCard, Wifi, TriangleAlert as AlertTriangle, Activity } from "lucide-react";
 import { toast } from "sonner";
 
-type UserRole = "fan" | "staff" | "manager" | "admin";
+type Tab = "analytics" | "pos" | "fanpoints" | "users" | "deposit";
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+interface AnalyticsStats {
+  total_tips: number;
+  total_amount: number;
+  active_staff: number;
+  total_fans: number;
+}
+
+interface CategoryBreakdown {
+  food: number;
+  alcohol: number;
+  general: number;
+}
+
+interface GamePhase {
+  id: string;
+  phase_name: string;
+  is_active: boolean;
+  started_at: string | null;
+}
+
+interface Stand {
+  id: string;
+  name: string;
+  location: string;
+  pos_type: string;
+  is_active: boolean;
+}
+
+interface Reward {
+  id: string;
+  name: string;
+  description: string | null;
+  points_cost: number;
+  is_active: boolean;
+}
+
+interface PointLeader {
+  user_id: string;
+  total_points: number;
+  profiles: { full_name: string; email: string } | null;
+}
 
 interface UserRow {
   id: string;
-  email: string;
   full_name: string;
-  role: UserRole;
+  email: string;
+  role: string;
   is_active: boolean;
   stripe_connect_status: string;
-  created_at: string;
 }
 
-interface PlatformStats {
-  total_users: number;
-  total_transactions: number;
-  total_tips_cents: number;
-  total_stands: number;
-  total_rewards: number;
-}
-
-type Tab = "overview" | "users" | "rewards" | "transactions";
-
-const ROLE_COLORS: Record<UserRole, string> = {
-  fan: "bg-blue-400/20 text-blue-400",
-  staff: "bg-teal/20 text-teal",
-  manager: "bg-yellow-400/20 text-yellow-400",
-  admin: "bg-red-400/20 text-red-400",
+const POS_TYPES = ["square", "clover", "toast", "skyTab", "manual", "other"];
+const POS_COLORS: Record<string, string> = {
+  square:  "text-blue-400",
+  clover:  "text-green-400",
+  toast:   "text-orange-400",
+  skyTab:  "text-cyan-400",
+  manual:  "text-yellow-400",
+  other:   "text-muted-foreground",
 };
 
+// ── Main component ─────────────────────────────────────────────────────────────
 export default function AdminPanel() {
-  const { profile, signOut } = useAuth();
-  const [tab, setTab] = useState<Tab>("overview");
-  const [users, setUsers] = useState<UserRow[]>([]);
-  const [stats, setStats] = useState<PlatformStats>({
-    total_users: 0, total_transactions: 0, total_tips_cents: 0,
-    total_stands: 0, total_rewards: 0,
-  });
-  const [loading, setLoading] = useState(true);
-  const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all");
-  const [savingUserId, setSavingUserId] = useState<string | null>(null);
-
-  useEffect(() => { loadAll(); }, []);
-
-  async function loadAll() {
-    setLoading(true);
-    const [usersRes, txRes, standsRes, rewardsRes] = await Promise.all([
-      supabase.from("profiles").select("id, email, full_name, role, is_active, stripe_connect_status, created_at").order("created_at", { ascending: false }),
-      supabase.from("transactions").select("tip_amount_cents").eq("status", "completed"),
-      supabase.from("stands").select("id"),
-      supabase.from("rewards").select("id"),
-    ]);
-    if (usersRes.data) {
-      setUsers(usersRes.data);
-      setStats({
-        total_users: usersRes.data.length,
-        total_transactions: txRes.data?.length ?? 0,
-        total_tips_cents: txRes.data?.reduce((s, t) => s + t.tip_amount_cents, 0) ?? 0,
-        total_stands: standsRes.data?.length ?? 0,
-        total_rewards: rewardsRes.data?.length ?? 0,
-      });
-    }
-    setLoading(false);
-  }
-
-  async function updateRole(userId: string, newRole: UserRole) {
-    setSavingUserId(userId);
-    const { error } = await supabase.from("profiles").update({ role: newRole }).eq("id", userId);
-    if (error) toast.error("Failed to update role");
-    else {
-      toast.success("Role updated");
-      setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, role: newRole } : u));
-    }
-    setSavingUserId(null);
-  }
-
-  async function toggleUserActive(userId: string, current: boolean) {
-    await supabase.from("profiles").update({ is_active: !current }).eq("id", userId);
-    setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, is_active: !current } : u));
-  }
-
-  function fmt(cents: number) { return `$${(cents / 100).toFixed(2)}`; }
-
-  const filteredUsers = roleFilter === "all" ? users : users.filter((u) => u.role === roleFilter);
+  const { signOut } = useAuth();
+  const [tab, setTab] = useState<Tab>("analytics");
 
   const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
-    { key: "overview", label: "Overview", icon: BarChart3 },
-    { key: "users", label: "Users", icon: Users },
-    { key: "rewards", label: "Rewards", icon: Award },
-    { key: "transactions", label: "Transactions", icon: Activity },
+    { key: "analytics", label: "Analytics", icon: BarChart3   },
+    { key: "pos",       label: "POS",        icon: CreditCard  },
+    { key: "fanpoints", label: "Fan Pts",    icon: Star        },
+    { key: "users",     label: "Users",      icon: Users       },
+    { key: "deposit",   label: "Deposit",    icon: DollarSign  },
   ];
 
   return (
     <div className="min-h-screen bg-background">
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-1/4 top-[-15%] h-[700px] w-[700px] rounded-full bg-teal/[0.05] blur-[130px]" />
+        <div className="absolute bottom-[-5%] right-1/3 h-[400px] w-[400px] rounded-full bg-teal/[0.04] blur-[100px]" />
+      </div>
+
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-border/50 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <header className="sticky top-0 z-30 border-b border-border/40 bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/80">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal glow-teal">
               <Shield className="h-4 w-4 text-white" />
             </div>
             <div>
               <span className="text-base font-bold text-foreground">Admin Panel</span>
-              <span className="ml-2 rounded-full bg-red-400/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-400">
-                ADMIN
-              </span>
+              <span className="ml-2 rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-400">ADMIN</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="hidden text-sm text-muted-foreground sm:block">{profile?.full_name || profile?.email}</span>
-            <button
-              onClick={signOut}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground transition-smooth"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
+          <button onClick={signOut} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground transition-smooth">
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
-      </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        {/* Tab nav */}
-        <div className="mb-6 flex gap-1 rounded-xl bg-black/20 p-1 w-fit overflow-x-auto">
+        {/* Tab bar */}
+        <div className="mx-auto flex max-w-4xl border-t border-border/20">
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap transition-smooth ${
-                tab === key ? "bg-red-500/80 text-white" : "text-muted-foreground hover:text-foreground"
+              className={`flex flex-1 items-center justify-center gap-1 py-2.5 text-xs font-semibold transition-smooth ${
+                tab === key
+                  ? "text-teal border-b-2 border-teal"
+                  : "text-muted-foreground hover:text-foreground border-b-2 border-transparent"
               }`}
             >
               <Icon className="h-3.5 w-3.5" />
-              {label}
+              <span className="hidden sm:inline">{label}</span>
             </button>
           ))}
         </div>
+      </header>
 
-        {loading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-teal" />
-          </div>
-        ) : (
-          <>
-            {/* Overview */}
-            {tab === "overview" && (
-              <div className="space-y-6 fade-in-up">
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-                  {[
-                    { label: "Total Users", value: stats.total_users, icon: Users },
-                    { label: "Transactions", value: stats.total_transactions, icon: Activity },
-                    { label: "Tips Processed", value: fmt(stats.total_tips_cents), icon: DollarSign },
-                    { label: "Active Stands", value: stats.total_stands, icon: TrendingUp },
-                    { label: "Rewards", value: stats.total_rewards, icon: Award },
-                  ].map((s) => (
-                    <div key={s.label} className="glassmorphism rounded-2xl p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{s.label}</p>
-                        <s.icon className="h-3.5 w-3.5 text-teal" />
-                      </div>
-                      <p className="text-2xl font-bold text-foreground">{s.value}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Role breakdown */}
-                <div className="glassmorphism rounded-2xl p-6">
-                  <h3 className="text-sm font-semibold text-foreground mb-4">User Breakdown by Role</h3>
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    {(["fan", "staff", "manager", "admin"] as UserRole[]).map((r) => {
-                      const count = users.filter((u) => u.role === r).length;
-                      return (
-                        <div key={r} className="rounded-xl bg-black/20 p-3 text-center">
-                          <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${ROLE_COLORS[r]}`}>
-                            {r}
-                          </span>
-                          <p className="mt-2 text-2xl font-bold text-foreground">{count}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Users */}
-            {tab === "users" && (
-              <div className="glassmorphism rounded-2xl p-6 fade-in-up">
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
-                    <Users className="h-4 w-4 text-teal" /> All Users ({filteredUsers.length})
-                  </h2>
-                  <div className="flex gap-1 rounded-xl bg-black/20 p-1">
-                    {(["all", "fan", "staff", "manager", "admin"] as const).map((r) => (
-                      <button
-                        key={r}
-                        onClick={() => setRoleFilter(r)}
-                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold capitalize transition-smooth ${
-                          roleFilter === r ? "bg-teal text-white" : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {r}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  {filteredUsers.map((u) => (
-                    <div key={u.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-black/20 px-4 py-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal/20 text-teal text-sm font-bold flex-shrink-0">
-                          {(u.full_name || u.email).charAt(0).toUpperCase()}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate">{u.full_name || "—"}</p>
-                          <p className="text-xs text-muted-foreground truncate">{u.email}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        {savingUserId === u.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin text-teal" />
-                        ) : (
-                          <select
-                            value={u.role}
-                            onChange={(e) => updateRole(u.id, e.target.value as UserRole)}
-                            className="rounded-lg border border-border bg-black/30 px-2 py-1 text-xs text-foreground focus:border-teal focus:outline-none transition-smooth"
-                          >
-                            {(["fan", "staff", "manager", "admin"] as UserRole[]).map((r) => (
-                              <option key={r} value={r} className="bg-background capitalize">{r}</option>
-                            ))}
-                          </select>
-                        )}
-                        <button
-                          onClick={() => toggleUserActive(u.id, u.is_active)}
-                          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold transition-smooth ${
-                            u.is_active ? "bg-teal/20 text-teal hover:bg-teal/30" : "bg-destructive/20 text-destructive hover:bg-destructive/30"
-                          }`}
-                        >
-                          {u.is_active ? "Active" : "Suspended"}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Rewards management stub */}
-            {tab === "rewards" && (
-              <div className="glassmorphism rounded-2xl p-6 fade-in-up">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
-                    <Award className="h-4 w-4 text-teal" /> Rewards Catalog
-                  </h2>
-                  <span className="text-sm text-muted-foreground">{stats.total_rewards} total</span>
-                </div>
-                <RewardsManager />
-              </div>
-            )}
-
-            {/* Transactions */}
-            {tab === "transactions" && (
-              <div className="glassmorphism rounded-2xl p-6 fade-in-up">
-                <h2 className="text-base font-semibold text-foreground flex items-center gap-2 mb-4">
-                  <Activity className="h-4 w-4 text-teal" /> Transaction Log
-                </h2>
-                <TransactionLog />
-              </div>
-            )}
-          </>
-        )}
+      <main className="mx-auto max-w-4xl px-4 py-6">
+        {tab === "analytics" && <AnalyticsTab />}
+        {tab === "pos"       && <POSTab />}
+        {tab === "fanpoints" && <FanPointsTab />}
+        {tab === "users"     && <UsersTab />}
+        {tab === "deposit"   && <DepositTab />}
       </main>
     </div>
   );
 }
 
-function RewardsManager() {
-  const [rewards, setRewards] = useState<any[]>([]);
+// ── Analytics Tab ──────────────────────────────────────────────────────────────
+function AnalyticsTab() {
+  const [stats, setStats] = useState<AnalyticsStats>({ total_tips: 0, total_amount: 0, active_staff: 0, total_fans: 0 });
+  const [breakdown, setBreakdown] = useState<CategoryBreakdown>({ food: 0, alcohol: 0, general: 0 });
+  const [phases, setPhases] = useState<GamePhase[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
-  const [cost, setCost] = useState("");
-  const [category, setCategory] = useState("other");
-  const [saving, setSaving] = useState(false);
+  const [enablingQ3, setEnablingQ3] = useState(false);
 
   useEffect(() => {
-    supabase.from("rewards").select("*").order("created_at", { ascending: false }).then(({ data }) => {
-      if (data) setRewards(data);
-      setLoading(false);
-    });
+    Promise.all([
+      supabase.from("transactions").select("amount, category").then(({ data }) => {
+        if (!data) return;
+        setStats(prev => ({
+          ...prev,
+          total_tips: data.length,
+          total_amount: data.reduce((s, t) => s + (t.amount || 0), 0),
+        }));
+        const cats = { food: 0, alcohol: 0, general: 0 };
+        data.forEach(t => { const c = (t.category as keyof CategoryBreakdown) ?? "general"; cats[c] = (cats[c] || 0) + (t.amount || 0); });
+        setBreakdown(cats);
+      }),
+      supabase.from("profiles").select("role, is_active").then(({ data }) => {
+        if (!data) return;
+        setStats(prev => ({
+          ...prev,
+          active_staff: data.filter(p => p.role === "staff" && p.is_active).length,
+          total_fans: data.filter(p => p.role === "fan").length,
+        }));
+      }),
+      supabase.from("game_phases").select("*").order("started_at", { ascending: false }).then(({ data }) => {
+        if (data) setPhases(data);
+      }),
+    ]).finally(() => setLoading(false));
   }, []);
 
-  async function createReward() {
-    if (!name.trim() || !cost) return;
-    setSaving(true);
-    const { error } = await supabase.from("rewards").insert({
-      name: name.trim(), description: desc.trim(),
-      point_cost: parseInt(cost), category,
-    });
-    if (error) toast.error("Failed to create reward");
-    else {
-      toast.success("Reward created!");
-      setName(""); setDesc(""); setCost(""); setShowForm(false);
-      const { data } = await supabase.from("rewards").select("*").order("created_at", { ascending: false });
-      if (data) setRewards(data);
-    }
-    setSaving(false);
+  async function activatePhase(id: string) {
+    await supabase.from("game_phases").update({ is_active: false }).neq("id", "00000000-0000-0000-0000-000000000000");
+    await supabase.from("game_phases").update({ is_active: true }).eq("id", id);
+    setPhases(prev => prev.map(p => ({ ...p, is_active: p.id === id })));
+    toast.success("Game phase activated.");
   }
 
-  if (loading) return <Loader2 className="h-5 w-5 animate-spin text-teal" />;
+  async function enableQ3Cutoff() {
+    setEnablingQ3(true);
+    const { error } = await supabase.from("tip_pools").update({ q3_cutoff_enforced: true, cutoff_at: new Date().toISOString() }).eq("status", "open");
+    setEnablingQ3(false);
+    if (error) { toast.error("Failed to apply Q3 cutoff."); return; }
+    toast.success("Q3 cutoff applied to all open pools.");
+  }
+
+  const catTotal = breakdown.food + breakdown.alcohol + breakdown.general || 1;
+
+  if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-3">
-      <button
-        onClick={() => setShowForm(!showForm)}
-        className="flex items-center gap-1.5 rounded-xl border border-teal/30 px-3 py-1.5 text-sm font-semibold text-teal hover:bg-teal/10 transition-smooth"
-      >
-        <CheckCircle className="h-3.5 w-3.5" /> Add Reward
-      </button>
+    <div className="space-y-5 fade-in-up">
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { label: "Total Tips",    value: stats.total_tips.toString(),           icon: Activity,    color: "text-teal" },
+          { label: "Total Earned",  value: `$${stats.total_amount.toFixed(0)}`,   icon: TrendingUp,  color: "text-emerald-400" },
+          { label: "Active Staff",  value: stats.active_staff.toString(),         icon: Users,       color: "text-blue-400" },
+          { label: "Fans",          value: stats.total_fans.toString(),           icon: Star,        color: "text-amber-400" },
+        ].map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className="glassmorphism rounded-2xl p-4 text-center">
+            <Icon className={`mx-auto mb-1 h-5 w-5 ${color}`} />
+            <p className="text-xl font-bold text-foreground">{value}</p>
+            <p className="text-[11px] text-muted-foreground">{label}</p>
+          </div>
+        ))}
+      </div>
 
-      {showForm && (
-        <div className="rounded-xl border border-teal/20 bg-teal/5 p-4 space-y-2">
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Reward name *" className="w-full rounded-xl border border-border bg-black/20 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none" />
-          <input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Description" className="w-full rounded-xl border border-border bg-black/20 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none" />
-          <div className="flex gap-2">
-            <input type="number" value={cost} onChange={(e) => setCost(e.target.value)} placeholder="Point cost *" className="flex-1 rounded-xl border border-border bg-black/20 px-3 py-2 text-sm text-foreground focus:border-teal focus:outline-none" />
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="flex-1 rounded-xl border border-border bg-black/20 px-3 py-2 text-sm text-foreground focus:border-teal focus:outline-none">
-              {["merchandise", "discount", "experience", "other"].map((c) => (
-                <option key={c} value={c} className="bg-background capitalize">{c}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex gap-2">
-            <button onClick={createReward} disabled={saving || !name.trim() || !cost} className="flex items-center gap-1.5 rounded-xl bg-teal px-4 py-2 text-sm font-semibold text-white hover:bg-teal-light disabled:opacity-60">
-              {saving && <Loader2 className="h-3 w-3 animate-spin" />} Save
-            </button>
-            <button onClick={() => setShowForm(false)} className="rounded-xl px-3 py-2 text-sm text-muted-foreground hover:text-foreground">Cancel</button>
-          </div>
-        </div>
-      )}
+      {/* Category breakdown */}
+      <div className="glassmorphism rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-4">Revenue by Category</h3>
+        {[
+          { key: "food",    label: "Food",    color: "bg-orange-500" },
+          { key: "alcohol", label: "Alcohol", color: "bg-blue-500" },
+          { key: "general", label: "General", color: "bg-teal" },
+        ].map(({ key, label, color }) => {
+          const val = breakdown[key as keyof CategoryBreakdown];
+          const pct = Math.round((val / catTotal) * 100);
+          return (
+            <div key={key} className="mb-3">
+              <div className="flex justify-between mb-1">
+                <span className="text-xs text-muted-foreground capitalize">{label}</span>
+                <span className="text-xs font-semibold text-foreground">${val.toFixed(0)} ({pct}%)</span>
+              </div>
+              <div className="h-2 rounded-full bg-white/10">
+                <div className={`h-2 rounded-full ${color} transition-all duration-500`} style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-      {rewards.map((r) => (
-        <div key={r.id} className="flex items-center justify-between rounded-xl bg-black/20 px-4 py-3">
-          <div>
-            <p className="text-sm font-semibold text-foreground">{r.name}</p>
-            <p className="text-xs text-muted-foreground capitalize">{r.category} · {r.point_cost} pts</p>
+      {/* Q3 Cutoff */}
+      <div className="glassmorphism rounded-2xl p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-amber-400" />
+            <h3 className="text-sm font-semibold text-foreground">Q3 Cutoff Control</h3>
           </div>
-          <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${r.is_active ? "bg-teal/20 text-teal" : "bg-muted text-muted-foreground"}`}>
-            {r.is_active ? "Active" : "Inactive"}
-          </span>
+          <button
+            onClick={enableQ3Cutoff}
+            disabled={enablingQ3}
+            className="rounded-xl bg-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-500/30 transition-smooth disabled:opacity-40"
+          >
+            {enablingQ3 ? "Applying…" : "Enforce Q3 Cutoff"}
+          </button>
         </div>
-      ))}
+        <p className="text-xs text-muted-foreground">Enforcing Q3 cutoff marks all open tip pools with a cutoff timestamp. Tips after cutoff are held for the next period.</p>
+      </div>
+
+      {/* Game Phases */}
+      <div className="glassmorphism rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-border/40">
+          <h3 className="text-sm font-semibold text-foreground">Game Phases</h3>
+        </div>
+        <div className="divide-y divide-border/20">
+          {phases.length === 0 ? (
+            <p className="px-5 py-4 text-sm text-muted-foreground">No game phases defined.</p>
+          ) : (
+            phases.map(p => (
+              <div key={p.id} className="flex items-center justify-between px-5 py-3">
+                <div>
+                  <p className="text-sm font-medium text-foreground">{p.phase_name}</p>
+                  {p.started_at && <p className="text-xs text-muted-foreground">{new Date(p.started_at).toLocaleString()}</p>}
+                </div>
+                {p.is_active ? (
+                  <span className="rounded-full bg-teal/20 px-2.5 py-0.5 text-[10px] font-semibold text-teal">Active</span>
+                ) : (
+                  <button onClick={() => activatePhase(p.id)} className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-white/10 transition-smooth">
+                    Activate
+                  </button>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-function TransactionLog() {
-  const [txs, setTxs] = useState<any[]>([]);
+// ── POS / Stands Tab ───────────────────────────────────────────────────────────
+function POSTab() {
+  const [stands, setStands] = useState<Stand[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [form, setForm] = useState({ name: "", location: "", pos_type: "square" });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    supabase.from("stands").select("*").order("name").then(({ data }) => {
+      if (data) setStands(data);
+      setLoading(false);
+    });
+  }, []);
+
+  async function addStand() {
+    if (!form.name.trim()) return;
+    setSaving(true);
+    const { data, error } = await supabase.from("stands").insert({ ...form, is_active: true }).select().maybeSingle();
+    setSaving(false);
+    if (error) { toast.error("Failed to add stand."); return; }
+    if (data) setStands(prev => [...prev, data]);
+    setShowAdd(false);
+    setForm({ name: "", location: "", pos_type: "square" });
+    toast.success("Stand added.");
+  }
+
+  async function toggleStand(id: string, current: boolean) {
+    const { error } = await supabase.from("stands").update({ is_active: !current }).eq("id", id);
+    if (error) { toast.error("Failed to update."); return; }
+    setStands(prev => prev.map(s => s.id === id ? { ...s, is_active: !current } : s));
+  }
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div className="space-y-4 fade-in-up">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-foreground">Stands & POS ({stands.length})</h2>
+        <button onClick={() => setShowAdd(v => !v)} className="flex items-center gap-1.5 rounded-xl bg-teal px-3 py-2 text-xs font-semibold text-white hover:bg-teal-light transition-smooth">
+          {showAdd ? <X className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+          {showAdd ? "Cancel" : "Add Stand"}
+        </button>
+      </div>
+
+      {showAdd && (
+        <div className="glassmorphism rounded-2xl p-5 space-y-3 border border-teal/20 fade-in-up">
+          <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Stand name" className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth" />
+          <input type="text" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} placeholder="Location (e.g. Section 122)" className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth" />
+          <select value={form.pos_type} onChange={e => setForm(f => ({ ...f, pos_type: e.target.value }))} className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground focus:border-teal focus:outline-none transition-smooth">
+            {POS_TYPES.map(p => <option key={p} value={p} className="capitalize">{p.charAt(0).toUpperCase() + p.slice(1)}</option>)}
+          </select>
+          <button onClick={addStand} disabled={!form.name.trim() || saving} className="w-full rounded-xl bg-teal py-3 text-sm font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40">
+            {saving ? "Adding…" : "Add Stand"}
+          </button>
+        </div>
+      )}
+
+      <div className="space-y-2">
+        {stands.map(s => (
+          <div key={s.id} className="glassmorphism rounded-xl px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${s.is_active ? "bg-teal/20" : "bg-white/5"}`}>
+                <Wifi className={`h-4 w-4 ${s.is_active ? "text-teal" : "text-muted-foreground"}`} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">{s.name}</p>
+                <p className="text-xs text-muted-foreground">{s.location}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`text-xs font-semibold capitalize ${POS_COLORS[s.pos_type] ?? "text-muted-foreground"}`}>{s.pos_type}</span>
+              <button onClick={() => toggleStand(s.id, s.is_active)} className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold transition-smooth ${s.is_active ? "bg-teal/20 text-teal" : "bg-destructive/20 text-destructive"}`}>
+                {s.is_active ? "Online" : "Offline"}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Fan Points Tab ─────────────────────────────────────────────────────────────
+function FanPointsTab() {
+  const [leaderboard, setLeaderboard] = useState<PointLeader[]>([]);
+  const [rewards, setRewards] = useState<Reward[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddReward, setShowAddReward] = useState(false);
+  const [rewardForm, setRewardForm] = useState({ name: "", description: "", points_cost: "" });
+  const [savingReward, setSavingReward] = useState(false);
+
+  useEffect(() => {
+    Promise.all([
+      supabase.from("fan_point_balances").select("user_id, total_points, profiles(full_name, email)").order("total_points", { ascending: false }).limit(10).then(({ data }) => { if (data) setLeaderboard(data as unknown as PointLeader[]); }),
+      supabase.from("rewards_catalog").select("*").order("points_cost").then(({ data }) => { if (data) setRewards(data); }),
+    ]).finally(() => setLoading(false));
+  }, []);
+
+  async function addReward() {
+    if (!rewardForm.name.trim() || !rewardForm.points_cost) return;
+    setSavingReward(true);
+    const { data, error } = await supabase.from("rewards_catalog").insert({
+      name: rewardForm.name.trim(),
+      description: rewardForm.description.trim() || null,
+      points_cost: parseInt(rewardForm.points_cost),
+      is_active: true,
+    }).select().maybeSingle();
+    setSavingReward(false);
+    if (error) { toast.error("Failed to add reward."); return; }
+    if (data) setRewards(prev => [...prev, data]);
+    setShowAddReward(false);
+    setRewardForm({ name: "", description: "", points_cost: "" });
+    toast.success("Reward added.");
+  }
+
+  async function toggleReward(id: string, current: boolean) {
+    const { error } = await supabase.from("rewards_catalog").update({ is_active: !current }).eq("id", id);
+    if (error) { toast.error("Failed to update."); return; }
+    setRewards(prev => prev.map(r => r.id === id ? { ...r, is_active: !current } : r));
+  }
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div className="space-y-5 fade-in-up">
+      {/* Leaderboard */}
+      <div className="glassmorphism rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-border/40 flex items-center gap-2">
+          <Star className="h-4 w-4 text-amber-400" />
+          <h3 className="text-sm font-semibold text-foreground">Top Fan Points</h3>
+        </div>
+        <div className="divide-y divide-border/20">
+          {leaderboard.length === 0 ? (
+            <p className="px-5 py-4 text-sm text-muted-foreground">No points earned yet.</p>
+          ) : (
+            leaderboard.map((entry, i) => (
+              <div key={entry.user_id} className="flex items-center justify-between px-5 py-3">
+                <div className="flex items-center gap-3">
+                  <span className="w-5 text-xs font-bold text-muted-foreground">{i + 1}</span>
+                  <p className="text-sm font-medium text-foreground">{entry.profiles?.full_name || entry.profiles?.email || "—"}</p>
+                </div>
+                <span className="text-sm font-bold text-amber-400">{Number(entry.total_points).toLocaleString()} pts</span>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Rewards catalog */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-foreground">Rewards Catalog</h3>
+          <button onClick={() => setShowAddReward(v => !v)} className="flex items-center gap-1.5 rounded-xl bg-teal px-3 py-2 text-xs font-semibold text-white hover:bg-teal-light transition-smooth">
+            {showAddReward ? <X className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+            {showAddReward ? "Cancel" : "Add Reward"}
+          </button>
+        </div>
+
+        {showAddReward && (
+          <div className="glassmorphism rounded-2xl p-5 space-y-3 border border-teal/20 mb-3 fade-in-up">
+            <input type="text" value={rewardForm.name} onChange={e => setRewardForm(f => ({ ...f, name: e.target.value }))} placeholder="Reward name" className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth" />
+            <input type="text" value={rewardForm.description} onChange={e => setRewardForm(f => ({ ...f, description: e.target.value }))} placeholder="Description (optional)" className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth" />
+            <input type="number" value={rewardForm.points_cost} onChange={e => setRewardForm(f => ({ ...f, points_cost: e.target.value }))} placeholder="Points cost" min="1" className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth" />
+            <button onClick={addReward} disabled={!rewardForm.name.trim() || !rewardForm.points_cost || savingReward} className="w-full rounded-xl bg-teal py-3 text-sm font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40">
+              {savingReward ? "Adding…" : "Add Reward"}
+            </button>
+          </div>
+        )}
+
+        <div className="space-y-2">
+          {rewards.map(r => (
+            <div key={r.id} className="glassmorphism rounded-xl px-4 py-3 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-foreground">{r.name}</p>
+                <p className="text-xs text-muted-foreground">{r.description ?? "—"} · {r.points_cost.toLocaleString()} pts</p>
+              </div>
+              <button onClick={() => toggleReward(r.id, r.is_active)} className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold transition-smooth ${r.is_active ? "bg-teal/20 text-teal" : "bg-destructive/20 text-destructive"}`}>
+                {r.is_active ? "Active" : "Inactive"}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Users Tab ──────────────────────────────────────────────────────────────────
+function UsersTab() {
+  const [users, setUsers] = useState<UserRow[]>([]);
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from("transactions")
-      .select("id, tipper_name, tip_amount_cents, transaction_type, status, created_at")
-      .order("created_at", { ascending: false })
-      .limit(50)
-      .then(({ data }) => {
-        if (data) setTxs(data);
-        setLoading(false);
-      });
+    supabase.from("profiles").select("id, full_name, email, role, is_active, stripe_connect_status").order("created_at", { ascending: false }).then(({ data }) => {
+      if (data) setUsers(data);
+      setLoading(false);
+    });
   }, []);
 
-  if (loading) return <Loader2 className="h-5 w-5 animate-spin text-teal" />;
-  if (txs.length === 0) return <p className="text-sm text-muted-foreground">No transactions yet.</p>;
+  async function changeRole(id: string, role: string) {
+    const { error } = await supabase.from("profiles").update({ role }).eq("id", id);
+    if (error) { toast.error("Failed to update role."); return; }
+    setUsers(prev => prev.map(u => u.id === id ? { ...u, role } : u));
+    toast.success("Role updated.");
+  }
+
+  const filtered = users.filter(u =>
+    u.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+    u.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const ROLE_COLORS: Record<string, string> = {
+    admin:   "bg-amber-500/20 text-amber-400",
+    manager: "bg-teal/20 text-teal",
+    staff:   "bg-blue-500/20 text-blue-400",
+    fan:     "bg-white/10 text-muted-foreground",
+  };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-2">
-      {txs.map((t) => (
-        <div key={t.id} className="flex items-center justify-between rounded-xl bg-black/20 px-4 py-3">
-          <div>
-            <p className="text-sm font-medium text-foreground">{t.tipper_name || "Anonymous"}</p>
-            <p className="text-xs text-muted-foreground capitalize">{t.transaction_type} · {new Date(t.created_at).toLocaleDateString()}</p>
+    <div className="space-y-4 fade-in-up">
+      <input
+        type="text"
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        placeholder="Search users…"
+        className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth"
+      />
+      <p className="text-xs text-muted-foreground">{filtered.length} user{filtered.length !== 1 ? "s" : ""}</p>
+      <div className="space-y-2">
+        {filtered.map(u => (
+          <div key={u.id} className="glassmorphism rounded-xl px-4 py-3 flex items-center gap-3">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-teal/20 text-teal text-xs font-bold">
+              {(u.full_name || u.email || "?").charAt(0).toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">{u.full_name || "—"}</p>
+              <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ${ROLE_COLORS[u.role] ?? "bg-white/10 text-muted-foreground"}`}>
+                {u.role}
+              </span>
+              <select
+                value={u.role}
+                onChange={e => changeRole(u.id, e.target.value)}
+                className="rounded-lg border border-border bg-black/20 px-2 py-1 text-[11px] text-foreground focus:border-teal focus:outline-none transition-smooth"
+              >
+                <option value="fan">Fan</option>
+                <option value="staff">Staff</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-sm font-bold text-teal">${(t.tip_amount_cents / 100).toFixed(2)}</p>
-            <span className={`text-[10px] font-semibold uppercase ${t.status === "completed" ? "text-teal" : t.status === "failed" ? "text-destructive" : "text-yellow-400"}`}>
-              {t.status}
-            </span>
-          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Direct Deposit Simulator Tab ───────────────────────────────────────────────
+function DepositTab() {
+  const [users, setUsers] = useState<{ id: string; full_name: string; email: string }[]>([]);
+  const [targetId, setTargetId] = useState("");
+  const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
+  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from("profiles").select("id, full_name, email").in("role", ["staff", "manager"]).order("full_name").then(({ data }) => {
+      if (data) setUsers(data);
+      setLoading(false);
+    });
+  }, []);
+
+  async function sendDeposit() {
+    if (!targetId || !amount) return;
+    setSending(true);
+    const { error } = await supabase.from("transactions").insert({
+      staff_id: targetId,
+      fan_id: targetId,
+      amount: parseFloat(amount),
+      transaction_type: "direct_deposit",
+      category: "general",
+      note: note.trim() || "Direct deposit",
+      tipper_name: "Admin",
+    });
+    setSending(false);
+    if (error) { toast.error("Failed to send deposit."); return; }
+    toast.success(`$${parseFloat(amount).toFixed(2)} direct deposit sent.`);
+    setAmount("");
+    setNote("");
+    setTargetId("");
+  }
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div className="space-y-4 fade-in-up">
+      <div className="glassmorphism rounded-2xl p-5 border border-teal/20 space-y-4">
+        <div className="flex items-center gap-2 mb-1">
+          <DollarSign className="h-4 w-4 text-teal" />
+          <h3 className="text-sm font-semibold text-foreground">Direct Deposit Simulator</h3>
         </div>
-      ))}
+        <p className="text-xs text-muted-foreground">Issue a direct deposit to any staff member's account. This simulates a payroll or bonus transfer.</p>
+
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Recipient</label>
+          <select value={targetId} onChange={e => setTargetId(e.target.value)} className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground focus:border-teal focus:outline-none transition-smooth">
+            <option value="">Select staff member…</option>
+            {users.map(u => <option key={u.id} value={u.id}>{u.full_name || u.email}</option>)}
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Amount ($)</label>
+          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" min="0.01" step="0.01" className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth" />
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Note (optional)</label>
+          <input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="Payroll, bonus, etc." className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth" />
+        </div>
+
+        <button
+          onClick={sendDeposit}
+          disabled={!targetId || !amount || sending}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-teal py-4 text-sm font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40 glow-teal-hero"
+        >
+          <Check className="h-4 w-4" />
+          {sending ? "Processing…" : `Send $${parseFloat(amount || "0").toFixed(2)}`}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Shared micro-components ────────────────────────────────────────────────────
+function LoadingSpinner() {
+  return (
+    <div className="flex justify-center py-12">
+      <Loader2 className="h-6 w-6 animate-spin text-teal" />
     </div>
   );
 }

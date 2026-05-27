@@ -1,359 +1,484 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { Users, ChartBar as BarChart3, Layers, DollarSign, LogOut, Plus, Loader as Loader2, CircleCheck as CheckCircle, Clock, TrendingUp } from "lucide-react";
+import {
+  Users, MapPin, DollarSign, ClipboardList,
+  LogOut, UserCheck, Check, X,
+  Loader as Loader2,
+} from "lucide-react";
 import { toast } from "sonner";
+
+type Tab = "staff" | "checkin" | "payouts" | "roster";
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+interface StaffMember {
+  id: string;
+  full_name: string;
+  email: string;
+  role: string;
+  is_active: boolean;
+}
 
 interface Stand {
   id: string;
   name: string;
   location: string;
-  pos_type: string;
-  is_active: boolean;
 }
 
-interface StaffMember {
+interface CheckIn {
   id: string;
-  full_name: string;
-  email: string;
-  stripe_connect_status: string;
-  is_active: boolean;
+  user_id: string;
+  stand_id: string;
+  checked_in_at: string;
+  checked_out_at: string | null;
+  profiles: { full_name: string } | null;
+  stands: { name: string } | null;
 }
 
 interface TipPool {
   id: string;
-  name: string;
-  total_amount_cents: number;
-  pos_ticket_count: number;
-  split_method: string;
+  stand_id: string;
   status: string;
-  opened_at: string;
+  total_amount: number | null;
+  split_method: string;
+  created_at: string;
+  stands: { name: string } | null;
 }
 
-interface TransactionSummary {
-  total: number;
-  amount: number;
-  today: number;
+interface RosterEntry {
+  id: string;
+  user_id: string;
+  stand_id: string;
+  is_geo_validated: boolean;
+  profiles: { full_name: string; email: string } | null;
+  stands: { name: string } | null;
 }
 
-type Tab = "overview" | "staff" | "stands" | "pools";
+// ── Helpers ────────────────────────────────────────────────────────────────────
+const ROLE_COLORS: Record<string, string> = {
+  staff:   "bg-blue-500/20 text-blue-400",
+  manager: "bg-teal/20 text-teal",
+  admin:   "bg-amber-500/20 text-amber-400",
+  fan:     "bg-white/10 text-muted-foreground",
+};
 
+const POOL_STATUS_COLORS: Record<string, string> = {
+  open:        "bg-teal/20 text-teal",
+  distributed: "bg-blue-500/20 text-blue-400",
+  pending:     "bg-amber-500/20 text-amber-400",
+  cancelled:   "bg-destructive/20 text-destructive",
+};
+
+// ── Main component ─────────────────────────────────────────────────────────────
 export default function ManagerPortal() {
-  const { profile, signOut } = useAuth();
-  const [tab, setTab] = useState<Tab>("overview");
-  const [stands, setStands] = useState<Stand[]>([]);
-  const [staff, setStaff] = useState<StaffMember[]>([]);
-  const [pools, setPools] = useState<TipPool[]>([]);
-  const [summary, setSummary] = useState<TransactionSummary>({ total: 0, amount: 0, today: 0 });
-  const [loading, setLoading] = useState(true);
-
-  // New stand form
-  const [showStandForm, setShowStandForm] = useState(false);
-  const [newStandName, setNewStandName] = useState("");
-  const [newStandLocation, setNewStandLocation] = useState("");
-  const [newStandPOS, setNewStandPOS] = useState("manual");
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => { loadAll(); }, []);
-
-  async function loadAll() {
-    setLoading(true);
-    const [standsRes, staffRes, poolsRes, txRes] = await Promise.all([
-      supabase.from("stands").select("*").order("name"),
-      supabase.from("profiles").select("id, full_name, email, stripe_connect_status, is_active").in("role", ["staff"]),
-      supabase.from("tip_pools").select("*").order("opened_at", { ascending: false }).limit(10),
-      supabase.from("transactions").select("amount_cents, tip_amount_cents, created_at").eq("status", "completed"),
-    ]);
-    if (standsRes.data) setStands(standsRes.data);
-    if (staffRes.data) setStaff(staffRes.data);
-    if (poolsRes.data) setPools(poolsRes.data);
-    if (txRes.data) {
-      const today = new Date(); today.setHours(0, 0, 0, 0);
-      setSummary({
-        total: txRes.data.length,
-        amount: txRes.data.reduce((s, t) => s + t.tip_amount_cents, 0),
-        today: txRes.data.filter((t) => new Date(t.created_at) >= today).reduce((s, t) => s + t.tip_amount_cents, 0),
-      });
-    }
-    setLoading(false);
-  }
-
-  async function createStand() {
-    if (!newStandName.trim()) return;
-    setSaving(true);
-    const { error } = await supabase.from("stands").insert({
-      name: newStandName.trim(),
-      location: newStandLocation.trim(),
-      pos_type: newStandPOS,
-    });
-    if (error) toast.error("Failed to create stand");
-    else {
-      toast.success("Stand created!");
-      setNewStandName(""); setNewStandLocation(""); setShowStandForm(false);
-      loadAll();
-    }
-    setSaving(false);
-  }
-
-  async function toggleStand(id: string, current: boolean) {
-    await supabase.from("stands").update({ is_active: !current }).eq("id", id);
-    setStands((prev) => prev.map((s) => s.id === id ? { ...s, is_active: !current } : s));
-  }
-
-  function fmt(cents: number) { return `$${(cents / 100).toFixed(2)}`; }
+  const { signOut } = useAuth();
+  const [tab, setTab] = useState<Tab>("staff");
 
   const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
-    { key: "overview", label: "Overview", icon: BarChart3 },
-    { key: "staff", label: "Staff", icon: Users },
-    { key: "stands", label: "Stands", icon: Layers },
-    { key: "pools", label: "Tip Pools", icon: DollarSign },
+    { key: "staff",   label: "Staff",    icon: Users         },
+    { key: "checkin", label: "Check-In", icon: UserCheck     },
+    { key: "payouts", label: "Payouts",  icon: DollarSign    },
+    { key: "roster",  label: "Roster",   icon: ClipboardList },
   ];
 
   return (
     <div className="min-h-screen bg-background">
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-1/3 top-[-15%] h-[600px] w-[600px] rounded-full bg-teal/[0.06] blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-1/4 h-[400px] w-[400px] rounded-full bg-teal/[0.04] blur-[100px]" />
+      </div>
+
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-border/50 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <header className="sticky top-0 z-30 border-b border-border/40 bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal glow-teal">
               <DollarSign className="h-4 w-4 text-white" />
             </div>
             <div>
               <span className="text-base font-bold text-foreground">Manager Portal</span>
-              <span className="ml-2 rounded-full bg-teal/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-teal">
-                {profile?.role}
-              </span>
+              <span className="ml-2 rounded-full bg-teal/20 px-2 py-0.5 text-[10px] font-semibold text-teal">MANAGER</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="hidden text-sm text-muted-foreground sm:block">{profile?.full_name || profile?.email}</span>
-            <button
-              onClick={signOut}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground transition-smooth"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
+          <button
+            onClick={signOut}
+            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground transition-smooth"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
-      </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        {/* Tab nav */}
-        <div className="mb-6 flex gap-1 rounded-xl bg-black/20 p-1 w-fit overflow-x-auto">
+        {/* Tab bar */}
+        <div className="mx-auto flex max-w-3xl border-t border-border/20">
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap transition-smooth ${
-                tab === key ? "bg-teal text-white" : "text-muted-foreground hover:text-foreground"
+              className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-smooth ${
+                tab === key
+                  ? "text-teal border-b-2 border-teal"
+                  : "text-muted-foreground hover:text-foreground border-b-2 border-transparent"
               }`}
             >
-              <Icon className="h-3.5 w-3.5" />
+              <Icon className="h-4 w-4" />
               {label}
             </button>
           ))}
         </div>
+      </header>
 
-        {loading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-teal" />
-          </div>
-        ) : (
-          <>
-            {/* Overview */}
-            {tab === "overview" && (
-              <div className="space-y-6 fade-in-up">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  {[
-                    { label: "Total Transactions", value: String(summary.total), icon: TrendingUp },
-                    { label: "All-Time Tips", value: fmt(summary.amount), icon: DollarSign },
-                    { label: "Tips Today", value: fmt(summary.today), icon: CheckCircle },
-                  ].map((s) => (
-                    <div key={s.label} className="glassmorphism rounded-2xl p-5">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{s.label}</p>
-                        <s.icon className="h-4 w-4 text-teal" />
-                      </div>
-                      <p className="text-3xl font-bold text-foreground">{s.value}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  {[
-                    { label: "Active Stands", value: stands.filter((s) => s.is_active).length },
-                    { label: "Staff Members", value: staff.length },
-                    { label: "Open Tip Pools", value: pools.filter((p) => p.status === "open").length },
-                  ].map((s) => (
-                    <div key={s.label} className="glassmorphism rounded-2xl p-5">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{s.label}</p>
-                      <p className="mt-2 text-3xl font-bold text-foreground">{s.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Staff */}
-            {tab === "staff" && (
-              <div className="glassmorphism rounded-2xl p-6 fade-in-up">
-                <h2 className="mb-4 text-base font-semibold text-foreground flex items-center gap-2">
-                  <Users className="h-4 w-4 text-teal" /> Staff Members
-                </h2>
-                {staff.length === 0 ? (
-                  <p className="text-sm text-muted-foreground py-4">No staff members yet.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {staff.map((s) => (
-                      <div key={s.id} className="flex items-center justify-between rounded-xl bg-black/20 px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal/20 text-teal text-sm font-bold flex-shrink-0">
-                            {(s.full_name || s.email).charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{s.full_name || "—"}</p>
-                            <p className="text-xs text-muted-foreground">{s.email}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                            s.stripe_connect_status === "active"
-                              ? "bg-teal/20 text-teal"
-                              : s.stripe_connect_status === "pending"
-                              ? "bg-yellow-400/20 text-yellow-400"
-                              : "bg-muted text-muted-foreground"
-                          }`}>
-                            {s.stripe_connect_status === "active" ? "Payout Active" : s.stripe_connect_status === "pending" ? "Pending" : "No Payout"}
-                          </span>
-                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${s.is_active ? "bg-teal/20 text-teal" : "bg-destructive/20 text-destructive"}`}>
-                            {s.is_active ? "Active" : "Inactive"}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Stands */}
-            {tab === "stands" && (
-              <div className="space-y-4 fade-in-up">
-                <div className="glassmorphism rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
-                      <Layers className="h-4 w-4 text-teal" /> Stands & POS
-                    </h2>
-                    <button
-                      onClick={() => setShowStandForm(!showStandForm)}
-                      className="flex items-center gap-1.5 rounded-xl border border-teal/30 px-3 py-1.5 text-sm font-semibold text-teal hover:bg-teal/10 transition-smooth"
-                    >
-                      <Plus className="h-3.5 w-3.5" /> Add Stand
-                    </button>
-                  </div>
-
-                  {showStandForm && (
-                    <div className="mb-4 rounded-xl border border-teal/20 bg-teal/5 p-4 space-y-3">
-                      <input
-                        value={newStandName}
-                        onChange={(e) => setNewStandName(e.target.value)}
-                        placeholder="Stand name *"
-                        className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth"
-                      />
-                      <input
-                        value={newStandLocation}
-                        onChange={(e) => setNewStandLocation(e.target.value)}
-                        placeholder="Location (e.g. Section 114)"
-                        className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none transition-smooth"
-                      />
-                      <select
-                        value={newStandPOS}
-                        onChange={(e) => setNewStandPOS(e.target.value)}
-                        className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground focus:border-teal focus:outline-none transition-smooth"
-                      >
-                        {["square", "clover", "toast", "manual", "other"].map((p) => (
-                          <option key={p} value={p} className="bg-background capitalize">{p.charAt(0).toUpperCase() + p.slice(1)}</option>
-                        ))}
-                      </select>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={createStand}
-                          disabled={saving || !newStandName.trim()}
-                          className="flex items-center gap-2 rounded-xl bg-teal px-4 py-2 text-sm font-semibold text-white hover:bg-teal-light transition-smooth disabled:opacity-60"
-                        >
-                          {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                          Create Stand
-                        </button>
-                        <button onClick={() => setShowStandForm(false)} className="rounded-xl px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-smooth">
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {stands.length === 0 ? (
-                    <p className="text-sm text-muted-foreground py-4">No stands yet. Add your first stand.</p>
-                  ) : (
-                    <div className="space-y-2">
-                      {stands.map((s) => (
-                        <div key={s.id} className="flex items-center justify-between rounded-xl bg-black/20 px-4 py-3">
-                          <div>
-                            <p className="text-sm font-semibold text-foreground">{s.name}</p>
-                            <p className="text-xs text-muted-foreground">{s.location} · <span className="capitalize">{s.pos_type}</span></p>
-                          </div>
-                          <button
-                            onClick={() => toggleStand(s.id, s.is_active)}
-                            className={`rounded-full px-3 py-1 text-xs font-semibold transition-smooth ${
-                              s.is_active ? "bg-teal/20 text-teal hover:bg-teal/30" : "bg-muted text-muted-foreground hover:bg-muted/60"
-                            }`}
-                          >
-                            {s.is_active ? "Active" : "Inactive"}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Tip Pools */}
-            {tab === "pools" && (
-              <div className="glassmorphism rounded-2xl p-6 fade-in-up">
-                <h2 className="mb-4 text-base font-semibold text-foreground flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-teal" /> Tip Pools
-                </h2>
-                {pools.length === 0 ? (
-                  <p className="text-sm text-muted-foreground py-4">No tip pools yet.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {pools.map((p) => (
-                      <div key={p.id} className="rounded-xl bg-black/20 px-4 py-3">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-foreground">{p.name || "Unnamed Pool"}</p>
-                            <p className="text-xs text-muted-foreground capitalize">{p.split_method} split · {p.pos_ticket_count} tickets</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm font-bold text-teal">{fmt(p.total_amount_cents)}</p>
-                            <span className={`text-[10px] font-semibold uppercase ${
-                              p.status === "open" ? "text-teal" :
-                              p.status === "distributed" ? "text-green-400" :
-                              p.status === "cancelled" ? "text-destructive" : "text-yellow-400"
-                            }`}>
-                              {p.status}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </>
-        )}
+      <main className="mx-auto max-w-3xl px-4 py-6">
+        {tab === "staff"   && <StaffTab />}
+        {tab === "checkin" && <CheckInTab />}
+        {tab === "payouts" && <PayoutsTab />}
+        {tab === "roster"  && <RosterTab />}
       </main>
+    </div>
+  );
+}
+
+// ── Staff Management Tab ───────────────────────────────────────────────────────
+function StaffTab() {
+  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [stands, setStands] = useState<Stand[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [assignStandId, setAssignStandId] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    Promise.all([
+      supabase.from("profiles").select("id, full_name, email, role, is_active").in("role", ["staff", "manager"]).order("full_name").then(({ data }) => { if (data) setStaff(data); }),
+      supabase.from("stands").select("id, name, location").order("name").then(({ data }) => { if (data) setStands(data); }),
+    ]).finally(() => setLoading(false));
+  }, []);
+
+  async function toggleActive(id: string, current: boolean) {
+    const { error } = await supabase.from("profiles").update({ is_active: !current }).eq("id", id);
+    if (error) { toast.error("Failed to update."); return; }
+    setStaff(prev => prev.map(s => s.id === id ? { ...s, is_active: !current } : s));
+    toast.success(!current ? "Staff activated." : "Staff deactivated.");
+  }
+
+  async function changeRole(id: string, role: string) {
+    const { error } = await supabase.from("profiles").update({ role }).eq("id", id);
+    if (error) { toast.error("Failed to update role."); return; }
+    setStaff(prev => prev.map(s => s.id === id ? { ...s, role } : s));
+    toast.success("Role updated.");
+  }
+
+  async function assignToStand(userId: string) {
+    const standId = assignStandId[userId];
+    if (!standId) return;
+    const { error } = await supabase.from("stand_staff").upsert({ stand_id: standId, user_id: userId }, { onConflict: "stand_id,user_id" });
+    if (error) { toast.error("Failed to assign stand."); return; }
+    toast.success("Assigned to stand.");
+    setAssignStandId(prev => { const n = { ...prev }; delete n[userId]; return n; });
+  }
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div className="space-y-3 fade-in-up">
+      <h2 className="text-sm font-semibold text-foreground mb-1">Staff Members ({staff.length})</h2>
+      {staff.length === 0 ? (
+        <EmptyState icon={Users} message="No staff members found." />
+      ) : (
+        staff.map(s => (
+          <div key={s.id} className="glassmorphism rounded-2xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-teal/20 text-teal text-sm font-bold">
+                  {(s.full_name || s.email).charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{s.full_name || "—"}</p>
+                  <p className="text-xs text-muted-foreground">{s.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ${ROLE_COLORS[s.role] ?? "bg-white/10 text-muted-foreground"}`}>
+                  {s.role}
+                </span>
+                <button
+                  onClick={() => toggleActive(s.id, s.is_active)}
+                  className={`flex h-7 w-7 items-center justify-center rounded-full transition-smooth ${s.is_active ? "bg-teal/20 text-teal" : "bg-destructive/20 text-destructive"}`}
+                >
+                  {s.is_active ? <Check className="h-3.5 w-3.5" /> : <X className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <select
+                value={s.role}
+                onChange={(e) => changeRole(s.id, e.target.value)}
+                className="flex-1 rounded-lg border border-border bg-black/20 px-2 py-1.5 text-xs text-foreground focus:border-teal focus:outline-none transition-smooth"
+              >
+                <option value="fan">Fan</option>
+                <option value="staff">Staff</option>
+                <option value="manager">Manager</option>
+              </select>
+              <select
+                value={assignStandId[s.id] ?? ""}
+                onChange={(e) => setAssignStandId(prev => ({ ...prev, [s.id]: e.target.value }))}
+                className="flex-1 rounded-lg border border-border bg-black/20 px-2 py-1.5 text-xs text-foreground focus:border-teal focus:outline-none transition-smooth"
+              >
+                <option value="">Assign to stand…</option>
+                {stands.map(st => <option key={st.id} value={st.id}>{st.name}</option>)}
+              </select>
+              <button
+                onClick={() => assignToStand(s.id)}
+                disabled={!assignStandId[s.id]}
+                className="rounded-lg bg-teal px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-light transition-smooth disabled:opacity-40"
+              >
+                Assign
+              </button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+// ── Check-In Tab ───────────────────────────────────────────────────────────────
+function CheckInTab() {
+  const [checkIns, setCheckIns] = useState<CheckIn[]>([]);
+  const [stands, setStands] = useState<Stand[]>([]);
+  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [standId, setStandId] = useState("");
+  const [userId, setUserId] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const today = new Date().toISOString().split("T")[0];
+
+  useEffect(() => { loadData(); }, []);
+
+  async function loadData() {
+    setLoading(true);
+    const [ciRes, stRes, stfRes] = await Promise.all([
+      supabase.from("check_ins").select("*, profiles(full_name), stands(name)").gte("checked_in_at", today).order("checked_in_at", { ascending: false }),
+      supabase.from("stands").select("id, name, location"),
+      supabase.from("profiles").select("id, full_name, email, role, is_active").in("role", ["staff", "manager"]),
+    ]);
+    if (ciRes.data) setCheckIns(ciRes.data as unknown as CheckIn[]);
+    if (stRes.data) setStands(stRes.data);
+    if (stfRes.data) setStaff(stfRes.data);
+    setLoading(false);
+  }
+
+  async function checkIn() {
+    if (!standId || !userId) return;
+    setSubmitting(true);
+    const { error } = await supabase.from("check_ins").insert({ stand_id: standId, user_id: userId });
+    setSubmitting(false);
+    if (error) { toast.error("Failed to check in."); return; }
+    toast.success("Checked in.");
+    setUserId("");
+    loadData();
+  }
+
+  async function checkOut(id: string) {
+    const { error } = await supabase.from("check_ins").update({ checked_out_at: new Date().toISOString() }).eq("id", id);
+    if (error) { toast.error("Failed to check out."); return; }
+    toast.success("Checked out.");
+    loadData();
+  }
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div className="space-y-4 fade-in-up">
+      <div className="glassmorphism rounded-2xl p-5 space-y-3 border border-teal/20">
+        <h3 className="text-sm font-semibold text-foreground">New Check-In</h3>
+        <select value={standId} onChange={e => setStandId(e.target.value)} className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground focus:border-teal focus:outline-none transition-smooth">
+          <option value="">Select stand…</option>
+          {stands.map(s => <option key={s.id} value={s.id}>{s.name} — {s.location}</option>)}
+        </select>
+        <select value={userId} onChange={e => setUserId(e.target.value)} className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground focus:border-teal focus:outline-none transition-smooth">
+          <option value="">Select staff member…</option>
+          {staff.map(s => <option key={s.id} value={s.id}>{s.full_name || s.email}</option>)}
+        </select>
+        <button onClick={checkIn} disabled={!standId || !userId || submitting} className="w-full rounded-xl bg-teal py-3 text-sm font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40">
+          {submitting ? "Checking in…" : "Check In"}
+        </button>
+      </div>
+
+      <div>
+        <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Today's Check-Ins</h3>
+        {checkIns.length === 0 ? (
+          <EmptyState icon={UserCheck} message="No check-ins today." />
+        ) : (
+          <div className="space-y-2">
+            {checkIns.map(ci => (
+              <div key={ci.id} className="glassmorphism rounded-xl px-4 py-3 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">{ci.profiles?.full_name ?? "—"}</p>
+                  <p className="text-xs text-muted-foreground">{ci.stands?.name ?? "—"} · {new Date(ci.checked_in_at).toLocaleTimeString()}</p>
+                </div>
+                {ci.checked_out_at ? (
+                  <span className="text-xs text-muted-foreground">Out {new Date(ci.checked_out_at).toLocaleTimeString()}</span>
+                ) : (
+                  <button onClick={() => checkOut(ci.id)} className="rounded-lg bg-destructive/20 px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/30 transition-smooth">
+                    Check Out
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Payouts Tab ────────────────────────────────────────────────────────────────
+function PayoutsTab() {
+  const [pools, setPools] = useState<TipPool[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [distributing, setDistributing] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.from("tip_pools").select("*, stands(name)").order("created_at", { ascending: false }).then(({ data }) => {
+      if (data) setPools(data as unknown as TipPool[]);
+      setLoading(false);
+    });
+  }, []);
+
+  async function distribute(poolId: string) {
+    setDistributing(poolId);
+    const { error } = await supabase.from("tip_pools").update({ status: "distributed" }).eq("id", poolId);
+    setDistributing(null);
+    if (error) { toast.error("Failed to distribute."); return; }
+    setPools(prev => prev.map(p => p.id === poolId ? { ...p, status: "distributed" } : p));
+    toast.success("Tips distributed to staff.");
+  }
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div className="space-y-3 fade-in-up">
+      <h2 className="text-sm font-semibold text-foreground mb-1">Tip Pools</h2>
+      {pools.length === 0 ? (
+        <EmptyState icon={DollarSign} message="No tip pools found." />
+      ) : (
+        pools.map(pool => (
+          <div key={pool.id} className="glassmorphism rounded-2xl p-4">
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <p className="text-sm font-semibold text-foreground">{pool.stands?.name ?? "Unknown Stand"}</p>
+                <p className="text-xs text-muted-foreground capitalize">{pool.split_method} split · {new Date(pool.created_at).toLocaleDateString()}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                {pool.total_amount != null && (
+                  <span className="text-sm font-bold text-teal">${Number(pool.total_amount).toFixed(2)}</span>
+                )}
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ${POOL_STATUS_COLORS[pool.status] ?? "bg-white/10 text-muted-foreground"}`}>
+                  {pool.status}
+                </span>
+              </div>
+            </div>
+            {pool.status === "open" && (
+              <button
+                onClick={() => distribute(pool.id)}
+                disabled={distributing === pool.id}
+                className="w-full rounded-xl bg-teal py-2.5 text-xs font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40"
+              >
+                {distributing === pool.id ? "Distributing…" : "Approve & Distribute"}
+              </button>
+            )}
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+// ── Game Roster Tab ────────────────────────────────────────────────────────────
+function RosterTab() {
+  const [roster, setRoster] = useState<RosterEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from("stand_staff").select("*, profiles(full_name, email), stands(name)").then(({ data }) => {
+      if (data) setRoster(data as unknown as RosterEntry[]);
+      setLoading(false);
+    });
+  }, []);
+
+  async function validateGeo(id: string) {
+    const { error } = await supabase.from("stand_staff").update({ is_geo_validated: true }).eq("id", id);
+    if (error) { toast.error("Failed to validate."); return; }
+    setRoster(prev => prev.map(r => r.id === id ? { ...r, is_geo_validated: true } : r));
+    toast.success("Geo-validation confirmed.");
+  }
+
+  async function removeFromRoster(id: string) {
+    const { error } = await supabase.from("stand_staff").delete().eq("id", id);
+    if (error) { toast.error("Failed to remove."); return; }
+    setRoster(prev => prev.filter(r => r.id !== id));
+    toast.success("Removed from roster.");
+  }
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div className="space-y-3 fade-in-up">
+      <h2 className="text-sm font-semibold text-foreground mb-1">Game Roster ({roster.length})</h2>
+      {roster.length === 0 ? (
+        <EmptyState icon={ClipboardList} message="Roster is empty. Assign staff to stands first." />
+      ) : (
+        roster.map(entry => (
+          <div key={entry.id} className="glassmorphism rounded-2xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-teal/20 text-teal text-sm font-bold">
+                {(entry.profiles?.full_name || entry.profiles?.email || "?").charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{entry.profiles?.full_name ?? "—"}</p>
+                <p className="text-xs text-muted-foreground">{entry.stands?.name ?? "Unknown Stand"}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {entry.is_geo_validated ? (
+                <span className="flex items-center gap-1 rounded-full bg-teal/20 px-2.5 py-0.5 text-[10px] font-semibold text-teal">
+                  <MapPin className="h-2.5 w-2.5" /> Verified
+                </span>
+              ) : (
+                <button
+                  onClick={() => validateGeo(entry.id)}
+                  className="flex items-center gap-1 rounded-full bg-amber-500/20 px-2.5 py-1 text-[10px] font-semibold text-amber-400 hover:bg-amber-500/30 transition-smooth"
+                >
+                  <MapPin className="h-2.5 w-2.5" /> Validate
+                </button>
+              )}
+              <button
+                onClick={() => removeFromRoster(entry.id)}
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-destructive/10 text-destructive hover:bg-destructive/20 transition-smooth"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+// ── Shared micro-components ────────────────────────────────────────────────────
+function LoadingSpinner() {
+  return (
+    <div className="flex justify-center py-12">
+      <Loader2 className="h-6 w-6 animate-spin text-teal" />
+    </div>
+  );
+}
+
+function EmptyState({ icon: Icon, message }: { icon: React.ElementType; message: string }) {
+  return (
+    <div className="glassmorphism rounded-2xl py-12 text-center">
+      <Icon className="mx-auto mb-2 h-8 w-8 text-muted-foreground/40" />
+      <p className="text-sm text-muted-foreground">{message}</p>
     </div>
   );
 }
