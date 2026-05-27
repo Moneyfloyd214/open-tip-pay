@@ -1,191 +1,318 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Upload, User } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import { ExternalBlob, KYCStatus } from "../backend";
-import { useSaveCallerUserProfile } from "../hooks/useQueries";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/lib/supabase";
+import {
+  ChevronRight, X, DollarSign, QrCode, Star,
+  Shield, Zap, ArrowRight, Check,
+} from "lucide-react";
 
-export default function OnboardingPage() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [bio, setBio] = useState("");
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string>("");
+// ── Slide definitions ──────────────────────────────────────────────────────────
+const SLIDES = [
+  {
+    id: 1,
+    tag: "Welcome",
+    title: "Welcome to Colts Tip Pay",
+    subtitle: "powered by Open Tip Pay",
+    body: "Modern, mobile-first payment and tipping experience built for Lucas Oil Stadium. Pay instantly, tip effortlessly, and earn rewards every time.",
+    icon: DollarSign,
+    iconBg: "bg-teal/20",
+    iconColor: "text-teal",
+    accent: "from-teal/20 to-transparent",
+    visual: (
+      <div className="relative mx-auto w-40 h-40 flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full bg-teal/10 animate-pulse" />
+        <div className="absolute inset-4 rounded-full bg-teal/15" />
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-teal glow-teal z-10">
+          <DollarSign className="h-10 w-10 text-white" />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 2,
+    tag: "Payments",
+    title: "Send & Receive Instantly",
+    subtitle: "Universal payments for everyone",
+    body: "Fans, staff, and businesses all use the same platform. Send money P2P, split bills with your crew, or request payment — all from your phone in seconds.",
+    icon: Zap,
+    iconBg: "bg-blue-500/20",
+    iconColor: "text-blue-400",
+    accent: "from-blue-500/15 to-transparent",
+    visual: (
+      <div className="mx-auto w-full max-w-xs space-y-2">
+        {[
+          { name: "Bartender · Jake",  amount: "+$12.00", dir: "in",  delay: "" },
+          { name: "You → Section 122", amount: "-$5.00",  dir: "out", delay: "animation-delay-150" },
+          { name: "Fan Split · 3 ppl", amount: "+$8.50",  dir: "in",  delay: "animation-delay-300" },
+        ].map((row, i) => (
+          <div key={i} className={`glassmorphism rounded-xl px-4 py-3 flex items-center justify-between fade-in-up ${row.delay}`}>
+            <div className="flex items-center gap-2">
+              <div className={`h-7 w-7 rounded-full flex items-center justify-center ${row.dir === "in" ? "bg-teal/20" : "bg-white/10"}`}>
+                <ArrowRight className={`h-3.5 w-3.5 ${row.dir === "in" ? "text-teal rotate-180" : "text-muted-foreground"}`} />
+              </div>
+              <span className="text-xs text-foreground">{row.name}</span>
+            </div>
+            <span className={`text-xs font-bold ${row.dir === "in" ? "text-teal" : "text-muted-foreground"}`}>{row.amount}</span>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    id: 3,
+    tag: "Tipping",
+    title: "Tip Your Crew",
+    subtitle: "No cash? No problem.",
+    body: "Scan any staff member's QR badge to tip concession workers, bartenders, valet, and more — directly from your phone. Fast, contactless, and instant.",
+    icon: QrCode,
+    iconBg: "bg-emerald-500/20",
+    iconColor: "text-emerald-400",
+    accent: "from-emerald-500/15 to-transparent",
+    visual: (
+      <div className="mx-auto flex flex-col items-center gap-4">
+        <div className="glassmorphism rounded-2xl p-5 border border-teal/30 flex flex-col items-center gap-3">
+          <div className="grid grid-cols-7 gap-0.5">
+            {Array.from({ length: 49 }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-3 w-3 rounded-sm ${
+                  [0,1,2,7,14,21,28,35,42,43,44,6,13,20,27,34,41,48,3,5,10,12,15,17,22,23,24,25,26,31,33,38,40,45,47].includes(i)
+                    ? "bg-teal"
+                    : "bg-transparent"
+                }`}
+              />
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground font-medium">Scan to Tip</p>
+        </div>
+        <div className="flex items-center gap-2 rounded-full bg-teal/20 px-4 py-2 border border-teal/30">
+          <Check className="h-3.5 w-3.5 text-teal" />
+          <span className="text-xs font-semibold text-teal">$5.00 tip sent!</span>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 4,
+    tag: "Rewards",
+    title: "Earn Fan Points",
+    subtitle: "Every dollar = more Colts perks",
+    body: "Every payment inside Lucas Oil Stadium earns Fan Points. Redeem for merch, food credits, premium seating upgrades, and exclusive Indianapolis Colts experiences.",
+    icon: Star,
+    iconBg: "bg-amber-500/20",
+    iconColor: "text-amber-400",
+    accent: "from-amber-500/15 to-transparent",
+    visual: (
+      <div className="mx-auto flex flex-col items-center gap-4 w-full max-w-xs">
+        <div className="glassmorphism rounded-2xl p-5 border border-amber-500/20 w-full">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/20">
+              <Star className="h-5 w-5 text-amber-400" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">Fan Points</p>
+              <p className="text-xs text-muted-foreground">Lucas Oil Stadium</p>
+            </div>
+          </div>
+          <p className="text-3xl font-bold text-amber-400">2,450 pts</p>
+          <div className="mt-3 h-2 rounded-full bg-white/10">
+            <div className="h-2 w-3/5 rounded-full bg-amber-400" />
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-1">550 pts to next reward</p>
+        </div>
+        <div className="grid grid-cols-3 gap-2 w-full">
+          {["Merch", "Food", "Seats"].map(r => (
+            <div key={r} className="glassmorphism rounded-xl py-2 text-center">
+              <p className="text-[10px] text-muted-foreground">{r}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 5,
+    tag: "Security",
+    title: "Secure & Trusted",
+    subtitle: "Bank-level protection",
+    body: "Login with biometrics, freeze all withdrawals instantly with Vault Lock, and require 2FA on every transfer. Your money is always protected — in the stadium and beyond.",
+    icon: Shield,
+    iconBg: "bg-blue-600/20",
+    iconColor: "text-blue-400",
+    accent: "from-blue-600/15 to-transparent",
+    visual: (
+      <div className="mx-auto flex flex-col items-center gap-3 w-full max-w-xs">
+        {[
+          { label: "Biometric Login",       status: "Active",  color: "text-teal",       bg: "bg-teal/20" },
+          { label: "Vault Lock",            status: "Enabled", color: "text-amber-400",  bg: "bg-amber-500/20" },
+          { label: "2FA Withdrawals",       status: "On",      color: "text-blue-400",   bg: "bg-blue-500/20" },
+          { label: "Internet Identity",     status: "Verified",color: "text-emerald-400",bg: "bg-emerald-500/20" },
+        ].map(({ label, status, color, bg }) => (
+          <div key={label} className="glassmorphism rounded-xl px-4 py-3 flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <Check className={`h-3.5 w-3.5 ${color}`} />
+              <span className="text-xs text-foreground">{label}</span>
+            </div>
+            <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${bg} ${color}`}>{status}</span>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+];
 
-  const saveProfile = useSaveCallerUserProfile();
+// ── Component ──────────────────────────────────────────────────────────────────
+interface OnboardingPageProps {
+  demoMode?: boolean;
+}
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Photo must be less than 5MB");
-        return;
-      }
-      setPhotoFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+export default function OnboardingPage({ demoMode = false }: OnboardingPageProps) {
+  const { user } = useAuth();
+  const [slide, setSlide] = useState(0);
+  const [completing, setCompleting] = useState(false);
+
+  const current = SLIDES[slide];
+  const isLast = slide === SLIDES.length - 1;
+  const progress = ((slide + 1) / SLIDES.length) * 100;
+
+  async function markOnboardingComplete() {
+    if (!user || completing) return;
+    setCompleting(true);
+    await supabase.from("profiles").update({ onboarding_complete: true }).eq("id", user.id);
+    window.location.href = demoMode ? "/dashboard?demo=1" : "/dashboard";
+  }
+
+  function skip() {
+    if (demoMode) {
+      window.location.href = "/dashboard?demo=1";
+    } else {
+      markOnboardingComplete();
     }
-  };
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!username.trim()) {
-      toast.error("Please enter a username");
-      return;
+  function next() {
+    if (isLast) {
+      markOnboardingComplete();
+    } else {
+      setSlide(s => s + 1);
     }
+  }
 
-    if (!email.trim()) {
-      toast.error("Please enter an email");
-      return;
-    }
-
-    try {
-      let photoBlob: ExternalBlob | undefined;
-
-      if (photoFile) {
-        const arrayBuffer = await photoFile.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
-        photoBlob = ExternalBlob.fromBytes(uint8Array);
-      }
-
-      await saveProfile.mutateAsync({
-        username: username.trim(),
-        email: email.trim(),
-        bio: bio.trim(),
-        photo: photoBlob,
-        walletAddress: undefined,
-        isFirstWalletConnection: true,
-        phoneNumber: undefined,
-        isVerified: false,
-        currentStatus: undefined,
-        kycStatus: KYCStatus.notSubmitted,
-        kycSubmissionTimestamp: undefined,
-        kycProviderReference: undefined,
-      });
-
-      toast.success("Profile created successfully!");
-    } catch (error) {
-      console.error("Profile creation error:", error);
-      toast.error("Failed to create profile. Please try again.");
-    }
-  };
+  const Icon = current.icon;
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-navy via-navy-light to-teal p-4">
-      <div className="mx-auto w-full max-w-md space-y-6 py-8">
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-white">
-            Welcome to Open Tip Pay
+    <div className="min-h-screen bg-background flex flex-col overflow-hidden">
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className={`absolute inset-0 bg-gradient-to-b ${current.accent} opacity-60 transition-all duration-700`} />
+        <div className="absolute left-1/4 top-[-20%] h-[600px] w-[600px] rounded-full bg-teal/[0.05] blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 h-[400px] w-[400px] rounded-full bg-teal/[0.04] blur-[100px]" />
+      </div>
+
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-6 pt-safe-top pt-6 pb-2">
+        {/* Colts branding */}
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-teal">
+            <DollarSign className="h-4 w-4 text-white" />
+          </div>
+          <span className="text-xs font-bold text-foreground">Colts Tip Pay</span>
+        </div>
+        {/* Skip */}
+        <button
+          onClick={skip}
+          className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-white/15 hover:text-foreground transition-smooth"
+        >
+          <X className="h-3 w-3" />
+          Skip
+        </button>
+      </div>
+
+      {/* Progress bar */}
+      <div className="px-6 py-2">
+        <div className="h-1 rounded-full bg-white/10 overflow-hidden">
+          <div
+            className="h-1 rounded-full bg-teal transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="flex justify-between mt-1.5">
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setSlide(i)}
+              className={`h-1.5 flex-1 mx-0.5 rounded-full transition-smooth ${i === slide ? "bg-teal" : i < slide ? "bg-teal/40" : "bg-white/10"}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Slide content */}
+      <div className="flex-1 flex flex-col px-6 pt-4 pb-4 overflow-y-auto">
+        {/* Visual area */}
+        <div className="flex items-center justify-center py-6 min-h-[200px]">
+          {current.visual}
+        </div>
+
+        {/* Tag */}
+        <div className="flex justify-center mb-3">
+          <span className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${current.iconBg} ${current.iconColor}`}>
+            {current.tag}
+          </span>
+        </div>
+
+        {/* Text */}
+        <div className="text-center space-y-2 mb-2">
+          <h1 className="text-2xl font-bold text-foreground leading-tight">
+            {current.title}
           </h1>
-          <p className="mt-2 text-sm text-white/80">
-            Set up your profile to get started
+          <p className="text-sm font-semibold text-teal">{current.subtitle}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
+            {current.body}
           </p>
         </div>
 
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6 rounded-2xl bg-white p-6 shadow-xl"
-        >
-          {/* Photo Upload */}
-          <div className="flex flex-col items-center space-y-4">
-            <Avatar className="h-24 w-24 border-4 border-teal">
-              {photoPreview ? (
-                <AvatarImage src={photoPreview} alt="Profile" />
-              ) : (
-                <AvatarFallback className="bg-navy-light text-white">
-                  <User className="h-12 w-12" />
-                </AvatarFallback>
-              )}
-            </Avatar>
-            <Label htmlFor="photo" className="cursor-pointer">
-              <div className="flex items-center gap-2 rounded-lg bg-teal px-4 py-2 text-sm font-medium text-white hover:bg-teal-dark">
-                <Upload className="h-4 w-4" />
-                Upload Photo
-              </div>
-              <Input
-                id="photo"
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                className="hidden"
-              />
-            </Label>
-          </div>
-
-          {/* Username */}
-          <div className="space-y-2">
-            <Label htmlFor="username" className="text-navy">
-              Username *
-            </Label>
-            <Input
-              id="username"
-              type="text"
-              placeholder="johndoe"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="text-navy border-navy-light focus:border-teal"
+        {/* Slide dots */}
+        <div className="flex justify-center gap-1.5 py-4">
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setSlide(i)}
+              className={`rounded-full transition-smooth ${i === slide ? "w-6 h-2 bg-teal" : "w-2 h-2 bg-white/20"}`}
             />
-          </div>
+          ))}
+        </div>
+      </div>
 
-          {/* Email */}
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-navy">
-              Email *
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="john@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="text-navy border-navy-light focus:border-teal"
-            />
-          </div>
-
-          {/* Bio */}
-          <div className="space-y-2">
-            <Label htmlFor="bio" className="text-navy">
-              Bio (Optional)
-            </Label>
-            <Textarea
-              id="bio"
-              placeholder="Tell us about yourself..."
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              rows={3}
-              className="text-navy border-navy-light focus:border-teal resize-none"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            disabled={saveProfile.isPending}
-            className="w-full bg-teal hover:bg-teal-dark text-white font-semibold"
-            size="lg"
+      {/* Bottom action */}
+      <div className="px-6 pb-safe-bottom pb-8 space-y-3">
+        {isLast && demoMode && (
+          <button
+            onClick={() => { window.location.href = "/dashboard"; }}
+            className="w-full rounded-xl border border-border py-3 text-sm font-semibold text-muted-foreground hover:text-foreground hover:border-teal/40 transition-smooth"
           >
-            {saveProfile.isPending ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Creating Profile...
-              </>
-            ) : (
-              "Create Profile"
-            )}
-          </Button>
-        </form>
+            Sign In with My Account
+          </button>
+        )}
+        <button
+          onClick={next}
+          disabled={completing}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-teal py-4 text-sm font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-60 glow-teal-hero"
+        >
+          {completing ? (
+            "Getting Started…"
+          ) : isLast ? (
+            <>
+              {demoMode ? "Start Demo" : "Get Started"}
+              <ArrowRight className="h-4 w-4" />
+            </>
+          ) : (
+            <>
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

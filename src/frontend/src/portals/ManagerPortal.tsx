@@ -331,11 +331,24 @@ function CheckInTab() {
   );
 }
 
+// ── Types for weighted split ───────────────────────────────────────────────────
+interface SplitAllocation {
+  user_id: string;
+  full_name: string;
+  hours_worked: number;
+  role_weight: number;
+  blended_weight: number;
+  share_pct: number;
+  allocated_amount: number;
+}
+
 // ── Payouts Tab ────────────────────────────────────────────────────────────────
 function PayoutsTab() {
   const [pools, setPools] = useState<TipPool[]>([]);
   const [loading, setLoading] = useState(true);
   const [distributing, setDistributing] = useState<string | null>(null);
+  const [preview, setPreview] = useState<Record<string, SplitAllocation[]>>({});
+  const [previewLoading, setPreviewLoading] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.from("tip_pools").select("*, stands(name)").order("created_at", { ascending: false }).then(({ data }) => {
@@ -344,13 +357,106 @@ function PayoutsTab() {
     });
   }, []);
 
-  async function distribute(poolId: string) {
-    setDistributing(poolId);
-    const { error } = await supabase.from("tip_pools").update({ status: "distributed" }).eq("id", poolId);
-    setDistributing(null);
-    if (error) { toast.error("Failed to distribute."); return; }
-    setPools(prev => prev.map(p => p.id === poolId ? { ...p, status: "distributed" } : p));
-    toast.success("Tips distributed to staff.");
+  async function loadPreview(pool: TipPool) {
+    if (preview[pool.id]) { setPreview(prev => { const n = { ...prev }; delete n[pool.id]; return n; }); return; }
+    setPreviewLoading(pool.id);
+
+    // Fetch tip_pool_splits with user/role_weight info
+    const { data: splits } = await supabase
+      .from("tip_pool_splits")
+      .select("user_id, role_weight, hours_worked, profiles(full_name)")
+      .eq("pool_id", pool.id);
+
+    let allocations: SplitAllocation[] = [];
+
+    if (splits && splits.length > 0) {
+      // Use role_weight from splits, hours_worked from splits (updated at check-out)
+      const sumBlended = splits.reduce((s, sp) => s + (sp.hours_worked || 1) * (sp.role_weight || 1), 0);
+      allocations = splits.map(sp => {
+        const h = Number(sp.hours_worked) || 1;
+        const r = Number(sp.role_weight) || 1;
+        const blend = h * r;
+        const pct = sumBlended > 0 ? (blend / sumBlended) * 100 : 100 / splits.length;
+        const amount = ((pool.total_amount ?? 0) * pct) / 100;
+        return {
+          user_id: sp.user_id,
+          full_name: (sp as any).profiles?.full_name ?? sp.user_id.slice(0, 8),
+          hours_worked: h,
+          role_weight: r,
+          blended_weight: blend,
+          share_pct: pct,
+          allocated_amount: amount,
+        };
+      });
+    } else {
+      // Fallback: equal split among stand staff with check-ins for pool period
+      const { data: staffRows } = await supabase
+        .from("check_ins")
+        .select("user_id, hours_worked, profiles(full_name)")
+        .eq("stand_id", pool.stand_id)
+        .gte("checked_in_at", pool.created_at);
+
+      if (staffRows && staffRows.length > 0) {
+        const sumH = staffRows.reduce((s, ci) => s + (Number(ci.hours_worked) || 1), 0);
+        allocations = staffRows.map(ci => {
+          const h = Number(ci.hours_worked) || 1;
+          const pct = (h / sumH) * 100;
+          return {
+            user_id: ci.user_id,
+            full_name: (ci as any).profiles?.full_name ?? ci.user_id.slice(0, 8),
+            hours_worked: h,
+            role_weight: 1,
+            blended_weight: h,
+            share_pct: pct,
+            allocated_amount: ((pool.total_amount ?? 0) * pct) / 100,
+          };
+        });
+      }
+    }
+
+    setPreview(prev => ({ ...prev, [pool.id]: allocations }));
+    setPreviewLoading(null);
+  }
+
+  async function distribute(pool: TipPool) {
+    setDistributing(pool.id);
+    try {
+      const allocations = preview[pool.id];
+      if (allocations && allocations.length > 0) {
+        // Write individual allocated amounts to tip_pool_splits
+        const totalCents = Math.round((pool.total_amount ?? 0) * 100);
+        for (const alloc of allocations) {
+          const cents = Math.round((alloc.allocated_amount) * 100);
+          await supabase.from("tip_pool_splits").upsert({
+            pool_id: pool.id,
+            user_id: alloc.user_id,
+            role_weight: alloc.role_weight,
+            hours_worked: alloc.hours_worked,
+            allocated_amount_cents: cents,
+          }, { onConflict: "pool_id,user_id" });
+        }
+        // Log a transaction for each allocation
+        const txRows = allocations.map(alloc => ({
+          staff_id: alloc.user_id,
+          fan_id: alloc.user_id,
+          amount: alloc.allocated_amount,
+          transaction_type: "digital",
+          category: "general",
+          note: `Pool payout — ${alloc.share_pct.toFixed(1)}% (${alloc.hours_worked}h × ${alloc.role_weight}x weight)`,
+          tipper_name: "Tip Pool",
+        }));
+        await supabase.from("transactions").insert(txRows);
+      }
+      const { error } = await supabase.from("tip_pools").update({ status: "distributed" }).eq("id", pool.id);
+      if (error) throw error;
+      setPools(prev => prev.map(p => p.id === pool.id ? { ...p, status: "distributed" } : p));
+      setPreview(prev => { const n = { ...prev }; delete n[pool.id]; return n; });
+      toast.success("Tips distributed with weighted blending.");
+    } catch {
+      toast.error("Failed to distribute.");
+    } finally {
+      setDistributing(null);
+    }
   }
 
   if (loading) return <LoadingSpinner />;
@@ -362,8 +468,8 @@ function PayoutsTab() {
         <EmptyState icon={DollarSign} message="No tip pools found." />
       ) : (
         pools.map(pool => (
-          <div key={pool.id} className="glassmorphism rounded-2xl p-4">
-            <div className="flex items-start justify-between mb-3">
+          <div key={pool.id} className="glassmorphism rounded-2xl p-4 space-y-3">
+            <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm font-semibold text-foreground">{pool.stands?.name ?? "Unknown Stand"}</p>
                 <p className="text-xs text-muted-foreground capitalize">{pool.split_method} split · {new Date(pool.created_at).toLocaleDateString()}</p>
@@ -377,14 +483,52 @@ function PayoutsTab() {
                 </span>
               </div>
             </div>
+
             {pool.status === "open" && (
-              <button
-                onClick={() => distribute(pool.id)}
-                disabled={distributing === pool.id}
-                className="w-full rounded-xl bg-teal py-2.5 text-xs font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40"
-              >
-                {distributing === pool.id ? "Distributing…" : "Approve & Distribute"}
-              </button>
+              <>
+                <button
+                  onClick={() => loadPreview(pool)}
+                  disabled={previewLoading === pool.id}
+                  className="w-full rounded-xl border border-teal/30 py-2 text-xs font-semibold text-teal hover:bg-teal/10 transition-smooth disabled:opacity-40"
+                >
+                  {previewLoading === pool.id ? "Calculating…" : preview[pool.id] ? "Hide Breakdown" : "Preview Split"}
+                </button>
+
+                {preview[pool.id] && (
+                  <div className="space-y-1.5 rounded-xl bg-black/20 p-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      Blended Split (hours × role weight)
+                    </p>
+                    {preview[pool.id].length === 0 ? (
+                      <p className="text-xs text-muted-foreground">No check-in data found for this pool.</p>
+                    ) : (
+                      preview[pool.id].map(alloc => (
+                        <div key={alloc.user_id} className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-teal/20 text-teal text-[10px] font-bold flex-shrink-0">
+                              {alloc.full_name.charAt(0).toUpperCase()}
+                            </div>
+                            <span className="text-foreground truncate">{alloc.full_name}</span>
+                          </div>
+                          <div className="flex items-center gap-3 flex-shrink-0">
+                            <span className="text-muted-foreground">{alloc.hours_worked}h × {alloc.role_weight}x</span>
+                            <span className="text-muted-foreground w-10 text-right">{alloc.share_pct.toFixed(1)}%</span>
+                            <span className="font-bold text-teal w-14 text-right">${alloc.allocated_amount.toFixed(2)}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+
+                <button
+                  onClick={() => distribute(pool)}
+                  disabled={distributing === pool.id}
+                  className="w-full rounded-xl bg-teal py-2.5 text-xs font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40"
+                >
+                  {distributing === pool.id ? "Distributing…" : "Approve & Distribute"}
+                </button>
+              </>
             )}
           </div>
         ))

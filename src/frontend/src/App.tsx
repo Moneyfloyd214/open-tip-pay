@@ -1,6 +1,8 @@
 import { Toaster } from "sonner";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { Loader as Loader2 } from "lucide-react";
+import { supabase } from "./lib/supabase";
+import { useEffect } from "react";
 
 // Pages
 import LoginPage from "./pages/LoginPage";
@@ -61,6 +63,18 @@ import AdminPanel from "./portals/AdminPanel";
 function Router() {
   const { user, loading, isManager, isAdmin } = useAuth();
   const path = window.location.pathname;
+  const params = new URLSearchParams(window.location.search);
+  const isDemo = params.get("demo") === "1";
+
+  // Redirect new authenticated users (onboarding_complete = false) to /onboarding
+  useEffect(() => {
+    if (!user || path === "/onboarding" || path.startsWith("/tip/") || path === "/kitchen" || path === "/partner") return;
+    supabase.from("profiles").select("onboarding_complete").eq("id", user.id).maybeSingle().then(({ data }) => {
+      if (data && data.onboarding_complete === false) {
+        window.location.href = "/onboarding";
+      }
+    });
+  }, [user, path]);
 
   if (loading) {
     return (
@@ -75,11 +89,11 @@ function Router() {
   if (path === "/kitchen")      return <KitchenDisplayPage />;
   if (path === "/partner")      return <PartnerWithUsPage />;
 
+  // ── Demo mode onboarding (no auth required) ────────────────────────────────
+  if (path === "/onboarding" && isDemo) return <OnboardingPage demoMode />;
+
   // ── Unauthenticated → login ────────────────────────────────────────────────
-  if (!user) {
-    if (path === "/auth/login" || path === "/") return <LoginPage />;
-    return <LoginPage />;
-  }
+  if (!user) return <LoginPage />;
 
   // ── Role-gated portals ─────────────────────────────────────────────────────
   if (path === "/admin") {

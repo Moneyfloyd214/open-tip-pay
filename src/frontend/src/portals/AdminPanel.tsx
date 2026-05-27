@@ -33,6 +33,22 @@ interface Stand {
   location: string;
   pos_type: string;
   is_active: boolean;
+  is_volunteer_org: boolean;
+  volunteer_org_id: string | null;
+}
+
+interface SimulatedTicket {
+  id: string;
+  stand_id: string;
+  stand_name: string;
+  items: string;
+  amount: number;
+  tip: number;
+  pos_type: string;
+  is_volunteer_org: boolean;
+  volunteer_org_id: string | null;
+  timestamp: string;
+  status: "pending" | "ingested" | "routed";
 }
 
 interface Reward {
@@ -280,17 +296,51 @@ function AnalyticsTab() {
   );
 }
 
+// ── POS ticket simulator helpers ───────────────────────────────────────────────
+const MOCK_ITEMS = [
+  ["Hot Dog x2", "Nachos x1"],
+  ["Draft Beer x3"],
+  ["Burger x1", "Soda x2"],
+  ["Popcorn x2", "Water x1"],
+  ["Seltzer x2"],
+  ["Nachos x1", "Draft Beer x2"],
+];
+
+function generateMockTicket(stand: Stand): SimulatedTicket {
+  const items = MOCK_ITEMS[Math.floor(Math.random() * MOCK_ITEMS.length)];
+  const amount = parseFloat((Math.random() * 35 + 5).toFixed(2));
+  const tip = parseFloat((amount * (Math.random() * 0.2 + 0.1)).toFixed(2));
+  return {
+    id: `sim-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    stand_id: stand.id,
+    stand_name: stand.name,
+    items: items.join(", "),
+    amount,
+    tip,
+    pos_type: stand.pos_type,
+    is_volunteer_org: stand.is_volunteer_org,
+    volunteer_org_id: stand.volunteer_org_id,
+    timestamp: new Date().toISOString(),
+    status: "pending",
+  };
+}
+
 // ── POS / Stands Tab ───────────────────────────────────────────────────────────
 function POSTab() {
+  const { user } = useAuth();
   const [stands, setStands] = useState<Stand[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ name: "", location: "", pos_type: "square" });
+  const [form, setForm] = useState({ name: "", location: "", pos_type: "square", is_volunteer_org: false });
   const [saving, setSaving] = useState(false);
+  const [tickets, setTickets] = useState<SimulatedTicket[]>([]);
+  const [simulating, setSimulating] = useState(false);
+  const [ingestingId, setIngestingId] = useState<string | null>(null);
+  const [selectedStandId, setSelectedStandId] = useState<string>("all");
 
   useEffect(() => {
     supabase.from("stands").select("*").order("name").then(({ data }) => {
-      if (data) setStands(data);
+      if (data) setStands(data as Stand[]);
       setLoading(false);
     });
   }, []);
@@ -298,12 +348,18 @@ function POSTab() {
   async function addStand() {
     if (!form.name.trim()) return;
     setSaving(true);
-    const { data, error } = await supabase.from("stands").insert({ ...form, is_active: true }).select().maybeSingle();
+    const { data, error } = await supabase.from("stands").insert({
+      name: form.name,
+      location: form.location,
+      pos_type: form.pos_type,
+      is_volunteer_org: form.is_volunteer_org,
+      is_active: true,
+    }).select().maybeSingle();
     setSaving(false);
     if (error) { toast.error("Failed to add stand."); return; }
-    if (data) setStands(prev => [...prev, data]);
+    if (data) setStands(prev => [...prev, data as Stand]);
     setShowAdd(false);
-    setForm({ name: "", location: "", pos_type: "square" });
+    setForm({ name: "", location: "", pos_type: "square", is_volunteer_org: false });
     toast.success("Stand added.");
   }
 
@@ -313,10 +369,61 @@ function POSTab() {
     setStands(prev => prev.map(s => s.id === id ? { ...s, is_active: !current } : s));
   }
 
+  function simulateTickets() {
+    const activeStands = stands.filter(s => s.is_active);
+    if (activeStands.length === 0) { toast.error("No active stands to simulate."); return; }
+    setSimulating(true);
+    const count = Math.floor(Math.random() * 3) + 2;
+    const newTickets: SimulatedTicket[] = Array.from({ length: count }, () => {
+      const stand = activeStands[Math.floor(Math.random() * activeStands.length)];
+      return generateMockTicket(stand);
+    });
+    setTickets(prev => [...newTickets, ...prev].slice(0, 30));
+    setSimulating(false);
+    toast.success(`${count} POS ticket${count > 1 ? "s" : ""} received.`);
+  }
+
+  async function ingestTicket(ticket: SimulatedTicket) {
+    if (!user) return;
+    setIngestingId(ticket.id);
+    try {
+      const { error } = await supabase.from("transactions").insert({
+        staff_id: user.id,
+        fan_id: user.id,
+        amount: ticket.tip,
+        transaction_type: "digital",
+        category: "food",
+        note: `POS (${ticket.pos_type.toUpperCase()}) — ${ticket.items} — subtotal $${ticket.amount.toFixed(2)}`,
+        tipper_name: "POS Terminal",
+        ...(ticket.volunteer_org_id ? { volunteer_org_id: ticket.volunteer_org_id } : {}),
+      });
+      if (error) throw error;
+      setTickets(prev => prev.map(t => t.id === ticket.id ? { ...t, status: ticket.is_volunteer_org ? "routed" : "ingested" } : t));
+      toast.success(ticket.is_volunteer_org
+        ? `Tip routed to volunteer org for ${ticket.stand_name}.`
+        : `Ticket ingested — $${ticket.tip.toFixed(2)} tip recorded.`
+      );
+    } catch {
+      toast.error("Failed to ingest ticket.");
+    } finally {
+      setIngestingId(null);
+    }
+  }
+
+  async function ingestAll() {
+    const pending = tickets.filter(t => t.status === "pending");
+    for (const t of pending) await ingestTicket(t);
+  }
+
+  const filteredTickets = selectedStandId === "all"
+    ? tickets
+    : tickets.filter(t => t.stand_id === selectedStandId);
+
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="space-y-4 fade-in-up">
+      {/* Stands list */}
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-foreground">Stands & POS ({stands.length})</h2>
         <button onClick={() => setShowAdd(v => !v)} className="flex items-center gap-1.5 rounded-xl bg-teal px-3 py-2 text-xs font-semibold text-white hover:bg-teal-light transition-smooth">
@@ -332,6 +439,15 @@ function POSTab() {
           <select value={form.pos_type} onChange={e => setForm(f => ({ ...f, pos_type: e.target.value }))} className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground focus:border-teal focus:outline-none transition-smooth">
             {POS_TYPES.map(p => <option key={p} value={p} className="capitalize">{p.charAt(0).toUpperCase() + p.slice(1)}</option>)}
           </select>
+          <label className="flex items-center gap-3 cursor-pointer">
+            <div
+              onClick={() => setForm(f => ({ ...f, is_volunteer_org: !f.is_volunteer_org }))}
+              className={`h-5 w-9 rounded-full relative transition-smooth ${form.is_volunteer_org ? "bg-teal" : "bg-white/10"}`}
+            >
+              <div className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all ${form.is_volunteer_org ? "left-[18px]" : "left-0.5"}`} />
+            </div>
+            <span className="text-xs text-muted-foreground">Volunteer Organization stand (tips routed to org account)</span>
+          </label>
           <button onClick={addStand} disabled={!form.name.trim() || saving} className="w-full rounded-xl bg-teal py-3 text-sm font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40">
             {saving ? "Adding…" : "Add Stand"}
           </button>
@@ -346,7 +462,12 @@ function POSTab() {
                 <Wifi className={`h-4 w-4 ${s.is_active ? "text-teal" : "text-muted-foreground"}`} />
               </div>
               <div>
-                <p className="text-sm font-medium text-foreground">{s.name}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium text-foreground">{s.name}</p>
+                  {s.is_volunteer_org && (
+                    <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-400">VOL ORG</span>
+                  )}
+                </div>
                 <p className="text-xs text-muted-foreground">{s.location}</p>
               </div>
             </div>
@@ -358,6 +479,96 @@ function POSTab() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* POS Ticket Simulator */}
+      <div className="glassmorphism rounded-2xl p-5 border border-teal/20 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="h-4 w-4 text-teal" />
+            <h3 className="text-sm font-semibold text-foreground">POS Ticket Simulator</h3>
+          </div>
+          <div className="flex items-center gap-2">
+            {tickets.some(t => t.status === "pending") && (
+              <button
+                onClick={ingestAll}
+                className="rounded-xl bg-emerald-500/20 px-3 py-1.5 text-xs font-bold text-emerald-400 hover:bg-emerald-500/30 transition-smooth"
+              >
+                Ingest All
+              </button>
+            )}
+            <button
+              onClick={simulateTickets}
+              disabled={simulating}
+              className="flex items-center gap-1.5 rounded-xl bg-teal px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-light transition-smooth disabled:opacity-40"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Simulate
+            </button>
+          </div>
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          Simulates real-time POS ticket ingestion from Toast, Square, SkyTab, and other terminals. Volunteer org tips are automatically routed to the linked org account.
+        </p>
+
+        {stands.length > 0 && (
+          <select
+            value={selectedStandId}
+            onChange={e => setSelectedStandId(e.target.value)}
+            className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground focus:border-teal focus:outline-none transition-smooth"
+          >
+            <option value="all">All Stands</option>
+            {stands.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        )}
+
+        {filteredTickets.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border py-8 text-center">
+            <Wifi className="mx-auto mb-2 h-8 w-8 text-muted-foreground/30" />
+            <p className="text-sm text-muted-foreground">No tickets yet. Click Simulate to generate POS events.</p>
+          </div>
+        ) : (
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {filteredTickets.map(t => (
+              <div key={t.id} className="rounded-xl bg-black/20 px-4 py-3 flex items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className={`text-[10px] font-bold uppercase ${POS_COLORS[t.pos_type] ?? "text-muted-foreground"}`}>{t.pos_type}</span>
+                    <span className="text-xs text-muted-foreground">{t.stand_name}</span>
+                    {t.is_volunteer_org && (
+                      <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-400">VOL ORG</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-foreground truncate">{t.items}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    ${t.amount.toFixed(2)} + <span className="text-teal">${t.tip.toFixed(2)} tip</span>
+                    {" · "}{new Date(t.timestamp).toLocaleTimeString()}
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  {t.status === "pending" ? (
+                    <button
+                      onClick={() => ingestTicket(t)}
+                      disabled={ingestingId === t.id}
+                      className="rounded-lg bg-teal px-2.5 py-1.5 text-[10px] font-bold text-white hover:bg-teal-light transition-smooth disabled:opacity-40"
+                    >
+                      {ingestingId === t.id ? "…" : "Ingest"}
+                    </button>
+                  ) : (
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                      t.status === "routed"
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : "bg-teal/20 text-teal"
+                    }`}>
+                      {t.status === "routed" ? "Routed" : "Ingested"}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

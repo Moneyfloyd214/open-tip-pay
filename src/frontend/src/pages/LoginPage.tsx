@@ -176,6 +176,17 @@ export default function LoginPage() {
           </div>
         </div>
 
+        {/* Demo mode entry */}
+        <div className="text-center">
+          <button
+            type="button"
+            onClick={() => { window.location.href = "/onboarding?demo=1"; }}
+            className="text-xs text-muted-foreground hover:text-teal transition-smooth underline underline-offset-4"
+          >
+            Explore as a Guest — no account needed
+          </button>
+        </div>
+
         <p className="text-center text-[11px] text-muted-foreground/50">
           © {new Date().getFullYear()} Open Tip Pay
         </p>
