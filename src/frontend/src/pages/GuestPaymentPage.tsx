@@ -1,44 +1,102 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { DollarSign, CircleCheck as CheckCircle, Loader as Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
-const queryClient = new QueryClient();
+interface TipLink {
+  id: string;
+  slug: string;
+  title: string;
+  message: string;
+  worker_id: string;
+}
+
+interface WorkerProfile {
+  full_name: string;
+  avatar_url: string;
+}
+
+const PRESETS = [1, 2, 5, 10, 20, 50];
+
+type Step = "loading" | "notfound" | "input" | "submitting" | "success";
 
 function GuestPaymentContent() {
-  const pathParts = window.location.pathname.split("/");
-  const recipientId = pathParts[pathParts.length - 1];
-  const isColts =
-    localStorage.getItem("whiteLabel") === "colts" ||
-    window.location.search.includes("colts");
-  const brandName = isColts ? "Colts Tip Pay" : "Open Tip Pay";
+  const slug = window.location.pathname.split("/tip/")[1]?.split("/")[0] ?? "";
 
-  const [amount, setAmount] = useState<number>(0);
+  const [step, setStep] = useState<Step>("loading");
+  const [tipLink, setTipLink] = useState<TipLink | null>(null);
+  const [worker, setWorker] = useState<WorkerProfile | null>(null);
+  const [amount, setAmount] = useState(0);
   const [customAmount, setCustomAmount] = useState("");
-  const [contactInfo, setContactInfo] = useState("");
-  const [step, setStep] = useState<"input" | "paying" | "success">("input");
-  const [pointsEarned, setPointsEarned] = useState(0);
+  const [tipperName, setTipperName] = useState("");
+  const [tipperEmail, setTipperEmail] = useState("");
+  const [note, setNote] = useState("");
 
-  const presets = [1, 2, 5, 10, 20];
-  const effectiveAmount = customAmount
-    ? Number.parseFloat(customAmount)
-    : amount;
-  const canPay = effectiveAmount > 0 && contactInfo.trim().length > 3;
+  const effectiveAmount = customAmount ? parseFloat(customAmount) : amount;
+  const canPay = effectiveAmount >= 1 && tipperName.trim().length >= 2;
 
-  const handlePay = (_method: string) => {
-    if (!canPay) return;
-    setStep("paying");
-    setTimeout(() => {
-      const pts = Math.floor(effectiveAmount * 10);
-      setPointsEarned(pts);
+  useEffect(() => {
+    if (!slug) { setStep("notfound"); return; }
+    (async () => {
+      const { data: link } = await supabase
+        .from("tip_links")
+        .select("id, slug, title, message, worker_id")
+        .eq("slug", slug)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (!link) { setStep("notfound"); return; }
+      setTipLink(link);
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url")
+        .eq("id", link.worker_id)
+        .maybeSingle();
+      setWorker(profile);
+      setStep("input");
+    })();
+  }, [slug]);
+
+  async function handlePay() {
+    if (!canPay || !tipLink) return;
+    setStep("submitting");
+
+    const { error } = await supabase.from("tips").insert({
+      tip_link_id: tipLink.id,
+      worker_id: tipLink.worker_id,
+      tipper_name: tipperName.trim(),
+      tipper_email: tipperEmail.trim(),
+      amount_cents: Math.round(effectiveAmount * 100),
+      message: note.trim(),
+      status: "completed",
+    });
+
+    if (error) {
+      toast.error("Something went wrong. Please try again.");
+      setStep("input");
+    } else {
       setStep("success");
-    }, 1500);
-  };
+    }
+  }
 
-  if (step === "paying") {
+  if (step === "loading") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#00e5cc] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-white/70">Processing payment...</p>
+        <Loader2 className="h-8 w-8 animate-spin text-teal" />
+      </div>
+    );
+  }
+
+  if (step === "notfound") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4 text-center">
+        <div className="glassmorphism rounded-2xl p-8 max-w-sm w-full">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/20 mx-auto">
+            <DollarSign className="h-6 w-6 text-destructive" />
+          </div>
+          <h2 className="text-lg font-bold text-foreground">Tip link not found</h2>
+          <p className="mt-2 text-sm text-muted-foreground">This link may be inactive or doesn't exist.</p>
         </div>
       </div>
     );
@@ -47,91 +105,76 @@ function GuestPaymentContent() {
   if (step === "success") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="w-full max-w-sm text-center space-y-6">
-          <div className="w-20 h-20 bg-[#10b981]/20 rounded-full flex items-center justify-center mx-auto border-2 border-[#10b981]">
-            <span className="text-4xl text-[#10b981]">&#10003;</span>
+        <div className="w-full max-w-sm text-center space-y-6 fade-in-up">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-teal/20 border-2 border-teal mx-auto glow-teal">
+            <CheckCircle className="h-10 w-10 text-teal" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground">
-              Payment Sent!
-            </h2>
-            <p className="text-white/60 mt-1">
-              ${effectiveAmount.toFixed(2)} delivered
-            </p>
+            <h2 className="text-2xl font-bold text-foreground">Tip Sent!</h2>
+            <p className="text-muted-foreground mt-1">${effectiveAmount.toFixed(2)} sent to {worker?.full_name || "your recipient"}</p>
           </div>
-          <div className="bg-[#f59e0b]/10 border border-[#f59e0b]/30 rounded-xl p-4">
-            <p className="text-[#f59e0b] font-bold text-lg">
-              &#11088; You earned {pointsEarned} Fan Points!
-            </p>
-            <p className="text-white/60 text-sm mt-1">
-              We will send details to {contactInfo}
-            </p>
+          <div className="glassmorphism rounded-2xl p-5">
+            <p className="text-sm text-muted-foreground">Thank you, {tipperName}! Your generosity makes a difference.</p>
+            {tipLink?.message && (
+              <p className="mt-3 text-sm font-medium text-teal">"{tipLink.message}"</p>
+            )}
           </div>
-          <div className="bg-muted/30 backdrop-blur-md border border-white/10 rounded-xl p-5 space-y-3">
-            <p className="text-white font-semibold">
-              Want to do more with {brandName}?
-            </p>
-            <p className="text-white/60 text-sm">
-              Track payments, send money to friends, and use your Fan Points.
-            </p>
-            <button
-              type="button"
-              className="w-full bg-[#00e5cc] text-[#0a0e1a] font-bold py-3 rounded-xl"
-              data-ocid="guest-download-app-button"
-            >
-              Download the App
-            </button>
-            <button
-              type="button"
-              className="w-full border border-white/20 text-white/70 py-2 rounded-xl text-sm"
-              data-ocid="guest-maybe-later-button"
-            >
-              Maybe Later
-            </button>
-            <div className="text-xs text-white/40 space-y-1 pt-2 border-t border-white/10">
-              <p>iPhone: Tap Share then Add to Home Screen</p>
-              <p>Android: Tap Install or Add to Home Screen</p>
-            </div>
-          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="text-sm text-muted-foreground hover:text-teal transition-smooth"
+          >
+            Send another tip
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      className="min-h-screen bg-background p-4"
-      data-ocid="guest_payment.page"
-    >
-      <div className="max-w-sm mx-auto space-y-5">
-        <div className="text-center pt-8 pb-2">
-          <h1 className="text-2xl font-bold text-[#00e5cc]">{brandName}</h1>
-          {isColts && (
-            <p className="text-white/40 text-xs">powered by Open Tip Pay</p>
-          )}
-        </div>
-        <div className="bg-muted/30 backdrop-blur-md border border-white/10 rounded-xl p-5 text-center">
-          <div className="w-16 h-16 bg-[#00e5cc]/20 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
-            &#128100;
+    <div className="min-h-screen bg-background px-4 py-8">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+        <div className="absolute left-1/4 top-[-10%] h-[300px] w-[300px] rounded-full bg-teal/[0.1] blur-[60px]" />
+      </div>
+
+      <div className="relative mx-auto max-w-sm space-y-5">
+        {/* Header */}
+        <div className="text-center pt-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal/20 mx-auto mb-3">
+            <DollarSign className="h-6 w-6 text-teal" />
           </div>
-          <h2 className="text-white font-semibold">Send a tip or payment</h2>
-          <p className="text-white/50 text-sm mt-1">
-            Scan to pay instantly &middot; Recipient ID: {recipientId}
-          </p>
+          <h1 className="text-xl font-bold text-foreground">Open Tip Pay</h1>
         </div>
-        <div className="bg-muted/30 backdrop-blur-md border border-white/10 rounded-xl p-5 space-y-3">
-          <h3 className="text-white font-semibold">Select Amount</h3>
-          <div className="grid grid-cols-5 gap-2">
-            {presets.map((p) => (
+
+        {/* Worker card */}
+        <div className="glassmorphism rounded-2xl p-5 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-teal/20 border-2 border-teal/40 mx-auto mb-3">
+            {worker?.avatar_url ? (
+              <img src={worker.avatar_url} alt="" className="h-full w-full rounded-full object-cover" />
+            ) : (
+              <span className="text-xl font-bold text-teal">
+                {(worker?.full_name || "?").charAt(0).toUpperCase()}
+              </span>
+            )}
+          </div>
+          <h2 className="text-base font-bold text-foreground">{tipLink?.title || "Send a Tip"}</h2>
+          {worker?.full_name && <p className="text-sm text-muted-foreground">to {worker.full_name}</p>}
+          {tipLink?.message && <p className="mt-2 text-xs text-muted-foreground/70 italic">"{tipLink.message}"</p>}
+        </div>
+
+        {/* Amount selection */}
+        <div className="glassmorphism rounded-2xl p-5 space-y-3">
+          <h3 className="text-sm font-semibold text-foreground">Select Amount</h3>
+          <div className="grid grid-cols-3 gap-2">
+            {PRESETS.map((p) => (
               <button
                 key={p}
                 type="button"
-                onClick={() => {
-                  setAmount(p);
-                  setCustomAmount("");
-                }}
-                data-ocid={`guest-preset-amount-${p}`}
-                className={`py-2 rounded-lg text-sm font-medium transition-all ${amount === p && !customAmount ? "bg-[#00e5cc] text-[#0a0e1a]" : "bg-white/10 text-white hover:bg-white/20"}`}
+                onClick={() => { setAmount(p); setCustomAmount(""); }}
+                className={`rounded-xl py-2.5 text-sm font-semibold transition-smooth ${
+                  amount === p && !customAmount
+                    ? "bg-teal text-white glow-teal"
+                    : "bg-black/20 text-muted-foreground hover:text-foreground hover:bg-black/30"
+                }`}
               >
                 ${p}
               </button>
@@ -139,64 +182,64 @@ function GuestPaymentContent() {
           </div>
           <input
             type="number"
-            placeholder="Custom amount"
+            placeholder="Custom amount ($)"
             value={customAmount}
-            onChange={(e) => {
-              setCustomAmount(e.target.value);
-              setAmount(0);
-            }}
-            data-ocid="guest-custom-amount-input"
-            className="w-full bg-muted/30 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#00e5cc]"
+            min={1}
+            step={0.01}
+            onChange={(e) => { setCustomAmount(e.target.value); setAmount(0); }}
+            className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal/40 transition-smooth"
           />
         </div>
-        <div className="bg-muted/30 backdrop-blur-md border border-white/10 rounded-xl p-5 space-y-3">
-          <h3 className="text-white font-semibold">
-            Enter your phone or email to earn Fan Points
-          </h3>
+
+        {/* Your info */}
+        <div className="glassmorphism rounded-2xl p-5 space-y-3">
+          <h3 className="text-sm font-semibold text-foreground">Your Details</h3>
           <input
             type="text"
-            placeholder="Phone number or email address"
-            value={contactInfo}
-            onChange={(e) => setContactInfo(e.target.value)}
-            data-ocid="guest-contact-info-input"
-            className="w-full bg-muted/30 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#00e5cc]"
+            placeholder="Your name *"
+            value={tipperName}
+            onChange={(e) => setTipperName(e.target.value)}
+            className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal/40 transition-smooth"
           />
-          <p className="text-white/40 text-xs">
-            We will send your Fan Points here and let you know how to download
-            the app
-          </p>
+          <input
+            type="email"
+            placeholder="Email (optional)"
+            value={tipperEmail}
+            onChange={(e) => setTipperEmail(e.target.value)}
+            className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal/40 transition-smooth"
+          />
+          <input
+            type="text"
+            placeholder="Leave a note (optional)"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="w-full rounded-xl border border-border bg-black/20 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal/40 transition-smooth"
+          />
         </div>
-        <div className="space-y-3">
-          <button
-            type="button"
-            onClick={() => handlePay("apple")}
-            disabled={!canPay}
-            data-ocid="guest-apple-pay-button"
-            className={`w-full bg-black text-white font-semibold py-4 rounded-xl text-lg transition-all ${canPay ? "opacity-100 hover:bg-gray-900" : "opacity-40 cursor-not-allowed"}`}
-          >
-            Pay with Apple Pay
-          </button>
-          <button
-            type="button"
-            onClick={() => handlePay("google")}
-            disabled={!canPay}
-            data-ocid="guest-google-pay-button"
-            className={`w-full bg-white text-gray-800 font-semibold py-4 rounded-xl text-lg transition-all ${canPay ? "opacity-100 hover:bg-gray-100" : "opacity-40 cursor-not-allowed"}`}
-          >
-            G Pay
-          </button>
-          <button
-            type="button"
-            onClick={() => handlePay("card")}
-            disabled={!canPay}
-            data-ocid="guest-card-pay-button"
-            className={`w-full border-2 border-[#00e5cc] text-[#00e5cc] font-semibold py-3 rounded-xl transition-all ${canPay ? "opacity-100 hover:bg-[#00e5cc]/10" : "opacity-40 cursor-not-allowed"}`}
-          >
-            Pay with Card
-          </button>
-        </div>
-        <p className="text-center text-white/30 text-xs pb-8">
-          Secured by {brandName}
+
+        {/* Pay button */}
+        <button
+          type="button"
+          onClick={handlePay}
+          disabled={!canPay || step === "submitting"}
+          className={`w-full flex items-center justify-center gap-2 rounded-2xl py-4 text-base font-bold transition-smooth ${
+            canPay
+              ? "bg-teal text-white glow-teal-hero hover:bg-teal-light"
+              : "bg-black/20 text-muted-foreground cursor-not-allowed"
+          }`}
+        >
+          {step === "submitting" ? (
+            <><Loader2 className="h-5 w-5 animate-spin" /> Processing…</>
+          ) : (
+            <>
+              <DollarSign className="h-5 w-5" />
+              {effectiveAmount >= 1 ? `Send $${effectiveAmount.toFixed(2)} Tip` : "Select an amount"}
+            </>
+          )}
+        </button>
+
+        <p className="text-center text-[11px] text-muted-foreground/40 pb-4">
+          Secured by Open Tip Pay
         </p>
       </div>
     </div>
@@ -204,11 +247,7 @@ function GuestPaymentContent() {
 }
 
 export function GuestPaymentPage() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <GuestPaymentContent />
-    </QueryClientProvider>
-  );
+  return <GuestPaymentContent />;
 }
 
 export default GuestPaymentPage;
