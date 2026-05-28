@@ -7,7 +7,7 @@
     "npm": "please use pnpm"
   },
   "scripts": {
-    "build": "pnpm install && pnpm -r --if-present run build",
+    "build": "pnpm install && pnpm -r --if-present run build && cp -r src/frontend/dist dist",
     "typecheck": "pnpm -r --if-present run typecheck",
     "check": "pnpm -r --if-present run check",
     "fix": "pnpm -r --if-present run fix",
