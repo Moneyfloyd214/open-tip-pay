@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import AppShell from "@/components/AppShell";
 import { supabase } from "@/lib/supabase";
-import { Shield, Lock, FingerprintPattern as Fingerprint, TriangleAlert as AlertTriangle, Check } from "lucide-react";
+import { Shield, Lock, Fingerprint, TriangleAlert as AlertTriangle, Check } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SecurityPage() {
