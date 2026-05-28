@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /tmp/cc-agent/67237329/project/src/frontend && npm install --prefer-offline --silent 2>/dev/null; npm run build 2>&1",
+            "timeout": 120,
+            "statusMessage": "Running npm run build..."
+          }
+        ]
+      }
+    ]
+  }
+}
