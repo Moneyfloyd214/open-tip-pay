@@ -3,4 +3,7 @@ packages:
   - "src/frontend"
 
 allowBuilds:
+  '@biomejs/biome': true
+  '@clerk/shared': true
+  esbuild: true
   sharp: true
