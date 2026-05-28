@@ -8,14 +8,7 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Principal } from "@dfinity/principal";
-import {
-  CalendarClock,
-  Loader2,
-  PlusCircle,
-  RefreshCw,
-  Trash2,
-} from "lucide-react";
+import { CalendarClock, Loader as Loader2, CirclePlus as PlusCircle, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -41,13 +34,9 @@ function SetupSheet({ open, onOpenChange }: SetupSheetProps) {
   const [frequency, setFrequency] = useState<Frequency>("Weekly");
   const create = useCreateRecurringPayment();
 
-  const validatePrincipal = (text: string): Principal | null => {
-    if (!text.trim()) return null;
-    try {
-      return Principal.fromText(text.trim());
-    } catch {
-      return null;
-    }
+  const validatePrincipal = (text: string): string | null => {
+    const t = text.trim();
+    return t.length > 0 ? t : null;
   };
 
   const handlePrincipalChange = (v: string) => {

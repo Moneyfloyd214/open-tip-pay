@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { useInternetIdentity } from "@caffeineai/core-infrastructure";
 import { Copy, Download, Share2, X } from "lucide-react";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useBranding } from "../context/BrandingContext";
 import { DEMO_PROFILE, useDemoMode } from "../context/DemoContext";
 import { useGetCallerUserProfile } from "../hooks/useQueries";
+import { supabase } from "../lib/supabase";
 import QRCodeGenerator from "./QRCodeGenerator";
 
 interface MyQRCodeSheetProps {
@@ -14,13 +14,19 @@ interface MyQRCodeSheetProps {
 }
 
 export default function MyQRCodeSheet({ open, onClose }: MyQRCodeSheetProps) {
-  const { identity } = useInternetIdentity();
   const { isDemoMode } = useDemoMode();
   const { data: realProfile } = useGetCallerUserProfile();
   const userProfile = isDemoMode ? DEMO_PROFILE : realProfile;
   const { isWhiteLabel, brandName } = useBranding();
+  const [userId, setUserId] = useState("");
 
   const personalCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user?.id) setUserId(data.session.user.id);
+    });
+  }, []);
 
   const handlePersonalCanvasReady = useCallback((canvas: HTMLCanvasElement) => {
     personalCanvasRef.current = canvas;
@@ -28,7 +34,7 @@ export default function MyQRCodeSheet({ open, onClose }: MyQRCodeSheetProps) {
 
   const principal = isDemoMode
     ? "demo-principal-aaaaa-bbbbb-ccccc-ddddd-eee"
-    : identity?.getPrincipal().toString() || "";
+    : userId;
   const tipLink = `${window.location.origin}/#/tip/${principal}`;
   const downloadUrl = window.location.origin || "https://opentippay.app";
   const displayName = userProfile?.username || "You";

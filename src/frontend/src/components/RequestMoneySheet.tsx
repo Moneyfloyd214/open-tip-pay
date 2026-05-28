@@ -10,8 +10,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import type { Principal } from "@dfinity/principal";
-import { ArrowDownLeft, CheckCircle2, Loader2, Search, X } from "lucide-react";
+import { ArrowDownLeft, CircleCheck as CheckCircle2, Loader as Loader2, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -28,7 +27,7 @@ const MAX_NOTE_LENGTH = 200;
 interface RequestMoneySheetProps {
   isOpen: boolean;
   onClose: () => void;
-  recipientPrincipal: Principal | null;
+  recipientPrincipal: string | null;
   recipientUsername?: string | null;
 }
 
@@ -73,7 +72,7 @@ export default function RequestMoneySheet({
   const recipientProfile = profileByPrincipal || profileByLocalUsername;
 
   // The principal to use for submitting — principal from props has priority
-  const effectivePrincipal: Principal | null = recipientPrincipal ?? null;
+  const effectivePrincipal: string | null = recipientPrincipal ?? null;
 
   // Sync step when the sheet opens / recipient props change
   useEffect(() => {

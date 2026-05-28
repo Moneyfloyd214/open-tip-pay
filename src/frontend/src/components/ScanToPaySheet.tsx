@@ -6,15 +6,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Principal } from "@dfinity/principal";
-import { AlertCircle, Camera, SwitchCamera } from "lucide-react";
+import { CircleAlert as AlertCircle, Camera, SwitchCamera } from "lucide-react";
 import { useEffect } from "react";
 import { useQRScanner } from "../qr-code/useQRScanner";
 
 interface ScanToPaySheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onScanSuccess: (principal: Principal) => void;
+  onScanSuccess: (principal: string) => void;
 }
 
 export default function ScanToPaySheet({
@@ -54,9 +53,10 @@ export default function ScanToPaySheet({
     if (qrResults.length > 0) {
       const latestResult = qrResults[0];
       try {
-        const principal = Principal.fromText(latestResult.data);
+        const scanned = latestResult.data.trim();
+        if (!scanned) throw new Error("empty");
         stopScanning();
-        onScanSuccess(principal);
+        onScanSuccess(scanned);
       } catch (_error) {
         // Invalid principal format, ignore
       }

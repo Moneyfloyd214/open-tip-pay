@@ -8,54 +8,7 @@ import type {
   PlaidMerchant,
   PointsRuleType,
 } from "@/types/fanpoints";
-import type { Principal } from "@dfinity/principal";
-import {
-  Activity,
-  AlertTriangle,
-  ArrowLeft,
-  Building2,
-  Calendar,
-  CheckCircle,
-  ChevronRight,
-  Clock,
-  Code2,
-  CreditCard,
-  Database,
-  Edit2,
-  Eye,
-  EyeOff,
-  FileText,
-  Filter,
-  Globe,
-  Handshake,
-  Lock,
-  Mail,
-  MessageCircle,
-  Monitor,
-  Palette,
-  Pencil,
-  Phone,
-  Plus,
-  Search,
-  Send,
-  Server,
-  Settings,
-  Shield,
-  ShieldAlert,
-  ShieldCheck,
-  ShieldOff,
-  Smartphone,
-  Store,
-  Terminal,
-  Trash2,
-  UserCog,
-  Users,
-  UtensilsCrossed,
-  Wifi,
-  X,
-  XCircle,
-  Zap,
-} from "lucide-react";
+import { Activity, TriangleAlert as AlertTriangle, ArrowLeft, Building2, Calendar, CircleCheck as CheckCircle, ChevronRight, Clock, Code as Code2, CreditCard, Database, CreditCard as Edit2, Eye, EyeOff, FileText, ListFilter as Filter, Globe, Handshake, Lock, Mail, MessageCircle, Monitor, Palette, Pencil, Phone, Plus, Search, Send, Server, Settings, Shield, ShieldAlert, ShieldCheck, ShieldOff, Smartphone, Store, Terminal, Trash2, UserCog, Users, UtensilsCrossed, Wifi, X, Circle as XCircle, Zap } from "lucide-react";
 import React, {
   useContext,
   useEffect,
@@ -150,8 +103,8 @@ function formatTs(ts: bigint) {
   return new Date(tsToMs(ts)).toLocaleString();
 }
 
-function truncatePrincipal(p: Principal | string) {
-  const s = typeof p === "string" ? p : p.toString();
+function truncatePrincipal(p: string) {
+  const s = p;
   if (s.length <= 16) return s;
   return `${s.slice(0, 8)}…${s.slice(-6)}`;
 }
@@ -2335,7 +2288,7 @@ function ApplicationsTab() {
       ? allApps
       : allApps.filter(([, app]) => app.status === filter);
 
-  const handleApprove = async (principal: Principal) => {
+  const handleApprove = async (principal: string) => {
     try {
       await approve.mutateAsync(principal);
       toast.success("Application approved!");
@@ -2344,7 +2297,7 @@ function ApplicationsTab() {
     }
   };
 
-  const handleReject = async (principal: Principal) => {
+  const handleReject = async (principal: string) => {
     try {
       await reject.mutateAsync({
         applicant: principal,
@@ -2626,7 +2579,7 @@ function FraudAlertCard({
 }: {
   alert: {
     resolved: boolean;
-    userId: Principal;
+    userId: string;
     timestamp: bigint;
     severity: string;
     reason: string;
@@ -3464,7 +3417,7 @@ function UserRolesTab() {
 function SupportAdminTab() {
   const { data: conversations = [], isLoading } =
     useAdminGetAllSupportConversations();
-  const [selectedPrincipal, setSelectedPrincipal] = useState<Principal | null>(
+  const [selectedPrincipal, setSelectedPrincipal] = useState<string | null>(
     null,
   );
   const { data: messages = [], refetch: refetchMessages } =
@@ -3488,11 +3441,11 @@ function SupportAdminTab() {
     }
   };
 
-  const handleClose = async (p: Principal) => {
+  const handleClose = async (p: string) => {
     try {
       await close.mutateAsync(p);
       toast.success("Ticket closed");
-      if (selectedPrincipal?.toString() === p.toString())
+      if (selectedPrincipal === p)
         setSelectedPrincipal(null);
     } catch {
       toast.error("Failed to close ticket");

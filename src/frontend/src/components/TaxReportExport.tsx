@@ -16,16 +16,10 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
-import {
-  CheckCircle,
-  Download,
-  FileSpreadsheet,
-  FileText,
-  Loader2,
-} from "lucide-react";
+import { CircleCheck as CheckCircle, Download, FileSpreadsheet, FileText, Loader as Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { type Tip, Variant_fiat_crypto } from "../backend";
+import { type Tip, Variant_fiat_crypto } from "../types/local-backend";
 import { useGetTipsReceived } from "../hooks/useQueries";
 
 interface TaxReportExportProps {

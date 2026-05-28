@@ -12,18 +12,7 @@ import {
 } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import type { Principal } from "@dfinity/principal";
-import {
-  CheckCircle2,
-  Loader2,
-  Percent,
-  Plus,
-  Scissors,
-  Search,
-  SplitSquareVertical,
-  Trash2,
-  X,
-} from "lucide-react";
+import { CircleCheck as CheckCircle2, Loader as Loader2, Percent, Plus, Scissors, Search, SquareSplitVertical as SplitSquareVertical, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -41,14 +30,14 @@ interface Participant {
   photo?: { getDirectURL: () => string };
   isVerified: boolean;
   // Real principal resolved from backend during add — never anonymous
-  principal: Principal | null;
+  principal: string | null;
 }
 
 interface ParticipantShare {
   username: string;
   photo?: { getDirectURL: () => string };
   isVerified: boolean;
-  principal: Principal;
+  principal: string;
   share: number; // cents (exact) or percentage (percentage mode) or 0 (equal — computed)
 }
 
@@ -190,7 +179,7 @@ export default function SplitPaymentSheet({
       username: p.username,
       photo: p.photo,
       isVerified: p.isVerified,
-      principal: p.principal as Principal, // safe: checked above
+      principal: p.principal as string, // safe: checked above
       share:
         splitMode === "percentage"
           ? Math.floor(100 / (participants.length + 1))
@@ -256,7 +245,7 @@ export default function SplitPaymentSheet({
   const handleSubmit = async () => {
     try {
       // All principals are resolved during participant add — no anonymous fallback needed
-      const participantShares: Array<[Principal, bigint]> = computedShares.map(
+      const participantShares: Array<[string, bigint]> = computedShares.map(
         (shareCents, i) => [shares[i].principal, BigInt(shareCents)],
       );
 

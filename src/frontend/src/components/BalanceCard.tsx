@@ -9,18 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  AlertCircle,
-  ArrowUpRight,
-  Clock,
-  DollarSign,
-  Info,
-  Lock,
-  Zap,
-} from "lucide-react";
+import { CircleAlert as AlertCircle, ArrowUpRight, Clock, DollarSign, Info, Lock, Zap } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { KYCStatus } from "../backend";
+import { KYCStatus } from "../types/local-backend";
 import {
   useGetCallerUserProfile,
   useGetTwoFactorSettings,

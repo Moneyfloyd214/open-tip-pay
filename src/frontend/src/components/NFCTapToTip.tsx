@@ -6,17 +6,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useInternetIdentity } from "@caffeineai/core-infrastructure";
-import { Principal } from "@dfinity/principal";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { CircleAlert as AlertCircle, Loader as Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "../lib/supabase";
 import QRCodeGenerator from "./QRCodeGenerator";
 
 interface NFCTapToTipProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: (principal: Principal) => void;
+  onSuccess: (principal: string) => void;
 }
 
 export default function NFCTapToTip({
@@ -24,14 +23,20 @@ export default function NFCTapToTip({
   onOpenChange,
   onSuccess,
 }: NFCTapToTipProps) {
-  const { identity } = useInternetIdentity();
+  const [userId, setUserId] = useState("");
   const [mode, setMode] = useState<"share" | "receive">("share");
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user?.id) setUserId(data.session.user.id);
+    });
+  }, []);
   const [isNFCSupported, setIsNFCSupported] = useState<boolean | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showQRFallback, setShowQRFallback] = useState(false);
 
-  const principal = identity?.getPrincipal().toString() || "";
+  const principal = userId;
 
   useEffect(() => {
     // Check NFC support
@@ -122,7 +127,7 @@ export default function NFCTapToTip({
             const principalString = textDecoder.decode(record.data);
 
             try {
-              const scannedPrincipal = Principal.fromText(principalString);
+              if (!principalString.trim()) throw new Error("empty");
 
               // Haptic feedback
               if (navigator.vibrate) {
@@ -130,7 +135,7 @@ export default function NFCTapToTip({
               }
 
               toast.success("Contact received!");
-              onSuccess(scannedPrincipal);
+              onSuccess(principalString.trim());
               onOpenChange(false);
             } catch (_err) {
               setError("Invalid contact data received");

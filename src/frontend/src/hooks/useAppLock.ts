@@ -1,4 +1,4 @@
-import { useInternetIdentity } from "@caffeineai/core-infrastructure";
+import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -10,7 +10,6 @@ export interface UseAppLockReturn {
   resetIdleTimer: () => void;
 }
 
-// ─── App Lock Enabled preference (stored in localStorage) ────────────────────
 const APP_LOCK_ENABLED_KEY = "open_tip_pay_app_lock_enabled";
 
 export function getAppLockEnabled(): boolean {
@@ -29,11 +28,10 @@ export function setAppLockEnabled(enabled: boolean): void {
       localStorage.removeItem(APP_LOCK_ENABLED_KEY);
     }
   } catch {
-    // localStorage unavailable — silently ignore
+    // localStorage unavailable
   }
 }
 
-/** React hook — returns current enabled state + a setter that re-renders callers */
 export function useAppLockEnabledPref(): [boolean, (enabled: boolean) => void] {
   const [enabled, setEnabled] = useState<boolean>(getAppLockEnabled);
 
@@ -45,34 +43,42 @@ export function useAppLockEnabledPref(): [boolean, (enabled: boolean) => void] {
   return [enabled, toggle];
 }
 
-const IDLE_TIMEOUT_MS = 60 * 1000; // 60 seconds
+const IDLE_TIMEOUT_MS = 60 * 1000;
 
 export function useAppLock(): UseAppLockReturn {
   const [isLocked, setIsLocked] = useState(true);
-  const { clear, identity } = useInternetIdentity();
+  const [hasSession, setHasSession] = useState(false);
   const queryClient = useQueryClient();
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
-  // Ref so resetIdleTimer always reads the latest isLocked without needing it as a dep
   const isLockedRef = useRef(isLocked);
+
   useEffect(() => {
     isLockedRef.current = isLocked;
   }, [isLocked]);
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setHasSession(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setHasSession(!!session);
+      if (!session) {
+        setIsLocked(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   const resetIdleTimer = useCallback(() => {
     lastActivityRef.current = Date.now();
-
-    if (idleTimerRef.current) {
-      clearTimeout(idleTimerRef.current);
-    }
-
-    // Only set idle timer if unlocked and authenticated (use ref to avoid stale closure)
-    if (!isLockedRef.current && identity) {
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    if (!isLockedRef.current && hasSession) {
       idleTimerRef.current = setTimeout(() => {
         setIsLocked(true);
       }, IDLE_TIMEOUT_MS);
     }
-  }, [identity]);
+  }, [hasSession]);
 
   const unlock = useCallback(() => {
     setIsLocked(false);
@@ -88,65 +94,40 @@ export function useAppLock(): UseAppLockReturn {
   }, []);
 
   const logout = useCallback(async () => {
-    await clear();
+    await supabase.auth.signOut();
     queryClient.clear();
     setIsLocked(true);
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
       idleTimerRef.current = null;
     }
-  }, [clear, queryClient]);
+  }, [queryClient]);
 
-  // Track user activity
   useEffect(() => {
-    if (!identity || isLocked) return;
-
-    const events = [
-      "mousedown",
-      "mousemove",
-      "keypress",
-      "scroll",
-      "touchstart",
-      "pointermove",
-    ];
-
-    const handleActivity = () => {
-      resetIdleTimer();
-    };
-
+    if (!hasSession || isLocked) return;
+    const events = ["mousedown", "mousemove", "keypress", "scroll", "touchstart", "pointermove"];
+    const handleActivity = () => resetIdleTimer();
     for (const event of events) {
       document.addEventListener(event, handleActivity, { passive: true });
     }
-
-    // Initial timer setup
     resetIdleTimer();
-
     return () => {
       for (const event of events) {
         document.removeEventListener(event, handleActivity);
       }
-      if (idleTimerRef.current) {
-        clearTimeout(idleTimerRef.current);
-      }
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     };
-  }, [identity, isLocked, resetIdleTimer]);
+  }, [hasSession, isLocked, resetIdleTimer]);
 
-  // Reset lock state when identity changes (logout)
   useEffect(() => {
-    if (!identity) {
+    if (!hasSession) {
       setIsLocked(true);
       if (idleTimerRef.current) {
         clearTimeout(idleTimerRef.current);
         idleTimerRef.current = null;
       }
     }
-  }, [identity]);
+  }, [hasSession]);
 
-  return {
-    isLocked,
-    unlock,
-    lock,
-    logout,
-    resetIdleTimer,
-  };
+  return { isLocked, unlock, lock, logout, resetIdleTimer };
 }

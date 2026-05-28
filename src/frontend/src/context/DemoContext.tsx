@@ -3,13 +3,13 @@ import {
   KYCStatus,
   Variant_active_inactive_suspended,
   Variant_partTime_fullTime_contractor,
-} from "@/backend";
+  type UserProfile,
+} from "@/types/local-backend";
 import type {
   ConcessionStand,
   FoodOrder,
   MenuItem,
-  UserProfile,
-} from "@/backend";
+} from "@/types/food-ordering";
 import type {
   PlaidMerchant,
   PointsRule,
@@ -142,27 +142,9 @@ export const DEMO_TRANSACTIONS: DemoTransaction[] = [
 // ─── Food Ordering Demo Data ─────────────────────────────────────────────────
 
 export const DEMO_STANDS: ConcessionStand[] = [
-  {
-    id: "stand-1",
-    name: "Lucas Oil Grill",
-    createdAt: BigInt(0),
-    section: "Main Concourse",
-    description: "",
-  },
-  {
-    id: "stand-2",
-    name: "End Zone Bites",
-    createdAt: BigInt(0),
-    section: "End Zone",
-    description: "",
-  },
-  {
-    id: "stand-3",
-    name: "Colts Fan Eats",
-    createdAt: BigInt(0),
-    section: "North Gate",
-    description: "",
-  },
+  { id: "stand-1", name: "Lucas Oil Grill" },
+  { id: "stand-2", name: "End Zone Bites" },
+  { id: "stand-3", name: "Colts Fan Eats" },
 ];
 
 export const DEMO_MENU_ITEMS: Record<string, MenuItem[]> = {
@@ -172,27 +154,21 @@ export const DEMO_MENU_ITEMS: Record<string, MenuItem[]> = {
       standId: "stand-1",
       name: "Classic Cheeseburger",
       description: "Juicy beef patty with cheddar, lettuce, and tomato",
-      priceInCents: BigInt(1299),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(1299),
     },
     {
       id: "item-102",
       standId: "stand-1",
       name: "Loaded Hot Dog",
       description: "All-beef dog with stadium mustard and onions",
-      priceInCents: BigInt(699),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(699),
     },
     {
       id: "item-103",
       standId: "stand-1",
       name: "Soft Pretzel",
       description: "Giant salted pretzel served with beer cheese dip",
-      priceInCents: BigInt(849),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(849),
     },
   ],
   "stand-2": [
@@ -201,27 +177,21 @@ export const DEMO_MENU_ITEMS: Record<string, MenuItem[]> = {
       standId: "stand-2",
       name: "Nachos Supreme",
       description: "Tortilla chips with jalapeños, cheese, and salsa",
-      priceInCents: BigInt(1099),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(1099),
     },
     {
       id: "item-202",
       standId: "stand-2",
       name: "BBQ Pulled Pork Sandwich",
       description: "Slow-cooked pork on a brioche bun with slaw",
-      priceInCents: BigInt(1399),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(1399),
     },
     {
       id: "item-203",
       standId: "stand-2",
       name: "Garlic Fries",
       description: "Crispy fries tossed in garlic butter and parsley",
-      priceInCents: BigInt(599),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(599),
     },
   ],
   "stand-3": [
@@ -230,59 +200,45 @@ export const DEMO_MENU_ITEMS: Record<string, MenuItem[]> = {
       standId: "stand-3",
       name: "Buffalo Wings (6pc)",
       description: "Crispy wings tossed in house buffalo sauce",
-      priceInCents: BigInt(1249),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(1249),
     },
     {
       id: "item-302",
       standId: "stand-3",
       name: "Stadium Popcorn",
       description: "Freshly popped with your choice of seasoning",
-      priceInCents: BigInt(499),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(499),
     },
     {
       id: "item-303",
       standId: "stand-3",
       name: "Fountain Drink",
       description: "32oz fountain drink — your choice of flavor",
-      priceInCents: BigInt(449),
-      category: "Food",
-      available: true,
+      priceCents: BigInt(449),
     },
   ],
 };
 
 export const DEMO_ACTIVE_ORDER: FoodOrder = {
   id: "order-demo-1",
-  // Use raw string literals so this module-level constant is safe to
-  // construct before the backend canister has initialized (e.g. /kitchen).
+  fanId: "demo-user",
   status: "Preparing" as FoodOrder["status"],
   standId: "stand-1",
   createdAt: BigInt(0),
   deliveryMethod: "Delivery" as FoodOrder["deliveryMethod"],
   updatedAt: BigInt(0),
-  totalInCents: BigInt(2148),
-  customerId: {
-    _isPrincipal: true,
-    toText: () => "demo-user",
-    toUint8Array: () => new Uint8Array([0]),
-    compareTo: () => 0,
-  } as unknown as import("@dfinity/principal").Principal,
   items: [
     {
-      itemId: "item-101",
+      menuItemId: "item-101",
       itemName: "Classic Cheeseburger",
-      quantity: BigInt(1),
-      priceInCents: BigInt(1299),
+      quantity: 1,
+      priceCents: BigInt(1299),
     },
     {
-      itemId: "item-103",
+      menuItemId: "item-103",
       itemName: "Soft Pretzel",
-      quantity: BigInt(1),
-      priceInCents: BigInt(849),
+      quantity: 1,
+      priceCents: BigInt(849),
     },
   ],
   seatNumber: "Section 114, Row F, Seat 22",

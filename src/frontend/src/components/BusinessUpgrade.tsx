@@ -14,17 +14,10 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  AlertTriangle,
-  Briefcase,
-  CheckCircle,
-  Clock,
-  Loader2,
-  XCircle,
-} from "lucide-react";
+import { TriangleAlert as AlertTriangle, Briefcase, CircleCheck as CheckCircle, Clock, Loader as Loader2, Circle as XCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { BusinessApplicationStatus } from "../backend";
+import { BusinessApplicationStatus } from "../types/local-backend";
 import {
   useGetMyBusinessApplication,
   useSubmitBusinessApplication,

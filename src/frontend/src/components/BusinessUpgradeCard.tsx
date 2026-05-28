@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRight,
-  Briefcase,
-  CheckCircle,
-  Clock,
-  XCircle,
-} from "lucide-react";
-import { BusinessApplicationStatus } from "../backend";
+import { ArrowRight, Briefcase, CircleCheck as CheckCircle, Clock, Circle as XCircle } from "lucide-react";
+import { BusinessApplicationStatus } from "../types/local-backend";
 import { useGetMyBusinessApplication } from "../hooks/useQueries";
 
 interface BusinessUpgradeCardProps {

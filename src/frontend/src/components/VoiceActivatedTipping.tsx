@@ -6,11 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Principal } from "@dfinity/principal";
-import { AlertCircle, CheckCircle, Loader2, Mic, MicOff } from "lucide-react";
+import { CircleAlert as AlertCircle, CircleCheck as CheckCircle, Loader as Loader2, Mic, MicOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Variant_fiat_crypto } from "../backend";
+import { Variant_fiat_crypto } from "../types/local-backend";
 import { useGetCallerUserProfile, useSendTip } from "../hooks/useQueries";
 
 interface VoiceActivatedTippingProps {

@@ -16,10 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheckCircle, Loader2, Plus, X } from "lucide-react";
+import { CircleCheck as CheckCircle, Loader as Loader2, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import type { Status } from "../backend";
+import type { Status } from "../types/local-backend";
 import {
   useAddStatus,
   useDeactivateStatus,

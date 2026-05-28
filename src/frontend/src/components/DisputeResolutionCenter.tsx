@@ -4,16 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  DollarSign,
-  Sparkles,
-  Wallet,
-} from "lucide-react";
+import { CircleAlert as AlertCircle, CircleCheck as CheckCircle, Clock, DollarSign, Sparkles, Wallet } from "lucide-react";
 import { useState } from "react";
-import { Variant_fiat_crypto } from "../backend";
+import { Variant_fiat_crypto } from "../types/local-backend";
 import { useGetDisputes } from "../hooks/useQueries";
 import type { Dispute, DisputeStatus } from "../hooks/useQueries";
 

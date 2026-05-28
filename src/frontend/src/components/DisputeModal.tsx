@@ -10,10 +10,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertTriangle, Loader2, Sparkles } from "lucide-react";
+import { TriangleAlert as AlertTriangle, Loader as Loader2, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { type Tip, Variant_fiat_crypto } from "../backend";
+import { type Tip, Variant_fiat_crypto } from "../types/local-backend";
 import { type DisputeReason, useSubmitDispute } from "../hooks/useQueries";
 
 interface DisputeModalProps {

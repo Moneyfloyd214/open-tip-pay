@@ -6,11 +6,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useInternetIdentity } from "@caffeineai/core-infrastructure";
 import { Copy, QrCode, Share2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useGetCallerUserProfile } from "../hooks/useQueries";
+import { supabase } from "../lib/supabase";
 import QRCodeGenerator from "./QRCodeGenerator";
 
 interface MyTipLinkCardProps {
@@ -18,12 +18,18 @@ interface MyTipLinkCardProps {
 }
 
 export default function MyTipLinkCard({ username }: MyTipLinkCardProps) {
-  const { identity } = useInternetIdentity();
   const { data: userProfile } = useGetCallerUserProfile();
   const [qrDialogOpen, setQrDialogOpen] = useState(false);
+  const [userId, setUserId] = useState("");
 
-  const principal = identity?.getPrincipal().toString() || "";
-  const walletAddress = userProfile?.walletAddress;
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user?.id) setUserId(data.session.user.id);
+    });
+  }, []);
+
+  const principal = userId;
+  const walletAddress = (userProfile as any)?.walletAddress;
   const tipLink = `${window.location.origin}/#/tip/${principal}`;
 
   const handleCopyLink = () => {

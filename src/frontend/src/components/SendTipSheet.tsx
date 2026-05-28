@@ -12,19 +12,10 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import type { Principal } from "@dfinity/principal";
-import {
-  CreditCard,
-  DollarSign,
-  Info,
-  Loader2,
-  Wallet,
-  X,
-  Zap,
-} from "lucide-react";
+import { CreditCard, DollarSign, Info, Loader as Loader2, Wallet, X, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Variant_fiat_crypto } from "../backend";
+import { type Variant_fiat_crypto } from "../types/local-backend";
 import {
   useCryptoExchangeRates,
   useGetCallerUserProfile,
@@ -40,7 +31,7 @@ type PaymentMethod = "balance" | "debit_card" | "credit_card";
 interface SendTipSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  recipientPrincipal: Principal | null;
+  recipientPrincipal: string | null;
   recipientUsername?: string | null;
   onOpenSecurityFAQ: () => void;
   /** When true, opens the sheet with "Sending as a tip" pre-enabled */

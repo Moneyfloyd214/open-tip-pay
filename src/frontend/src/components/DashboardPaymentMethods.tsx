@@ -17,18 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  AlertCircle,
-  Building2,
-  CheckCircle2,
-  CreditCard,
-  Loader2,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { CircleAlert as AlertCircle, Building2, CircleCheck as CheckCircle2, CreditCard, Loader as Loader2, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { type PaymentMethod, PaymentMethodType } from "../backend";
+import { type PaymentMethod, PaymentMethodType } from "../types/local-backend";
 import {
   useAddPaymentMethod,
   useGetPaymentMethods,

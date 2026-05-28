@@ -17,24 +17,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useInternetIdentity } from "@caffeineai/core-infrastructure";
+import { supabase } from "../lib/supabase";
 import { format } from "date-fns";
-import {
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Eye,
-  FileCheck,
-  Globe,
-  HelpCircle,
-  Info,
-  Lock,
-  MapPin,
-  Monitor,
-  Shield,
-  ShieldCheck,
-  Smartphone,
-} from "lucide-react";
+import { TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, Clock, Eye, FileCheck, Globe, Circle as HelpCircle, Info, Lock, MapPin, Monitor, Shield, ShieldCheck, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { setAppLockEnabled, useAppLockEnabledPref } from "../hooks/useAppLock";
@@ -58,8 +43,14 @@ export default function SecurityCenter() {
   const { data: encryptionLog = [] } = useGetEncryptionLog();
   const { data: fraudAlerts = [] } = useGetFraudAlerts();
   const { data: compilationStatus } = useGetCompilationStatus();
-  const { identity } = useInternetIdentity();
+  const [hasSession, setHasSession] = useState(false);
   const setBiometric = useSetBiometricSettings();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setHasSession(!!data.session);
+    });
+  }, []);
   const setAppLockEnabledMutation = useSetAppLockEnabled();
   const { data: hasPin } = useHasExistingPin();
 
@@ -98,7 +89,7 @@ export default function SecurityCenter() {
       const hasLocalStorage = typeof Storage !== "undefined";
 
       // Check Internet Identity authentication
-      const hasInternetIdentity = !!identity;
+      const hasInternetIdentity = hasSession;
 
       // Input protection is always active (client-side validation)
       const inputProtectionActive = true;
@@ -132,7 +123,7 @@ export default function SecurityCenter() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [identity]);
+  }, [hasSession]);
 
   const handleBiometricToggle = async (enabled: boolean) => {
     try {

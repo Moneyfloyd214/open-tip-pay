@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Settings, User } from "lucide-react";
-import type { UserProfile } from "../backend";
+import type { UserProfile } from "../types/local-backend";
 import { useBranding } from "../context/BrandingContext";
 
 interface HeaderProps {

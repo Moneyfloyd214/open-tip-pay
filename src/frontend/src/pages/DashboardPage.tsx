@@ -1,25 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useInternetIdentity } from "@caffeineai/core-infrastructure";
-import type { Principal } from "@dfinity/principal";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  Activity,
-  ArrowDownLeft,
-  Bell,
-  Briefcase,
-  CheckCircle,
-  ChevronRight,
-  FileText,
-  Loader2,
-  LogOut,
-  QrCode,
-  Scissors,
-  Shield,
-  Sparkles,
-  Star,
-  UserPlus,
-} from "lucide-react";
+import { Activity, ArrowDownLeft, Bell, Briefcase, CircleCheck as CheckCircle, ChevronRight, FileText, Loader as Loader2, LogOut, QrCode, Scissors, Shield, Sparkles, Star, UserPlus } from "lucide-react";
 import { useState } from "react";
 import AIAssistant from "../components/AIAssistant";
 import ActiveOrderCard from "../components/ActiveOrderCard";
@@ -89,12 +71,11 @@ export default function DashboardPage() {
   const [myQRCodeOpen, setMyQRCodeOpen] = useState(false);
   const [foodOrderOpen, setFoodOrderOpen] = useState(false);
   const [recipientPrincipal, setRecipientPrincipal] =
-    useState<Principal | null>(null);
+    useState<string | null>(null);
   const [settingsDefaultTab, setSettingsDefaultTab] = useState("security");
   const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
 
   const { isDemoMode, exitDemoMode } = useDemoMode();
-  const { clear } = useInternetIdentity();
   const queryClient = useQueryClient();
 
   // Real data hooks — disabled when in demo mode (enabled flag = false)
@@ -118,14 +99,14 @@ export default function DashboardPage() {
     0,
   );
 
-  const handleScanSuccess = (principal: Principal) => {
+  const handleScanSuccess = (principal: string) => {
     setRecipientPrincipal(principal);
     setScanOpen(false);
     setSendTipDefaultMode(false);
     setSendTipOpen(true);
   };
 
-  const handleNFCSuccess = (principal: Principal) => {
+  const handleNFCSuccess = (principal: string) => {
     setRecipientPrincipal(principal);
     setSendTipDefaultMode(false);
     setSendTipOpen(true);
@@ -172,8 +153,8 @@ export default function DashboardPage() {
       exitDemoMode();
       return;
     }
-    await clear();
     queryClient.clear();
+    window.location.href = "/";
   };
 
   const handleSendTipClose = (open: boolean) => {

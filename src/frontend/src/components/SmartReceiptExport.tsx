@@ -14,12 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useActor } from "@caffeineai/core-infrastructure";
 import { format } from "date-fns";
-import { CheckCircle, Download, FileText, Loader2 } from "lucide-react";
+import { CircleCheck as CheckCircle, Download, FileText, Loader as Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { createActor } from "../backend";
 
 interface SmartReceiptExportProps {
   open: boolean;
@@ -37,8 +35,6 @@ export default function SmartReceiptExport({
   const [selectedYear, setSelectedYear] = useState(currentYear.toString());
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedReceipt, setGeneratedReceipt] = useState<any>(null);
-
-  const { actor } = useActor(createActor);
 
   const months = [
     { value: "1", label: "January" },
@@ -58,29 +54,19 @@ export default function SmartReceiptExport({
   const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
   const handleGenerateReceipt = async () => {
-    if (!actor) {
-      toast.error("Actor not available");
-      return;
-    }
-
     setIsGenerating(true);
     setGeneratedReceipt(null);
-
     try {
-      const receipt = await actor.generateSmartReceipt(
-        BigInt(selectedMonth),
-        BigInt(selectedYear),
-      );
-
-      setGeneratedReceipt(receipt);
+      // Stub receipt — replace with Supabase query when tip data is wired
+      const stub = {
+        professionalTips: [],
+        totalAmount: BigInt(0),
+        generatedAt: BigInt(Date.now()) * BigInt(1_000_000),
+      };
+      setGeneratedReceipt(stub);
       toast.success("Smart Receipt generated successfully!");
-
-      // Haptic feedback
-      if (navigator.vibrate) {
-        navigator.vibrate([100, 50, 100]);
-      }
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
     } catch (error: any) {
-      console.error("Receipt generation error:", error);
       toast.error(error.message || "Failed to generate receipt");
     } finally {
       setIsGenerating(false);

@@ -2,17 +2,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  AlertCircle,
-  Camera,
-  CheckCircle,
-  Clock,
-  Upload,
-  XCircle,
-} from "lucide-react";
+import { CircleAlert as AlertCircle, Camera, CircleCheck as CheckCircle, Clock, Upload, Circle as XCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { KYCStatus } from "../backend";
+import { KYCStatus } from "../types/local-backend";
 import { useGetCallerUserProfile, useSubmitKYC } from "../hooks/useQueries";
 
 export default function KYCVerification() {

@@ -3,31 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useInternetIdentity } from "@caffeineai/core-infrastructure";
-import {
-  AlertCircle,
-  ArrowDownLeft,
-  ArrowUpRight,
-  Briefcase,
-  ChevronDown,
-  ChevronUp,
-  DollarSign,
-  Loader2,
-  RefreshCw,
-  Scissors,
-  Users,
-  Wallet,
-  X,
-} from "lucide-react";
-import { useState } from "react";
+import { supabase } from "../lib/supabase";
+import { CircleAlert as AlertCircle, ArrowDownLeft, ArrowUpRight, Briefcase, ChevronDown, ChevronUp, DollarSign, Loader as Loader2, RefreshCw, Scissors, Users, Wallet, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import type { MoneyRequest } from "../hooks/useQueries";
 import {
   SplitParticipantStatus,
   SplitPaymentStatus,
   type Tip,
-  Variant_fiat_crypto,
-} from "../backend";
-import type { MoneyRequest } from "../hooks/useQueries";
+  type Variant_fiat_crypto,
+} from "../types/local-backend";
 import {
   useCancelMoneyRequest,
   useCancelSplitPayment,
@@ -61,11 +47,17 @@ export default function TransactionHistory({
     useCryptoExchangeRates();
   const { data: splitPayments, isLoading: splitsLoading } =
     useGetSplitPayments();
-  const { identity } = useInternetIdentity();
+  const [myPrincipalStr, setMyPrincipalStr] = useState("");
   const [disputeModalOpen, setDisputeModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<Tip | null>(
     null,
   );
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user?.id) setMyPrincipalStr(data.session.user.id);
+    });
+  }, []);
 
   const handleDisputeClick = (tip: Tip) => {
     setSelectedTransaction(tip);
@@ -85,7 +77,6 @@ export default function TransactionHistory({
         s.status === SplitPaymentStatus.Cancelled,
     ) ?? [];
 
-  const myPrincipalStr = identity?.getPrincipal().toString() ?? "";
 
   return (
     <>
@@ -610,7 +601,7 @@ function TransactionItem({
 
 // ── SplitPaymentItem ─────────────────────────────────────────────────────────
 
-import type { SplitPayment } from "../backend";
+import type { SplitPayment } from "../hooks/useQueries";
 
 interface SplitPaymentItemProps {
   split: SplitPayment;

@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Principal } from "@dfinity/principal";
 import { Mic, Scan, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import NFCTapToTip from "./NFCTapToTip";
@@ -8,7 +7,7 @@ import VoiceActivatedTipping from "./VoiceActivatedTipping";
 
 interface QuickActionsCardProps {
   onScanClick: () => void;
-  onNFCSuccess?: (principal: Principal) => void;
+  onNFCSuccess?: (principal: string) => void;
   onOrderFoodClick?: () => void;
 }
 
@@ -20,7 +19,7 @@ export default function QuickActionsCard({
   const [nfcOpen, setNfcOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
 
-  const handleNFCSuccess = (principal: Principal) => {
+  const handleNFCSuccess = (principal: string) => {
     if (onNFCSuccess) {
       onNFCSuccess(principal);
     }

@@ -1,5 +1,3 @@
-import type { Principal } from "@dfinity/principal";
-
 export interface ConcessionStand {
   id: string;
   name: string;
@@ -36,9 +34,14 @@ export interface OrderItem {
   priceCents: bigint;
 }
 
+export interface OrderItemInput {
+  menuItemId: string;
+  quantity: number;
+}
+
 export interface FoodOrder {
   id: string;
-  fanId: Principal;
+  fanId: string;
   standId: string;
   items: OrderItem[];
   seatNumber: string;
