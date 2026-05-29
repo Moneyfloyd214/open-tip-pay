@@ -8,6 +8,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { onAuthStateChanged, signOut as firebaseSignOut, type User as FirebaseUser } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { supabase } from "@/lib/supabase";
 
 export type UserRole = "fan" | "staff" | "manager" | "admin";
@@ -29,7 +31,9 @@ export interface Profile {
 }
 
 interface AuthContextValue {
+  /** Firebase UID — aliased as clerkUserId so every existing component works unchanged */
   clerkUserId: string | null;
+  firebaseUser: FirebaseUser | null;
   profile: Profile | null;
   loading: boolean;
   isFan: boolean;
@@ -49,12 +53,14 @@ export function getCurrentClerkUserId(): string | null {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [userId, setUserId] = useState<string | null>(null);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const profileFetchedRef = useRef(false);
 
-  // Keep module-level ref in sync
+  const userId = firebaseUser?.uid ?? null;
+
+  // Keep module-level ref in sync for non-reactive callers
   useEffect(() => {
     _currentUserId = userId;
   }, [userId]);
@@ -76,42 +82,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [userId, fetchProfile]);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
-    setUserId(null);
+    await firebaseSignOut(auth);
+    setFirebaseUser(null);
     setProfile(null);
     profileFetchedRef.current = false;
   }, []);
 
-  // Listen to Supabase auth state — this is the sole source of truth for userId
+  // Firebase auth state listener — sole source of truth for who is logged in
   useEffect(() => {
-    let cancelled = false;
-
-    // Get the initial session immediately
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (cancelled) return;
-      const uid = session?.user?.id ?? null;
-      setUserId(uid);
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (cancelled) return;
-      const uid = session?.user?.id ?? null;
-      setUserId(uid);
-      if (!uid) {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setFirebaseUser(user);
+      if (!user) {
         setProfile(null);
         profileFetchedRef.current = false;
       }
       setLoading(false);
     });
-
-    return () => {
-      cancelled = true;
-      subscription.unsubscribe();
-    };
+    return unsubscribe;
   }, []);
 
-  // Background profile fetch — runs whenever userId changes, never blocks UI
+  // Background Supabase profile fetch — runs whenever userId changes, never blocks UI
   useEffect(() => {
     if (!userId) return;
     if (profileFetchedRef.current && profile?.id === userId) return;
@@ -123,9 +113,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         let data = await fetchProfile(userId);
         if (!data) {
-          // New user — create a minimal profile row
+          // New user — seed a minimal profile row keyed to the Firebase UID
           await supabase.from("profiles").upsert(
-            { id: userId, role: "fan", onboarding_complete: false },
+            {
+              id: userId,
+              email: firebaseUser?.email ?? "",
+              full_name: firebaseUser?.displayName ?? "",
+              role: "fan",
+              onboarding_complete: false,
+            },
             { onConflict: "id", ignoreDuplicates: true }
           );
           data = await fetchProfile(userId);
@@ -141,13 +137,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })();
 
     return () => { cancelled = true; };
-  }, [userId, fetchProfile]);
+  }, [userId, fetchProfile, firebaseUser?.email, firebaseUser?.displayName]);
 
   const role = profile?.role;
 
   const value = useMemo<AuthContextValue>(
     () => ({
       clerkUserId: userId,
+      firebaseUser,
       profile,
       loading,
       isFan: role === "fan",
@@ -157,7 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut,
       refreshProfile,
     }),
-    [userId, profile, loading, role, signOut, refreshProfile]
+    [userId, firebaseUser, profile, loading, role, signOut, refreshProfile]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
