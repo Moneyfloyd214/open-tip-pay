@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@caffeineai/core-infrastructure':
-        specifier: ^0.3.0
-        version: 0.3.0(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
     devDependencies:
       sharp:
         specifier: ^0.34.4
@@ -479,33 +475,6 @@ packages:
     dev: true
     optional: true
 
-  /@caffeineai/core-infrastructure@0.3.0(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1):
-    resolution: {integrity: sha512-8BVQr+bdpAhhVdjhfem0sWY3NDaUsztez1FKBbHvF1RY1xgqNN5eVPyNjDrP/tenhNibvruD40WZur7EBZvieg==}
-    dependencies:
-      '@caffeineai/object-storage': 0.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
-      '@dfinity/auth-client': 3.3.1(@dfinity/agent@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
-      '@icp-sdk/core': 4.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
-      '@tanstack/react-query': 5.100.14(react@19.1.7)
-      react: 19.1.7
-    transitivePeerDependencies:
-      - '@dfinity/agent'
-      - '@dfinity/candid'
-      - '@dfinity/identity'
-      - '@dfinity/identity-secp256k1'
-      - '@dfinity/principal'
-    dev: false
-
-  /@caffeineai/object-storage@0.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1):
-    resolution: {integrity: sha512-EUcLvxi8Y/2rNeV3R3J6DChFb0L3pHLh1W1CR9iHAOWDOWqVarXNgNcZvQjEhD5SzEzUMp5TdGZ8uLb43H1brQ==}
-    dependencies:
-      '@icp-sdk/core': 4.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
-    transitivePeerDependencies:
-      - '@dfinity/agent'
-      - '@dfinity/candid'
-      - '@dfinity/identity'
-      - '@dfinity/identity-secp256k1'
-      - '@dfinity/principal'
-    dev: false
 
   /@clerk/clerk-react@5.61.3(react-dom@19.1.7)(react@19.1.7):
     resolution: {integrity: sha512-W21aNEeHtqh3xJLuW5g2ydben/1D5pSnxsl/kCnv0IY1zma7lO+aIJ7Br2bR4FKKkiu695mPnjtY+fvkQmCXBg==}
