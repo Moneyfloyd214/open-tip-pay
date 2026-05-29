@@ -1,4 +1,4 @@
-import type { PartnerBrandingConfig } from "@/backend";
+import type { PartnerBrandingConfig } from "@/types/local-backend";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

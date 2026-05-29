@@ -1,5 +1,5 @@
-import { DeliveryMethod, OrderStatus } from "@/backend";
-import type { FoodOrder, OrderItem } from "@/backend";
+import { DeliveryMethod, OrderStatus } from "@/types/food-ordering";
+import type { FoodOrder, OrderItem } from "@/types/food-ordering";
 import { useBranding } from "@/context/BrandingContext";
 import { DEMO_ACTIVE_ORDER, DEMO_STANDS } from "@/context/DemoContext";
 import { useDemoMode } from "@/context/DemoContext";

@@ -1,8 +1,8 @@
-import type { ExtendedStaffMember } from "@/backend";
 import {
+  type ExtendedStaffMember,
   Variant_active_inactive_suspended,
   Variant_partTime_fullTime_contractor,
-} from "@/backend";
+} from "@/types/local-backend";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,32 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  ArrowLeft,
-  BarChart3,
-  CalendarDays,
-  Check,
-  CheckCircle,
-  Clock,
-  Copy,
-  DollarSign,
-  Download,
-  Heart,
-  IdCard,
-  Link2,
-  Loader2,
-  Phone,
-  Plus,
-  RefreshCw,
-  Send,
-  Settings,
-  Share2,
-  ShoppingBag,
-  Trash2,
-  UserCheck,
-  Users,
-  X,
-} from "lucide-react";
+import { ArrowLeft, ChartBar as BarChart3, CalendarDays, Check, CircleCheck as CheckCircle, Clock, Copy, DollarSign, Download, Heart, IdCard, Link2, Loader as Loader2, Phone, Plus, RefreshCw, Send, Settings, Share2, ShoppingBag, Trash2, UserCheck, Users, X } from "lucide-react";
 import React from "react";
 import { useState } from "react";
 import { toast } from "sonner";

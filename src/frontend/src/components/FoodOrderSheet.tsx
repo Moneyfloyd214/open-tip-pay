@@ -1,5 +1,5 @@
-import type { ConcessionStand, MenuItem } from "@/backend";
-import { DeliveryMethod, OrderStatus } from "@/backend";
+import type { ConcessionStand, MenuItem } from "@/types/food-ordering";
+import { DeliveryMethod, OrderStatus } from "@/types/food-ordering";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,15 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Minus,
-  Plus,
-  ShoppingCart,
-  Trash2,
-  Utensils,
-} from "lucide-react";
+import { ArrowLeft, CircleCheck as CheckCircle2, Minus, Plus, ShoppingCart, Trash2, Utensils } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useBranding } from "../context/BrandingContext";

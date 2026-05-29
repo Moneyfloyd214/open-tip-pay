@@ -217,6 +217,14 @@ export type UpdateRewardParams = {
   active: boolean;
 };
 
+export interface PartnerBrandingConfig {
+  partnerName: string;
+  primaryColor: string;
+  secondaryColor: string;
+  partnerLogoUrl: string;
+  isActive: boolean;
+}
+
 export const BusinessApplicationStatus = {
   pending: "pending",
   approved: "approved",

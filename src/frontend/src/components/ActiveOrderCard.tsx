@@ -1,5 +1,5 @@
-import type { FoodOrder } from "@/backend";
-import { OrderStatus } from "@/backend";
+import type { FoodOrder } from "@/types/food-ordering";
+import { OrderStatus } from "@/types/food-ordering";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Utensils } from "lucide-react";
