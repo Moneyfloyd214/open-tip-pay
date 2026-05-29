@@ -66,8 +66,7 @@ export default function LoginPage() {
                   identityPreviewEditButton: "text-teal",
                 },
               }}
-              afterSignInUrl="/dashboard"
-              redirectUrl="/dashboard"
+              forceRedirectUrl="/dashboard"
             />
           ) : (
             <SignUp
@@ -83,8 +82,7 @@ export default function LoginPage() {
                   footerActionLink: "text-teal hover:text-teal-light",
                 },
               }}
-              afterSignUpUrl="/onboarding"
-              redirectUrl="/onboarding"
+              forceRedirectUrl="/onboarding"
             />
           )}
         </div>

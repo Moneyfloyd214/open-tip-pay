@@ -1,5 +1,14 @@
 import { useUser, useClerk } from "@clerk/clerk-react";
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { supabase } from "@/lib/supabase";
 
 export type UserRole = "fan" | "staff" | "manager" | "admin";
@@ -34,23 +43,35 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+// Stable module-level ref — written once per sign-in, never during render
 let _currentClerkUserId: string | null = null;
 export function getCurrentClerkUserId(): string | null {
   return _currentClerkUserId;
 }
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+// ── Inner component so Clerk hooks are isolated from the Provider's render ───
+// This prevents the pattern where useUser()/useClerk() re-firing inside the
+// context provider causes the provider itself to re-render its children,
+// which re-reads context, which triggers Clerk again — the infinite loop.
+function AuthProviderInner({ children }: { children: ReactNode }) {
+  // useUser / useClerk are safe here: this component only re-renders when
+  // Clerk's own state changes, and it does NOT provide a context value itself.
   const { user: clerkUser, isLoaded: clerkLoaded } = useUser();
   const { signOut: clerkSignOut } = useClerk();
+
   const [profile, setProfile] = useState<Profile | null>(null);
-  // Start true — we don't know anything until Clerk resolves
   const [ready, setReady] = useState(false);
   const resolvedRef = useRef(false);
 
+  // Stable userId string — only changes when the actual user changes
   const clerkUserId = clerkUser?.id ?? null;
-  _currentClerkUserId = clerkUserId;
 
-  async function fetchProfile(userId: string): Promise<Profile | null> {
+  // Write to module ref inside an effect, never during render
+  useEffect(() => {
+    _currentClerkUserId = clerkUserId;
+  }, [clerkUserId]);
+
+  const fetchProfile = useCallback(async (userId: string): Promise<Profile | null> => {
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
@@ -58,28 +79,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle();
     if (error) console.warn("[AuthContext] fetchProfile error:", error.message);
     return data as Profile | null;
-  }
+  }, []);
 
-  async function upsertProfile(userId: string, email: string, fullName: string): Promise<Profile | null> {
-    const { error } = await supabase.from("profiles").upsert(
-      { id: userId, email, full_name: fullName, role: "fan", onboarding_complete: false },
-      { onConflict: "id", ignoreDuplicates: true }
-    );
-    if (error) console.warn("[AuthContext] upsertProfile error:", error.message);
-    return fetchProfile(userId);
-  }
+  const upsertProfile = useCallback(
+    async (userId: string, email: string, fullName: string): Promise<Profile | null> => {
+      const { error } = await supabase.from("profiles").upsert(
+        { id: userId, email, full_name: fullName, role: "fan", onboarding_complete: false },
+        { onConflict: "id", ignoreDuplicates: true }
+      );
+      if (error) console.warn("[AuthContext] upsertProfile error:", error.message);
+      return fetchProfile(userId);
+    },
+    [fetchProfile]
+  );
 
-  async function refreshProfile() {
+  const refreshProfile = useCallback(async () => {
     if (!clerkUserId) return;
     const data = await fetchProfile(clerkUserId);
     setProfile(data);
-  }
+  }, [clerkUserId, fetchProfile]);
 
-  // Hard deadline: if nothing resolves in 4s, unblock the UI anyway
+  // Hard 4s deadline — unblocks the UI no matter what
   useEffect(() => {
     const deadline = window.setTimeout(() => {
       if (!resolvedRef.current) {
-        console.warn("[AuthContext] hard deadline reached — unblocking UI");
+        console.warn("[AuthContext] hard deadline — unblocking UI");
         resolvedRef.current = true;
         setReady(true);
       }
@@ -87,29 +111,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(deadline);
   }, []);
 
+  // Main auth effect — runs only when Clerk's loaded state or user ID changes
   useEffect(() => {
-    // Clerk hasn't initialised yet — keep waiting
     if (!clerkLoaded) return;
 
-    // No signed-in user — we're done immediately
     if (!clerkUser) {
       setProfile(null);
-      resolvedRef.current = true;
-      setReady(true);
+      if (!resolvedRef.current) {
+        resolvedRef.current = true;
+        setReady(true);
+      }
       return;
     }
 
-    // Signed-in user — load / create their profile
     let cancelled = false;
     const email = clerkUser.primaryEmailAddress?.emailAddress ?? "";
     const fullName = clerkUser.fullName ?? clerkUser.username ?? "";
 
-    // Per-fetch deadline (shorter than the global one)
     const perFetchTimeout = window.setTimeout(() => {
       if (!cancelled && !resolvedRef.current) {
-        console.warn("[AuthContext] profile fetch timed out — rendering without profile");
+        console.warn("[AuthContext] profile fetch timed out");
         resolvedRef.current = true;
-        if (!cancelled) setReady(true);
+        setReady(true);
       }
     }, 3000);
 
@@ -124,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.warn("[AuthContext] profile load failed:", err);
       } finally {
         clearTimeout(perFetchTimeout);
-        if (!cancelled) {
+        if (!cancelled && !resolvedRef.current) {
           resolvedRef.current = true;
           setReady(true);
         }
@@ -135,33 +158,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       clearTimeout(perFetchTimeout);
     };
-  }, [clerkLoaded, clerkUser?.id]);
+  }, [clerkLoaded, clerkUserId]); // clerkUserId string — stable primitive, not object ref
 
-  async function signOut() {
+  const signOut = useCallback(async () => {
     await clerkSignOut();
     setProfile(null);
-  }
+  }, [clerkSignOut]);
 
-  const loading = !ready;
   const role = profile?.role;
 
-  return (
-    <AuthContext.Provider
-      value={{
-        clerkUserId,
-        profile,
-        loading,
-        isFan: role === "fan",
-        isStaff: role === "staff",
-        isManager: role === "manager",
-        isAdmin: role === "admin",
-        signOut,
-        refreshProfile,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  // Memoize the context value so consumers only re-render when something
+  // actually changes — not on every Clerk internal tick
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      clerkUserId,
+      profile,
+      loading: !ready,
+      isFan: role === "fan",
+      isStaff: role === "staff",
+      isManager: role === "manager",
+      isAdmin: role === "admin",
+      signOut,
+      refreshProfile,
+    }),
+    [clerkUserId, profile, ready, role, signOut, refreshProfile]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+// ── Public provider — wraps the inner component ──────────────────────────────
+// ClerkProvider must already be an ancestor (handled in main.tsx).
+export function AuthProvider({ children }: { children: ReactNode }) {
+  return <AuthProviderInner>{children}</AuthProviderInner>;
 }
 
 export function useAuth() {
