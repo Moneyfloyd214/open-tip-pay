@@ -1,5 +1,5 @@
 import { Toaster } from "sonner";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
 import { Loader as Loader2 } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import { useEffect } from "react";
@@ -144,9 +144,9 @@ function Unauthorized({ role }: { role: string }) {
 
 export default function App() {
   return (
-    <AuthProvider>
+    <>
       <Router />
       <Toaster richColors position="top-center" />
-    </AuthProvider>
+    </>
   );
 }

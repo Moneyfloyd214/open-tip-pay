@@ -1,12 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
+import { auth } from "./firebase";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in environment variables.",
-  );
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL as string,
+  import.meta.env.VITE_SUPABASE_ANON_KEY as string,
+  {
+    accessToken: async () => {
+      const token = await auth.currentUser?.getIdToken();
+      return token ?? null;
+    },
+  },
+);
