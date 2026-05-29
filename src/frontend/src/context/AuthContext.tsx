@@ -1,4 +1,3 @@
-import { useUser, useClerk } from "@clerk/clerk-react";
 import {
   createContext,
   useCallback,
@@ -43,92 +42,93 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-let _currentClerkUserId: string | null = null;
+// Module-level ref for non-reactive access (used by useQueries.ts)
+let _currentUserId: string | null = null;
 export function getCurrentClerkUserId(): string | null {
-  return _currentClerkUserId;
+  return _currentUserId;
 }
 
-function AuthProviderInner({ children }: { children: ReactNode }) {
-  const { user: clerkUser, isLoaded: clerkLoaded } = useUser();
-  const { signOut: clerkSignOut } = useClerk();
-
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [userId, setUserId] = useState<string | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  // loading = true only until Clerk tells us its state (isLoaded).
-  // Profile is fetched in the background and does NOT block rendering.
-  const [clerkReady, setClerkReady] = useState(false);
+  const [loading, setLoading] = useState(true);
   const profileFetchedRef = useRef(false);
 
-  const clerkUserId = clerkUser?.id ?? null;
-
-  // Write module-level ref in an effect, never during render
+  // Keep module-level ref in sync
   useEffect(() => {
-    _currentClerkUserId = clerkUserId;
-  }, [clerkUserId]);
+    _currentUserId = userId;
+  }, [userId]);
 
-  // Absolute fallback: if Clerk never fires isLoaded in 5s, unblock anyway
-  useEffect(() => {
-    const t = window.setTimeout(() => setClerkReady(true), 5000);
-    return () => clearTimeout(t);
-  }, []);
-
-  // As soon as Clerk resolves its loaded state, unblock the UI immediately.
-  // Profile loading is fire-and-forget — it updates the context when done
-  // but never blocks the initial render.
-  useEffect(() => {
-    if (!clerkLoaded) return;
-    setClerkReady(true);
-  }, [clerkLoaded]);
-
-  const fetchProfile = useCallback(async (userId: string): Promise<Profile | null> => {
+  const fetchProfile = useCallback(async (uid: string): Promise<Profile | null> => {
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
-      .eq("id", userId)
+      .eq("id", uid)
       .maybeSingle();
     if (error) console.warn("[AuthContext] fetchProfile error:", error.message);
     return data as Profile | null;
   }, []);
 
-  const upsertProfile = useCallback(
-    async (userId: string, email: string, fullName: string): Promise<Profile | null> => {
-      const { error } = await supabase.from("profiles").upsert(
-        { id: userId, email, full_name: fullName, role: "fan", onboarding_complete: false },
-        { onConflict: "id", ignoreDuplicates: true }
-      );
-      if (error) console.warn("[AuthContext] upsertProfile error:", error.message);
-      return fetchProfile(userId);
-    },
-    [fetchProfile]
-  );
-
   const refreshProfile = useCallback(async () => {
-    if (!clerkUserId) return;
-    const data = await fetchProfile(clerkUserId);
+    if (!userId) return;
+    const data = await fetchProfile(userId);
     setProfile(data);
-  }, [clerkUserId, fetchProfile]);
+  }, [userId, fetchProfile]);
 
-  // Background profile fetch — runs after Clerk resolves, never blocks UI
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUserId(null);
+    setProfile(null);
+    profileFetchedRef.current = false;
+  }, []);
+
+  // Listen to Supabase auth state — this is the sole source of truth for userId
   useEffect(() => {
-    if (!clerkLoaded) return;
-    if (!clerkUser) {
-      setProfile(null);
-      profileFetchedRef.current = false;
-      return;
-    }
+    let cancelled = false;
 
-    // Don't re-fetch if we already have a profile for this user
-    if (profileFetchedRef.current && profile?.id === clerkUser.id) return;
+    // Get the initial session immediately
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (cancelled) return;
+      const uid = session?.user?.id ?? null;
+      setUserId(uid);
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (cancelled) return;
+      const uid = session?.user?.id ?? null;
+      setUserId(uid);
+      if (!uid) {
+        setProfile(null);
+        profileFetchedRef.current = false;
+      }
+      setLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // Background profile fetch — runs whenever userId changes, never blocks UI
+  useEffect(() => {
+    if (!userId) return;
+    if (profileFetchedRef.current && profile?.id === userId) return;
 
     let cancelled = false;
     profileFetchedRef.current = false;
-    const email = clerkUser.primaryEmailAddress?.emailAddress ?? "";
-    const fullName = clerkUser.fullName ?? clerkUser.username ?? "";
 
     (async () => {
       try {
-        let data = await fetchProfile(clerkUser.id);
+        let data = await fetchProfile(userId);
         if (!data) {
-          data = await upsertProfile(clerkUser.id, email, fullName);
+          // New user — create a minimal profile row
+          await supabase.from("profiles").upsert(
+            { id: userId, role: "fan", onboarding_complete: false },
+            { onConflict: "id", ignoreDuplicates: true }
+          );
+          data = await fetchProfile(userId);
         }
         if (!cancelled) {
           setProfile(data);
@@ -141,21 +141,15 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
     })();
 
     return () => { cancelled = true; };
-  }, [clerkLoaded, clerkUserId]);
-
-  const signOut = useCallback(async () => {
-    await clerkSignOut();
-    setProfile(null);
-    profileFetchedRef.current = false;
-  }, [clerkSignOut]);
+  }, [userId, fetchProfile]);
 
   const role = profile?.role;
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      clerkUserId,
+      clerkUserId: userId,
       profile,
-      loading: !clerkReady,
+      loading,
       isFan: role === "fan",
       isStaff: role === "staff",
       isManager: role === "manager",
@@ -163,14 +157,10 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
       signOut,
       refreshProfile,
     }),
-    [clerkUserId, profile, clerkReady, role, signOut, refreshProfile]
+    [userId, profile, loading, role, signOut, refreshProfile]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  return <AuthProviderInner>{children}</AuthProviderInner>;
 }
 
 export function useAuth() {

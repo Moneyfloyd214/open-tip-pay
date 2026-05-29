@@ -5,7 +5,7 @@ import { defineConfig, loadEnv } from "vite";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
-  const required = ["VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY", "VITE_CLERK_PUBLISHABLE_KEY"];
+  const required = ["VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY"];
   const missing = required.filter((k) => !env[k]);
   if (missing.length > 0) {
     console.warn(`[vite] Missing environment variables: ${missing.join(", ")} — add them to src/frontend/.env`);

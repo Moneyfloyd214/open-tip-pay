@@ -1,4 +1,3 @@
-import { SignIn, SignUp } from "@clerk/clerk-react";
 import { DollarSign, Shield, Smartphone, Zap } from "lucide-react";
 import { useState } from "react";
 
@@ -48,43 +47,32 @@ export default function LoginPage() {
           ))}
         </div>
 
-        {/* Clerk auth UI */}
-        <div className="flex justify-center">
-          {mode === "signin" ? (
-            <SignIn
-              appearance={{
-                elements: {
-                  rootBox: "w-full",
-                  card: "glassmorphism rounded-2xl border-0 shadow-none bg-transparent",
-                  headerTitle: "text-foreground",
-                  headerSubtitle: "text-muted-foreground",
-                  formButtonPrimary: "bg-teal hover:bg-teal-light text-white font-bold rounded-xl glow-teal-hero",
-                  formFieldInput: "rounded-xl border border-border bg-black/20 text-foreground placeholder:text-muted-foreground focus:border-teal focus:ring-teal/40",
-                  formFieldLabel: "text-foreground",
-                  footerActionLink: "text-teal hover:text-teal-light",
-                  identityPreviewText: "text-foreground",
-                  identityPreviewEditButton: "text-teal",
-                },
-              }}
-              forceRedirectUrl="/dashboard"
+        {/* Auth placeholder — Firebase will be wired in next */}
+        <div className="glassmorphism rounded-2xl p-6 space-y-4 border border-teal/20">
+          <p className="text-center text-xs text-muted-foreground/60 pb-1">
+            Authentication coming soon
+          </p>
+          <div className="space-y-3">
+            <input
+              type="email"
+              placeholder="Email address"
+              disabled
+              className="w-full rounded-xl border border-border bg-black/20 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none cursor-not-allowed opacity-60"
             />
-          ) : (
-            <SignUp
-              appearance={{
-                elements: {
-                  rootBox: "w-full",
-                  card: "glassmorphism rounded-2xl border-0 shadow-none bg-transparent",
-                  headerTitle: "text-foreground",
-                  headerSubtitle: "text-muted-foreground",
-                  formButtonPrimary: "bg-teal hover:bg-teal-light text-white font-bold rounded-xl glow-teal-hero",
-                  formFieldInput: "rounded-xl border border-border bg-black/20 text-foreground placeholder:text-muted-foreground focus:border-teal focus:ring-teal/40",
-                  formFieldLabel: "text-foreground",
-                  footerActionLink: "text-teal hover:text-teal-light",
-                },
-              }}
-              forceRedirectUrl="/onboarding"
+            <input
+              type="password"
+              placeholder="Password"
+              disabled
+              className="w-full rounded-xl border border-border bg-black/20 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none cursor-not-allowed opacity-60"
             />
-          )}
+            <button
+              type="button"
+              disabled
+              className="w-full rounded-xl bg-teal/50 py-3 text-sm font-bold text-white cursor-not-allowed opacity-60"
+            >
+              {mode === "signin" ? "Sign In" : "Create Account"}
+            </button>
+          </div>
         </div>
 
         {/* Feature highlights */}
