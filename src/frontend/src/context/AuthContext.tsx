@@ -1,5 +1,5 @@
 import { useUser, useClerk } from "@clerk/clerk-react";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/lib/supabase";
 
 export type UserRole = "fan" | "staff" | "manager" | "admin";
@@ -43,7 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { user: clerkUser, isLoaded: clerkLoaded } = useUser();
   const { signOut: clerkSignOut } = useClerk();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [profileLoading, setProfileLoading] = useState(false);
+  // Start true — we don't know anything until Clerk resolves
+  const [ready, setReady] = useState(false);
+  const resolvedRef = useRef(false);
 
   const clerkUserId = clerkUser?.id ?? null;
   _currentClerkUserId = clerkUserId;
@@ -73,26 +75,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(data);
   }
 
+  // Hard deadline: if nothing resolves in 4s, unblock the UI anyway
   useEffect(() => {
+    const deadline = window.setTimeout(() => {
+      if (!resolvedRef.current) {
+        console.warn("[AuthContext] hard deadline reached — unblocking UI");
+        resolvedRef.current = true;
+        setReady(true);
+      }
+    }, 4000);
+    return () => clearTimeout(deadline);
+  }, []);
+
+  useEffect(() => {
+    // Clerk hasn't initialised yet — keep waiting
     if (!clerkLoaded) return;
 
+    // No signed-in user — we're done immediately
     if (!clerkUser) {
       setProfile(null);
-      setProfileLoading(false);
+      resolvedRef.current = true;
+      setReady(true);
       return;
     }
 
+    // Signed-in user — load / create their profile
     let cancelled = false;
-    setProfileLoading(true);
     const email = clerkUser.primaryEmailAddress?.emailAddress ?? "";
     const fullName = clerkUser.fullName ?? clerkUser.username ?? "";
 
-    const timeout = window.setTimeout(() => {
-      if (!cancelled) {
-        console.warn("[AuthContext] profile load timed out — rendering without profile");
-        setProfileLoading(false);
+    // Per-fetch deadline (shorter than the global one)
+    const perFetchTimeout = window.setTimeout(() => {
+      if (!cancelled && !resolvedRef.current) {
+        console.warn("[AuthContext] profile fetch timed out — rendering without profile");
+        resolvedRef.current = true;
+        if (!cancelled) setReady(true);
       }
-    }, 5000);
+    }, 3000);
 
     (async () => {
       try {
@@ -104,12 +123,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (err) {
         console.warn("[AuthContext] profile load failed:", err);
       } finally {
-        clearTimeout(timeout);
-        if (!cancelled) setProfileLoading(false);
+        clearTimeout(perFetchTimeout);
+        if (!cancelled) {
+          resolvedRef.current = true;
+          setReady(true);
+        }
       }
     })();
 
-    return () => { cancelled = true; clearTimeout(timeout); };
+    return () => {
+      cancelled = true;
+      clearTimeout(perFetchTimeout);
+    };
   }, [clerkLoaded, clerkUser?.id]);
 
   async function signOut() {
@@ -117,7 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(null);
   }
 
-  const loading = !clerkLoaded || profileLoading;
+  const loading = !ready;
   const role = profile?.role;
 
   return (
