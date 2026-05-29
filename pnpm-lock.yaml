@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@caffeineai/core-infrastructure':
+        specifier: ^0.3.0
+        version: 0.3.0(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
     devDependencies:
       sharp:
         specifier: ^0.34.4
@@ -475,6 +479,34 @@ packages:
     dev: true
     optional: true
 
+  /@caffeineai/core-infrastructure@0.3.0(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1):
+    resolution: {integrity: sha512-8BVQr+bdpAhhVdjhfem0sWY3NDaUsztez1FKBbHvF1RY1xgqNN5eVPyNjDrP/tenhNibvruD40WZur7EBZvieg==}
+    dependencies:
+      '@caffeineai/object-storage': 0.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
+      '@dfinity/auth-client': 3.3.1(@dfinity/agent@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
+      '@icp-sdk/core': 4.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
+      '@tanstack/react-query': 5.100.14(react@19.1.7)
+      react: 19.1.7
+    transitivePeerDependencies:
+      - '@dfinity/agent'
+      - '@dfinity/candid'
+      - '@dfinity/identity'
+      - '@dfinity/identity-secp256k1'
+      - '@dfinity/principal'
+    dev: false
+
+  /@caffeineai/object-storage@0.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1):
+    resolution: {integrity: sha512-EUcLvxi8Y/2rNeV3R3J6DChFb0L3pHLh1W1CR9iHAOWDOWqVarXNgNcZvQjEhD5SzEzUMp5TdGZ8uLb43H1brQ==}
+    dependencies:
+      '@icp-sdk/core': 4.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1)
+    transitivePeerDependencies:
+      - '@dfinity/agent'
+      - '@dfinity/candid'
+      - '@dfinity/identity'
+      - '@dfinity/identity-secp256k1'
+      - '@dfinity/principal'
+    dev: false
+
   /@clerk/clerk-react@5.61.3(react-dom@19.1.7)(react@19.1.7):
     resolution: {integrity: sha512-W21aNEeHtqh3xJLuW5g2ydben/1D5pSnxsl/kCnv0IY1zma7lO+aIJ7Br2bR4FKKkiu695mPnjtY+fvkQmCXBg==}
     engines: {node: '>=18.17.0'}
@@ -514,6 +546,91 @@ packages:
 
   /@date-fns/tz@1.5.0:
     resolution: {integrity: sha512-lwYN/vDPeNRULcepoE/LO2Pgx+7/RV+S9ARfbc9lr2DtGkOD7pAiruHvbR1RX3Qyf6ja47EWJDMsNK5vK08DJg==}
+    dev: false
+
+  /@dfinity/agent@3.3.1(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/hashes@1.8.0):
+    resolution: {integrity: sha512-U1zWIiCgJmxNet2NpKN+2UgOcO/OFC+FqGEpIsvu964eH7FeEMagmSZ5xTIsXSL9sN0mR7gY5Fuz+bv5XSBJQg==}
+    deprecated: 'This package has been deprecated. Use @icp-sdk/core/agent instead. Migration guide: https://js.icp.build/core/latest/upgrading/v5'
+    peerDependencies:
+      '@dfinity/candid': 3.3.1
+      '@dfinity/principal': 3.3.1
+      '@noble/hashes': ^1.8.0
+    dependencies:
+      '@dfinity/candid': 3.3.1(@dfinity/principal@3.3.1)
+      '@dfinity/cbor': 0.2.3
+      '@dfinity/principal': 3.3.1
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+    dev: false
+
+  /@dfinity/auth-client@3.3.1(@dfinity/agent@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1):
+    resolution: {integrity: sha512-Cxf8dlWzxG9mgRzEesuf4cRVCAMrIhlRKw54bc1CNceSobkhpo9Hbz4bSqD02zddKD+G69KAQR3z5r43wKi8CA==}
+    deprecated: This package has been deprecated. Its functionality is now part of `@icp-sdk/auth` (https://js.icp.build/auth), under the `client` submodule.
+    peerDependencies:
+      '@dfinity/agent': 3.3.1
+      '@dfinity/identity': 3.3.1
+      '@dfinity/principal': 3.3.1
+    dependencies:
+      '@dfinity/agent': 3.3.1(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/hashes@1.8.0)
+      '@dfinity/identity': 3.3.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/curves@1.9.7)(@noble/hashes@1.8.0)
+      '@dfinity/principal': 3.3.1
+      idb: 7.1.1
+    dev: false
+
+  /@dfinity/candid@3.3.1(@dfinity/principal@3.3.1):
+    resolution: {integrity: sha512-BOvhZhQarrpA5ErwLwXW/M28nSx3e0ZlV0iyJ+MvH6SkFcZqATVBPA0rVn57uDtMFboT8TzlA3RoW+YBzHxLJQ==}
+    deprecated: 'This package has been deprecated. Use @icp-sdk/core/candid instead. Migration guide: https://js.icp.build/core/latest/upgrading/v5'
+    peerDependencies:
+      '@dfinity/principal': 3.3.1
+    dependencies:
+      '@dfinity/principal': 3.3.1
+    dev: false
+
+  /@dfinity/cbor@0.2.3:
+    resolution: {integrity: sha512-5GX+9tAf29r94Pxv8nCzrv2/t+AkOfem/c/G61+FA2Wadq7THvc5cvr/AVLH0LpukVfNSWRRHvl1fkCdiB9MMQ==}
+    dev: false
+
+  /@dfinity/identity-secp256k1@3.3.1(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/curves@1.9.7)(@noble/hashes@1.8.0):
+    resolution: {integrity: sha512-rGgcCm9wLQkxuluPdfPcl1P/KrwehLmjVIXc1lEPE01C0H2YK4bofxYrxCnHQQl8a8Ioc1dkpOl7TBUtXTkKHw==}
+    deprecated: 'This package has been deprecated. Use @icp-sdk/core/identity/secp256k1 instead. Migration guide: https://js.icp.build/core/latest/upgrading/v5'
+    peerDependencies:
+      '@dfinity/candid': 3.3.1
+      '@noble/curves': ^1.9.2
+      '@noble/hashes': ^1.8.0
+    dependencies:
+      '@dfinity/agent': 3.3.1(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/hashes@1.8.0)
+      '@dfinity/candid': 3.3.1(@dfinity/principal@3.3.1)
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+      '@scure/bip32': 1.7.0
+      '@scure/bip39': 1.6.0
+      asn1js: 3.0.10
+    transitivePeerDependencies:
+      - '@dfinity/principal'
+    dev: false
+
+  /@dfinity/identity@3.3.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/curves@1.9.7)(@noble/hashes@1.8.0):
+    resolution: {integrity: sha512-c+Grr7Mc7RephqBzRpdtySDg1to9pitb0wakXSk8902yg3BVc5vAsmbA3S1WwriY8+AMB06Dy2IZl/9Hot/Yhw==}
+    deprecated: 'This package has been deprecated. Use @icp-sdk/core/identity instead. Migration guide: https://js.icp.build/core/latest/upgrading/v5'
+    peerDependencies:
+      '@dfinity/agent': 3.3.1
+      '@dfinity/candid': 3.3.1
+      '@dfinity/principal': 3.3.1
+      '@noble/curves': ^1.9.2
+      '@noble/hashes': ^1.8.0
+    dependencies:
+      '@dfinity/agent': 3.3.1(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/hashes@1.8.0)
+      '@dfinity/candid': 3.3.1(@dfinity/principal@3.3.1)
+      '@dfinity/principal': 3.3.1
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+    dev: false
+
+  /@dfinity/principal@3.3.1:
+    resolution: {integrity: sha512-UWloNRbDHSwVV/gec0CrtWm/cHODPgu+jgwn5iERheVwYCEp+yGXVIssUkJeN6wFxraqqCFcoBUvg7vtWM+GBg==}
+    deprecated: 'This package has been deprecated. Use @icp-sdk/core/principal instead. Migration guide: https://js.icp.build/core/latest/upgrading/v5'
+    dependencies:
+      '@noble/hashes': 1.8.0
     dev: false
 
   /@emnapi/runtime@1.10.0:
@@ -757,6 +874,22 @@ packages:
 
   /@floating-ui/utils@0.2.11:
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+    dev: false
+
+  /@icp-sdk/core@4.1.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/identity-secp256k1@3.3.1)(@dfinity/identity@3.3.1)(@dfinity/principal@3.3.1):
+    resolution: {integrity: sha512-IYWsRauSvmr3M3T85FPaRM9lhuIumavhmJVG69tiYYqQmayAt0X0veKSevO+vm9nzmymriYCOwXqi57NqYhufA==}
+    peerDependencies:
+      '@dfinity/agent': 3.3.1
+      '@dfinity/candid': 3.3.1
+      '@dfinity/identity': 3.3.1
+      '@dfinity/identity-secp256k1': 3.3.1
+      '@dfinity/principal': 3.3.1
+    dependencies:
+      '@dfinity/agent': 3.3.1(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/hashes@1.8.0)
+      '@dfinity/candid': 3.3.1(@dfinity/principal@3.3.1)
+      '@dfinity/identity': 3.3.1(@dfinity/agent@3.3.1)(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/curves@1.9.7)(@noble/hashes@1.8.0)
+      '@dfinity/identity-secp256k1': 3.3.1(@dfinity/candid@3.3.1)(@dfinity/principal@3.3.1)(@noble/curves@1.9.7)(@noble/hashes@1.8.0)
+      '@dfinity/principal': 3.3.1
     dev: false
 
   /@img/colour@1.1.0:
@@ -1020,6 +1153,18 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
     dev: true
+
+  /@noble/curves@1.9.7:
+    resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
+    engines: {node: ^14.21.3 || >=16}
+    dependencies:
+      '@noble/hashes': 1.8.0
+    dev: false
+
+  /@noble/hashes@1.8.0:
+    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
+    engines: {node: ^14.21.3 || >=16}
+    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2453,6 +2598,25 @@ packages:
     dev: true
     optional: true
 
+  /@scure/base@1.2.6:
+    resolution: {integrity: sha512-g/nm5FgUa//MCj1gV09zTJTaM6KBAHqLN907YVQqf7zC49+DcO4B1so4ZX07Ef10Twr6nuqYEH9GEggFXA4Fmg==}
+    dev: false
+
+  /@scure/bip32@1.7.0:
+    resolution: {integrity: sha512-E4FFX/N3f4B80AKWp5dP6ow+flD1LQZo/w8UnLGYZO674jS6YnYeepycOOksv+vLPSpgN35wgKgy+ybfTb2SMw==}
+    dependencies:
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+      '@scure/base': 1.2.6
+    dev: false
+
+  /@scure/bip39@1.6.0:
+    resolution: {integrity: sha512-+lF0BbLiJNwVlev4eKelw1WWLaiKXw7sSl8T6FvBlWkdX+94aGJ4o8XjUdlyhTCjd8c+B3KT3JfS8P0bLRNU6A==}
+    dependencies:
+      '@noble/hashes': 1.8.0
+      '@scure/base': 1.2.6
+    dev: false
+
   /@supabase/auth-js@2.106.2:
     resolution: {integrity: sha512-VcAjUErkHkhC5Jaf+g/G1qbkQrFh8edaCdHa7pxJmHUjkWKjT7UnYCtPA89XV0N0GIYRkEqJZw5V62CtOxTmBQ==}
     engines: {node: '>=20.0.0'}
@@ -2673,6 +2837,15 @@ packages:
     resolution: {integrity: sha512-ik3ZgC9dY/lYVVM++OISsaYDeg1tb0VtP5uL3ouh1koGOaUMDPpbFIei4JkFimWUFPn90sbMNMXQAIVOlnYKJA==}
     engines: {node: '>=10'}
     dependencies:
+      tslib: 2.8.1
+    dev: false
+
+  /asn1js@3.0.10:
+    resolution: {integrity: sha512-S2s3aOytiKdFRdulw2qPE51MzjzVOisppcVv7jVFR+Kw0kxwvFrDcYA0h7Ndqbmj0HkMIXYWaoj7fli8kgx1eg==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      pvtsutils: 1.3.6
+      pvutils: 1.1.5
       tslib: 2.8.1
     dev: false
 
@@ -3165,6 +3338,10 @@ packages:
     engines: {node: '>=20.0.0'}
     dev: false
 
+  /idb@7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
+    dev: false
+
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
     dev: true
@@ -3554,6 +3731,17 @@ packages:
       end-of-stream: 1.4.5
       once: 1.4.0
     dev: true
+
+  /pvtsutils@1.3.6:
+    resolution: {integrity: sha512-PLgQXQ6H2FWCaeRak8vvk1GW462lMxB5s3Jm673N82zI4vqtVUPuZdffdZbPDFRoU8kAhItWFtPCWiPpp4/EDg==}
+    dependencies:
+      tslib: 2.8.1
+    dev: false
+
+  /pvutils@1.1.5:
+    resolution: {integrity: sha512-KTqnxsgGiQ6ZAzZCVlJH5eOjSnvlyEgx1m8bkRJfOhmGRqfo5KLvmAlACQkrjEtOQ4B7wF9TdSLIs9O90MX9xA==}
+    engines: {node: '>=16.0.0'}
+    dev: false
 
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
