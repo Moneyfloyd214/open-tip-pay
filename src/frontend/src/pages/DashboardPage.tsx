@@ -172,18 +172,8 @@ export default function DashboardPage() {
     setRecipientPrincipal(null);
   };
 
-  if (!isDemoMode && (profileLoading || balanceLoading)) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-10 w-10 animate-spin text-teal" />
-          <p className="text-muted-foreground text-sm">
-            Loading your dashboard…
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // profileLoading / balanceLoading are non-blocking — data populates inline
+  // via skeletons. Never gate the full page on these.
 
   if (managerDashboardOpen) {
     return <ManagerDashboard onClose={() => setManagerDashboardOpen(false)} />;

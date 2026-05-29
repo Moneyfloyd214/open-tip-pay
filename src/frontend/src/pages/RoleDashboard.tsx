@@ -409,7 +409,7 @@ export default function RoleDashboard() {
   const [tipCount, setTipCount] = useState(0);
   const [fanPoints, setFanPoints] = useState(0);
   const [recentTips, setRecentTips] = useState<RecentTip[]>([]);
-  const [loadingData, setLoadingData] = useState(true);
+  const [loadingData, setLoadingData] = useState(false);
 
   // Vault lock
   const [vaultLocked, setVaultLocked] = useState(false);
@@ -435,7 +435,11 @@ export default function RoleDashboard() {
 
   // Load data
   useEffect(() => {
-    if (!clerkUserId) return;
+    if (!clerkUserId) {
+      setLoadingData(false);
+      return;
+    }
+    setLoadingData(true);
     Promise.all([fetchTransactions(), fetchFanPoints()]).finally(() => setLoadingData(false));
   }, [clerkUserId]);
 
