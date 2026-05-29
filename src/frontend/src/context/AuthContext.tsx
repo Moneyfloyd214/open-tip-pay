@@ -48,25 +48,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const clerkUserId = clerkUser?.id ?? null;
   _currentClerkUserId = clerkUserId;
 
-  async function fetchProfile(userId: string) {
-    const { data } = await supabase
+  async function fetchProfile(userId: string): Promise<Profile | null> {
+    const { data, error } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", userId)
       .maybeSingle();
-    setProfile(data as Profile | null);
+    if (error) console.warn("[AuthContext] fetchProfile error:", error.message);
+    return data as Profile | null;
   }
 
-  async function upsertProfile(userId: string, email: string, fullName: string) {
-    await supabase.from("profiles").upsert(
+  async function upsertProfile(userId: string, email: string, fullName: string): Promise<Profile | null> {
+    const { error } = await supabase.from("profiles").upsert(
       { id: userId, email, full_name: fullName, role: "fan", onboarding_complete: false },
       { onConflict: "id", ignoreDuplicates: true }
     );
-    await fetchProfile(userId);
+    if (error) console.warn("[AuthContext] upsertProfile error:", error.message);
+    return fetchProfile(userId);
   }
 
   async function refreshProfile() {
-    if (clerkUserId) await fetchProfile(clerkUserId);
+    if (!clerkUserId) return;
+    const data = await fetchProfile(clerkUserId);
+    setProfile(data);
   }
 
   useEffect(() => {
@@ -78,25 +82,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    let cancelled = false;
     setProfileLoading(true);
     const email = clerkUser.primaryEmailAddress?.emailAddress ?? "";
     const fullName = clerkUser.fullName ?? clerkUser.username ?? "";
 
-    supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", clerkUser.id)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) {
-          setProfile(data as Profile);
-          setProfileLoading(false);
-        } else {
-          upsertProfile(clerkUser.id, email, fullName).finally(() =>
-            setProfileLoading(false)
-          );
+    const timeout = window.setTimeout(() => {
+      if (!cancelled) {
+        console.warn("[AuthContext] profile load timed out — rendering without profile");
+        setProfileLoading(false);
+      }
+    }, 5000);
+
+    (async () => {
+      try {
+        let data = await fetchProfile(clerkUser.id);
+        if (!data) {
+          data = await upsertProfile(clerkUser.id, email, fullName);
         }
-      });
+        if (!cancelled) setProfile(data);
+      } catch (err) {
+        console.warn("[AuthContext] profile load failed:", err);
+      } finally {
+        clearTimeout(timeout);
+        if (!cancelled) setProfileLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; clearTimeout(timeout); };
   }, [clerkLoaded, clerkUser?.id]);
 
   async function signOut() {
