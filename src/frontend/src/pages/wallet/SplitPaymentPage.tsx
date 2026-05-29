@@ -11,7 +11,7 @@ interface Participant {
 }
 
 export default function SplitPaymentPage() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [totalAmount, setTotalAmount] = useState("");
   const [participants, setParticipants] = useState<Participant[]>([
     { name: "", percent: 50 },
@@ -64,12 +64,12 @@ export default function SplitPaymentPage() {
   }
 
   async function handleSplit() {
-    if (!canSplit || !user) return;
+    if (!canSplit || !clerkUserId) return;
     setSending(true);
     try {
       const rows = participants.map(p => ({
-        staff_id: user.id,
-        fan_id: user.id,
+        staff_id: clerkUserId,
+        fan_id: clerkUserId,
         amount: parseFloat((total * p.percent / 100).toFixed(2)),
         tipper_name: p.name.trim(),
         transaction_type: "digital",

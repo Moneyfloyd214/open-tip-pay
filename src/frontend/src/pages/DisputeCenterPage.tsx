@@ -21,7 +21,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function DisputeCenterPage() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -34,22 +34,22 @@ export default function DisputeCenterPage() {
   }, [user]);
 
   async function loadDisputes() {
-    if (!user) return;
+    if (!clerkUserId) return;
     const { data } = await supabase
       .from("disputes")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("user_id", clerkUserId)
       .order("created_at", { ascending: false });
     if (data) setDisputes(data);
     setLoading(false);
   }
 
   async function submitDispute() {
-    if (!reason.trim() || !user) return;
+    if (!reason.trim() || !clerkUserId) return;
     setSubmitting(true);
     try {
       const { error } = await supabase.from("disputes").insert({
-        user_id: user.id,
+        user_id: clerkUserId,
         transaction_id: txnId.trim() || null,
         reason: reason.trim(),
         status: "open",

@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import AppShell from "@/components/AppShell";
 import { supabase } from "@/lib/supabase";
-import { Shield, Lock, Fingerprint, TriangleAlert as AlertTriangle, Check } from "lucide-react";
+import { Shield, Lock, FingerprintPattern as Fingerprint, TriangleAlert as AlertTriangle, Check } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SecurityPage() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { clerkUserId, profile, refreshProfile } = useAuth();
   const [twoFaEnabled, setTwoFaEnabled] = useState(false);
   const [vaultLocked, setVaultLocked] = useState(false);
   const [pin, setPin] = useState("");
@@ -26,7 +26,7 @@ export default function SecurityPage() {
     const { error } = await supabase
       .from("profiles")
       .update({ two_fa_enabled: next })
-      .eq("id", user!.id);
+      .eq("id", clerkUserId!);
     if (error) { setTwoFaEnabled(!next); toast.error("Failed to update 2FA."); return; }
     toast.success(`2FA ${next ? "enabled" : "disabled"}.`);
     refreshProfile();
@@ -38,7 +38,7 @@ export default function SecurityPage() {
     const { error } = await supabase
       .from("profiles")
       .update({ vault_locked: next })
-      .eq("id", user!.id);
+      .eq("id", clerkUserId!);
     if (error) { setVaultLocked(!next); toast.error("Failed to update vault."); return; }
     toast.success(`Vault ${next ? "locked" : "unlocked"}.`);
     refreshProfile();
@@ -51,7 +51,7 @@ export default function SecurityPage() {
     const { error } = await supabase
       .from("profiles")
       .update({ pin_hash: pin })
-      .eq("id", user!.id);
+      .eq("id", clerkUserId!);
     setSaving(false);
     if (error) { toast.error("Failed to save PIN."); return; }
     toast.success("PIN saved.");

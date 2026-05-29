@@ -8,7 +8,7 @@ import { toast } from "sonner";
 type PayoutSchedule = "instant" | "daily" | "weekly" | "monthly";
 
 export default function SettingsPage() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { clerkUserId, profile, refreshProfile } = useAuth();
   const [notifs, setNotifs] = useState({ tips: true, payouts: true, security: true, marketing: false });
   const [payoutSchedule, setPayoutSchedule] = useState<PayoutSchedule>("daily");
   const [saving, setSaving] = useState(false);
@@ -22,12 +22,12 @@ export default function SettingsPage() {
   }, [profile]);
 
   async function saveSettings() {
-    if (!user) return;
+    if (!clerkUserId) return;
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
       .update({ notification_prefs: notifs, payout_schedule: payoutSchedule })
-      .eq("id", user.id);
+      .eq("id", clerkUserId);
     setSaving(false);
     if (error) { toast.error("Failed to save settings."); return; }
     toast.success("Settings saved.");

@@ -167,7 +167,7 @@ interface OnboardingPageProps {
 }
 
 export default function OnboardingPage({ demoMode = false }: OnboardingPageProps) {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [slide, setSlide] = useState(0);
   const [completing, setCompleting] = useState(false);
 
@@ -176,9 +176,9 @@ export default function OnboardingPage({ demoMode = false }: OnboardingPageProps
   const progress = ((slide + 1) / SLIDES.length) * 100;
 
   async function markOnboardingComplete() {
-    if (!user || completing) return;
+    if (!clerkUserId || completing) return;
     setCompleting(true);
-    await supabase.from("profiles").update({ onboarding_complete: true }).eq("id", user.id);
+    await supabase.from("profiles").update({ onboarding_complete: true }).eq("id", clerkUserId);
     window.location.href = demoMode ? "/dashboard?demo=1" : "/dashboard";
   }
 

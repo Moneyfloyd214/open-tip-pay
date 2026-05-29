@@ -8,7 +8,7 @@ import { toast } from "sonner";
 const PRESETS = [1, 2, 5, 10, 20, 50];
 
 export default function SendMoneyPage() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [slug, setSlug] = useState("");
   const [amount, setAmount] = useState<number>(0);
   const [customAmount, setCustomAmount] = useState("");
@@ -19,12 +19,12 @@ export default function SendMoneyPage() {
   const canSend = slug.trim().length > 0 && finalAmount > 0;
 
   async function handleSend() {
-    if (!canSend || !user) return;
+    if (!canSend || !clerkUserId) return;
     setSending(true);
     try {
       const { error } = await supabase.from("transactions").insert({
-        staff_id: user.id,
-        fan_id: user.id,
+        staff_id: clerkUserId,
+        fan_id: clerkUserId,
         amount: finalAmount,
         note,
         transaction_type: "digital",

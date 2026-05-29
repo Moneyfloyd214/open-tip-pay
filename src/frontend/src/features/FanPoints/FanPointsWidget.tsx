@@ -21,7 +21,7 @@ interface Reward {
 }
 
 export default function FanPointsWidget() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [balance, setBalance] = useState(0);
   const [ledger, setLedger] = useState<LedgerEntry[]>([]);
   const [rewards, setRewards] = useState<Reward[]>([]);
@@ -29,9 +29,9 @@ export default function FanPointsWidget() {
   const [activeTab, setActiveTab] = useState<"points" | "rewards">("points");
 
   useEffect(() => {
-    if (!user) return;
+    if (!clerkUserId) return;
     load();
-  }, [user]);
+  }, [clerkUserId]);
 
   async function load() {
     setLoading(true);
@@ -39,7 +39,7 @@ export default function FanPointsWidget() {
       supabase
         .from("fan_point_ledger")
         .select("*")
-        .eq("fan_id", user!.id)
+        .eq("fan_id", clerkUserId!)
         .order("created_at", { ascending: false })
         .limit(20),
       supabase.from("rewards").select("*").eq("is_active", true).limit(12),

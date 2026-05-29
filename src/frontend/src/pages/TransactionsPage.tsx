@@ -28,7 +28,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 const PAGE_SIZE = 20;
 
 export default function TransactionsPage() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [txns, setTxns] = useState<Transaction[]>([]);
   const [filter, setFilter] = useState<Filter>("all");
   const [loading, setLoading] = useState(true);
@@ -40,10 +40,10 @@ export default function TransactionsPage() {
     setPage(0);
     setHasMore(true);
     loadTxns(0);
-  }, [filter, user]);
+  }, [filter, clerkUserId]);
 
   async function loadTxns(pageNum: number) {
-    if (!user) return;
+    if (!clerkUserId) return;
     setLoading(true);
 
     let q = supabase
@@ -52,11 +52,11 @@ export default function TransactionsPage() {
       .order("created_at", { ascending: false })
       .range(pageNum * PAGE_SIZE, pageNum * PAGE_SIZE + PAGE_SIZE - 1);
 
-    if (filter === "received") q = q.eq("staff_id", user.id);
-    else if (filter === "sent") q = q.eq("fan_id", user.id).neq("staff_id", user.id);
+    if (filter === "received") q = q.eq("staff_id", clerkUserId);
+    else if (filter === "sent") q = q.eq("fan_id", clerkUserId).neq("staff_id", clerkUserId);
     else if (filter === "food") q = q.eq("category", "food");
     else if (filter === "alcohol") q = q.eq("category", "alcohol");
-    else q = q.or(`staff_id.eq.${user.id},fan_id.eq.${user.id}`);
+    else q = q.or(`staff_id.eq.${clerkUserId},fan_id.eq.${clerkUserId}`);
 
     const { data } = await q;
     if (data) {

@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
-import {
-  DollarSign, Copy, Check, LogOut, TrendingUp, Users,
-  CreditCard, Plus, ExternalLink, Loader2, QrCode, Settings
-} from "lucide-react";
+import { DollarSign, Copy, Check, LogOut, TrendingUp, Users, CreditCard, Plus, ExternalLink, Loader as Loader2, QrCode, Settings } from "lucide-react";
 import { toast } from "sonner";
 
 interface TipLink {
@@ -23,7 +20,7 @@ interface TipStat {
 }
 
 export default function Dashboard() {
-  const { user, profile, signOut } = useAuth();
+  const { clerkUserId, profile, signOut } = useAuth();
   const [tipLinks, setTipLinks] = useState<TipLink[]>([]);
   const [stats, setStats] = useState<TipStat>({ total_tips: 0, total_amount_cents: 0, this_month_cents: 0 });
   const [loading, setLoading] = useState(true);
@@ -31,19 +28,19 @@ export default function Dashboard() {
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "links" | "settings">("overview");
 
-  const displayName = profile?.full_name || user?.email?.split("@")[0] || "there";
+  const displayName = profile?.full_name || profile?.email?.split("@")[0] || "there";
   const origin = window.location.origin;
 
   useEffect(() => {
-    if (!user) return;
+    if (!clerkUserId) return;
     loadData();
-  }, [user]);
+  }, [clerkUserId]);
 
   async function loadData() {
     setLoading(true);
     const [linksRes, tipsRes] = await Promise.all([
-      supabase.from("tip_links").select("*").eq("worker_id", user!.id).order("created_at", { ascending: false }),
-      supabase.from("tips").select("amount_cents, created_at").eq("worker_id", user!.id),
+      supabase.from("tip_links").select("*").eq("worker_id", clerkUserId!).order("created_at", { ascending: false }),
+      supabase.from("tips").select("amount_cents, created_at").eq("worker_id", clerkUserId!),
     ]);
 
     if (linksRes.data) setTipLinks(linksRes.data);
@@ -61,11 +58,11 @@ export default function Dashboard() {
   }
 
   async function createTipLink() {
-    if (!user) return;
+    if (!clerkUserId) return;
     setCreatingLink(true);
     const slug = `${(profile?.full_name || "tip").toLowerCase().replace(/\s+/g, "-")}-${Math.random().toString(36).slice(2, 7)}`;
     const { error } = await supabase.from("tip_links").insert({
-      worker_id: user.id,
+      worker_id: clerkUserId,
       slug,
       title: `Tip ${profile?.full_name || "Me"}`,
       message: "Thank you for your generosity!",
@@ -125,7 +122,7 @@ export default function Dashboard() {
         {/* Welcome */}
         <div className="mb-8 fade-in-up">
           <h1 className="text-2xl font-bold text-foreground">Welcome back, {displayName}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{user?.email}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{profile?.email}</p>
         </div>
 
         {/* Stats */}

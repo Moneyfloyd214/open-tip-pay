@@ -61,20 +61,20 @@ import AdminPanel from "./portals/AdminPanel";
  *   /admin              AdminPanel          (admin)
  */
 function Router() {
-  const { user, loading, isManager, isAdmin } = useAuth();
+  const { clerkUserId, loading, isManager, isAdmin } = useAuth();
   const path = window.location.pathname;
   const params = new URLSearchParams(window.location.search);
   const isDemo = params.get("demo") === "1";
 
   // Redirect new authenticated users (onboarding_complete = false) to /onboarding
   useEffect(() => {
-    if (!user || path === "/onboarding" || path.startsWith("/tip/") || path === "/kitchen" || path === "/partner") return;
-    supabase.from("profiles").select("onboarding_complete").eq("id", user.id).maybeSingle().then(({ data }) => {
+    if (!clerkUserId || path === "/onboarding" || path.startsWith("/tip/") || path === "/kitchen" || path === "/partner") return;
+    supabase.from("profiles").select("onboarding_complete").eq("id", clerkUserId).maybeSingle().then(({ data }) => {
       if (data && data.onboarding_complete === false) {
         window.location.href = "/onboarding";
       }
     });
-  }, [user, path]);
+  }, [clerkUserId, path]);
 
   if (loading) {
     return (
@@ -93,7 +93,7 @@ function Router() {
   if (path === "/onboarding" && isDemo) return <OnboardingPage demoMode />;
 
   // ── Unauthenticated → login ────────────────────────────────────────────────
-  if (!user) return <LoginPage />;
+  if (!clerkUserId) return <LoginPage />;
 
   // ── Role-gated portals ─────────────────────────────────────────────────────
   if (path === "/admin") {

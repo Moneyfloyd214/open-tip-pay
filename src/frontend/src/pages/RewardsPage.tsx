@@ -23,7 +23,7 @@ interface LedgerEntry {
 type Tab = "redeem" | "history";
 
 export default function RewardsPage() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [tab, setTab] = useState<Tab>("redeem");
   const [balance, setBalance] = useState(0);
   const [rewards, setRewards] = useState<Reward[]>([]);
@@ -32,15 +32,15 @@ export default function RewardsPage() {
   const [redeeming, setRedeeming] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!clerkUserId) return;
     Promise.all([fetchBalance(), fetchRewards(), fetchLedger()]).finally(() => setLoading(false));
-  }, [user]);
+  }, [clerkUserId]);
 
   async function fetchBalance() {
     const { data } = await supabase
       .from("fan_point_balances")
       .select("total_points")
-      .eq("user_id", user!.id)
+      .eq("user_id", clerkUserId!)
       .maybeSingle();
     if (data) setBalance(Number(data.total_points) || 0);
   }
@@ -58,7 +58,7 @@ export default function RewardsPage() {
     const { data } = await supabase
       .from("fan_point_ledger")
       .select("id, points, reason, created_at")
-      .eq("user_id", user!.id)
+      .eq("user_id", clerkUserId!)
       .order("created_at", { ascending: false })
       .limit(30);
     if (data) setLedger(data);
@@ -69,14 +69,14 @@ export default function RewardsPage() {
     setRedeeming(reward.id);
     try {
       const { error: redeemError } = await supabase.from("reward_redemptions").insert({
-        user_id: user!.id,
+        user_id: clerkUserId!,
         reward_id: reward.id,
         points_spent: reward.points_cost,
       });
       if (redeemError) throw redeemError;
 
       const { error: ledgerError } = await supabase.from("fan_point_ledger").insert({
-        user_id: user!.id,
+        user_id: clerkUserId!,
         points: -reward.points_cost,
         reason: `Redeemed: ${reward.name}`,
       });

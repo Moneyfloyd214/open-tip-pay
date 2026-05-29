@@ -6,7 +6,7 @@ import { User, Check, Wallet, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ProfilePage() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { clerkUserId, profile, refreshProfile } = useAuth();
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
@@ -23,7 +23,7 @@ export default function ProfilePage() {
   }, [profile]);
 
   async function saveProfile() {
-    if (!user) return;
+    if (!clerkUserId) return;
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
@@ -33,22 +33,22 @@ export default function ProfilePage() {
         bio: bio.trim(),
         crypto_wallet_address: cryptoWallet.trim(),
       })
-      .eq("id", user.id);
+      .eq("id", clerkUserId);
     setSaving(false);
     if (error) { toast.error("Failed to save profile."); return; }
     toast.success("Profile updated.");
     refreshProfile();
   }
 
-  const initials = (profile?.full_name || user?.email || "?")
+  const initials = (profile?.full_name || profile?.email || "?")
     .split(" ")
     .map(w => w[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
 
-  const memberSince = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+  const memberSince = profile?.created_at
+    ? new Date(profile.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })
     : "—";
 
   const stripeStatus = profile?.stripe_connect_status ?? "not_connected";
@@ -67,7 +67,7 @@ export default function ProfilePage() {
             {initials}
           </div>
           <div className="text-center">
-            <p className="text-base font-bold text-foreground">{profile?.full_name || user?.email}</p>
+            <p className="text-base font-bold text-foreground">{profile?.full_name || profile?.email}</p>
             <p className="text-xs text-muted-foreground">Member since {memberSince}</p>
             <span className="mt-1 inline-flex items-center rounded-full bg-teal/20 px-2.5 py-0.5 text-[11px] font-semibold text-teal capitalize">
               {profile?.role ?? "fan"}

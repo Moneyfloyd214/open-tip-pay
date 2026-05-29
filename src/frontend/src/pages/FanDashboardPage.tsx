@@ -16,12 +16,12 @@ const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
 ];
 
 export default function FanDashboardPage() {
-  const { user, profile, signOut } = useAuth();
+  const { clerkUserId, profile, signOut } = useAuth();
   const [tab, setTab] = useState<Tab>("tips");
   const [copied, setCopied] = useState(false);
 
-  const displayName = profile?.full_name || user?.email?.split("@")[0] || "Fan";
-  const tipUrl = `${window.location.origin}/tip/${user?.id?.slice(0, 8)}`;
+  const displayName = profile?.full_name || profile?.email?.split("@")[0] || "Fan";
+  const tipUrl = `${window.location.origin}/tip/${clerkUserId?.slice(0, 8)}`;
 
   function copyTipUrl() {
     navigator.clipboard.writeText(tipUrl);

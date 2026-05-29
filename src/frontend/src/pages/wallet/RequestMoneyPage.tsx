@@ -11,19 +11,19 @@ interface TipStat {
 }
 
 export default function RequestMoneyPage() {
-  const { user, profile } = useAuth();
+  const { clerkUserId, profile } = useAuth();
   const [copied, setCopied] = useState(false);
   const [weekStats, setWeekStats] = useState<TipStat>({ count: 0, total: 0 });
   const [monthStats, setMonthStats] = useState<TipStat>({ count: 0, total: 0 });
   const [recentTippers, setRecentTippers] = useState<{ name: string; amount: number }[]>([]);
 
-  const tipSlug = user?.id?.slice(0, 8) ?? "";
+  const tipSlug = clerkUserId?.slice(0, 8) ?? "";
   const tipUrl = `${window.location.origin}/tip/${tipSlug}`;
 
   useEffect(() => {
-    if (!user) return;
+    if (!clerkUserId) return;
     loadStats();
-  }, [user]);
+  }, [clerkUserId]);
 
   async function loadStats() {
     const now = new Date();
@@ -33,7 +33,7 @@ export default function RequestMoneyPage() {
     const { data } = await supabase
       .from("transactions")
       .select("amount, tipper_name, created_at")
-      .eq("staff_id", user!.id)
+      .eq("staff_id", clerkUserId!)
       .order("created_at", { ascending: false })
       .limit(50);
 

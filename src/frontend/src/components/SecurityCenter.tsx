@@ -17,7 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
 import { format } from "date-fns";
 import { TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, Clock, Eye, FileCheck, Globe, Circle as HelpCircle, Info, Lock, MapPin, Monitor, Shield, ShieldCheck, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -43,14 +43,9 @@ export default function SecurityCenter() {
   const { data: encryptionLog = [] } = useGetEncryptionLog();
   const { data: fraudAlerts = [] } = useGetFraudAlerts();
   const { data: compilationStatus } = useGetCompilationStatus();
-  const [hasSession, setHasSession] = useState(false);
+  const { clerkUserId } = useAuth();
+  const hasSession = !!clerkUserId;
   const setBiometric = useSetBiometricSettings();
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setHasSession(!!data.session);
-    });
-  }, []);
   const setAppLockEnabledMutation = useSetAppLockEnabled();
   const { data: hasPin } = useHasExistingPin();
 

@@ -9,7 +9,7 @@ import {
 import { CircleAlert as AlertCircle, Loader as Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
 import QRCodeGenerator from "./QRCodeGenerator";
 
 interface NFCTapToTipProps {
@@ -23,20 +23,14 @@ export default function NFCTapToTip({
   onOpenChange,
   onSuccess,
 }: NFCTapToTipProps) {
-  const [userId, setUserId] = useState("");
+  const { clerkUserId } = useAuth();
   const [mode, setMode] = useState<"share" | "receive">("share");
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.user?.id) setUserId(data.session.user.id);
-    });
-  }, []);
   const [isNFCSupported, setIsNFCSupported] = useState<boolean | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showQRFallback, setShowQRFallback] = useState(false);
 
-  const principal = userId;
+  const principal = clerkUserId ?? "";
 
   useEffect(() => {
     // Check NFC support

@@ -327,7 +327,7 @@ function generateMockTicket(stand: Stand): SimulatedTicket {
 
 // ── POS / Stands Tab ───────────────────────────────────────────────────────────
 function POSTab() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [stands, setStands] = useState<Stand[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -384,12 +384,12 @@ function POSTab() {
   }
 
   async function ingestTicket(ticket: SimulatedTicket) {
-    if (!user) return;
+    if (!clerkUserId) return;
     setIngestingId(ticket.id);
     try {
       const { error } = await supabase.from("transactions").insert({
-        staff_id: user.id,
-        fan_id: user.id,
+        staff_id: clerkUserId,
+        fan_id: clerkUserId,
         amount: ticket.tip,
         transaction_type: "digital",
         category: "food",

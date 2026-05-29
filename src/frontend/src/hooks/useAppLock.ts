@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -47,7 +47,8 @@ const IDLE_TIMEOUT_MS = 60 * 1000;
 
 export function useAppLock(): UseAppLockReturn {
   const [isLocked, setIsLocked] = useState(true);
-  const [hasSession, setHasSession] = useState(false);
+  const { clerkUserId, signOut: authSignOut } = useAuth();
+  const hasSession = !!clerkUserId;
   const queryClient = useQueryClient();
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
@@ -58,17 +59,8 @@ export function useAppLock(): UseAppLockReturn {
   }, [isLocked]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setHasSession(!!session);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setHasSession(!!session);
-      if (!session) {
-        setIsLocked(true);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+    if (!hasSession) setIsLocked(true);
+  }, [hasSession]);
 
   const resetIdleTimer = useCallback(() => {
     lastActivityRef.current = Date.now();
@@ -94,7 +86,7 @@ export function useAppLock(): UseAppLockReturn {
   }, []);
 
   const logout = useCallback(async () => {
-    await supabase.auth.signOut();
+    await authSignOut();
     queryClient.clear();
     setIsLocked(true);
     if (idleTimerRef.current) {

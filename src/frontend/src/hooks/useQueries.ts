@@ -1,5 +1,6 @@
 import type { PointsRule, PointsRuleType } from "@/types/fanpoints";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getCurrentClerkUserId } from "../context/AuthContext";
 import { useDemoMode } from "../context/DemoContext";
 import type {
   ExtendedStaffMember,
@@ -39,13 +40,13 @@ export function useGetCallerUserProfile() {
   return useQuery<UserProfile | null>({
     queryKey: ["currentUserProfile"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      const { data } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+      const userId = getCurrentClerkUserId();
+      if (!userId) return null;
+      const { data } = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle();
       if (!data) return null;
       return {
-        username: data.full_name ?? user.email ?? "",
-        email: user.email ?? "",
+        username: data.full_name ?? data.email ?? "",
+        email: data.email ?? "",
         bio: data.bio ?? "",
         isVerified: false,
         isFirstWalletConnection: false,
@@ -375,9 +376,9 @@ export function useIsCallerAdmin() {
   return useQuery<boolean>({
     queryKey: ["isAdmin"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
-      const { data } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+      const userId = getCurrentClerkUserId();
+      if (!userId) return false;
+      const { data } = await supabase.from("profiles").select("role").eq("id", userId).maybeSingle();
       return data?.role === "admin";
     },
     staleTime: 60_000,

@@ -12,7 +12,7 @@ interface MonthRow {
 }
 
 export default function TaxCenterPage() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
   const [totalEarned, setTotalEarned] = useState(0);
@@ -20,9 +20,9 @@ export default function TaxCenterPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!clerkUserId) return;
     loadData();
-  }, [year, user]);
+  }, [year, clerkUserId]);
 
   async function loadData() {
     setLoading(true);
@@ -32,7 +32,7 @@ export default function TaxCenterPage() {
     const { data } = await supabase
       .from("transactions")
       .select("amount, created_at")
-      .eq("staff_id", user!.id)
+      .eq("staff_id", clerkUserId!)
       .gte("created_at", start)
       .lte("created_at", end);
 

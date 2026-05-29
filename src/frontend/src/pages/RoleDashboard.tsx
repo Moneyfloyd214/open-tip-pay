@@ -400,7 +400,7 @@ interface RecentTip {
 }
 
 export default function RoleDashboard() {
-  const { user, profile } = useAuth();
+  const { clerkUserId, profile } = useAuth();
 
   // Data
   const [balance, setBalance] = useState(0);
@@ -430,20 +430,20 @@ export default function RoleDashboard() {
   const [showInvite, setShowInvite] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
 
-  const displayName = profile?.full_name || user?.email?.split("@")[0] || "there";
-  const tipSlug = user?.id?.slice(0, 8) ?? "";
+  const displayName = profile?.full_name || profile?.email?.split("@")[0] || "there";
+  const tipSlug = clerkUserId?.slice(0, 8) ?? "";
 
   // Load data
   useEffect(() => {
-    if (!user) return;
+    if (!clerkUserId) return;
     Promise.all([fetchTransactions(), fetchFanPoints()]).finally(() => setLoadingData(false));
-  }, [user]);
+  }, [clerkUserId]);
 
   async function fetchTransactions() {
     const { data } = await supabase
       .from("transactions")
       .select("id, amount, tipper_name, created_at, transaction_type")
-      .eq("staff_id", user!.id)
+      .eq("staff_id", clerkUserId!)
       .order("created_at", { ascending: false })
       .limit(20);
     if (!data) return;
@@ -462,7 +462,7 @@ export default function RoleDashboard() {
     const { data } = await supabase
       .from("fan_point_balances")
       .select("total_points")
-      .eq("user_id", user!.id)
+      .eq("user_id", clerkUserId!)
       .maybeSingle();
     if (data) setFanPoints(Number(data.total_points) || 0);
   }
@@ -489,7 +489,7 @@ export default function RoleDashboard() {
   function lockVault() {
     setVaultLocked(true);
     setVaultCooldownEnd(Date.now() + 24 * 60 * 60 * 1000);
-    supabase.from("profiles").update({ vault_locked: true }).eq("id", user!.id);
+    supabase.from("profiles").update({ vault_locked: true }).eq("id", clerkUserId!);
     toast.success("Vault locked. All outgoing transactions frozen for 24 hours.");
   }
 
@@ -498,7 +498,7 @@ export default function RoleDashboard() {
     setVaultCooldownEnd(null);
     setVaultCooldownDisplay("");
     setShowVaultUnlock(false);
-    supabase.from("profiles").update({ vault_locked: false }).eq("id", user!.id);
+    supabase.from("profiles").update({ vault_locked: false }).eq("id", clerkUserId!);
     toast.success("Vault unlocked via biometrics.");
   }
 
@@ -604,7 +604,7 @@ export default function RoleDashboard() {
       {showVaultUnlock && (
         <VaultUnlockModal onSuccess={onVaultUnlockSuccess} onCancel={() => setShowVaultUnlock(false)} />
       )}
-      {showMyQR && <MyQRModal userId={user?.id ?? ""} name={displayName} onClose={() => setShowMyQR(false)} />}
+      {showMyQR && <MyQRModal userId={clerkUserId ?? ""} name={displayName} onClose={() => setShowMyQR(false)} />}
       {showScanQR && <ScanQRModal onClose={() => setShowScanQR(false)} />}
       {showInvite && <InviteSheet onClose={() => setShowInvite(false)} />}
       {showAI && <AIAssistantChat onClose={() => setShowAI(false)} />}

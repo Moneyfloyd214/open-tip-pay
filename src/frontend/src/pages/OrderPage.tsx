@@ -39,7 +39,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function OrderPage() {
-  const { user } = useAuth();
+  const { clerkUserId } = useAuth();
   const [stands, setStands] = useState<Stand[]>([]);
   const [standId, setStandId] = useState("");
   const [cart, setCart] = useState<Record<string, number>>({});
@@ -73,14 +73,14 @@ export default function OrderPage() {
   const itemCount = Object.values(cart).reduce((s, q) => s + q, 0);
 
   async function placeOrder() {
-    if (!user || !standId || itemCount === 0) return;
+    if (!clerkUserId || !standId || itemCount === 0) return;
     setOrdering(true);
     try {
       const rows = Object.entries(cart).map(([id, qty]) => {
         const item = MENU_ITEMS.find(m => m.id === id)!;
         return {
-          staff_id: user.id,
-          fan_id: user.id,
+          staff_id: clerkUserId,
+          fan_id: clerkUserId,
           amount: item.price * qty,
           transaction_type: "digital",
           category: item.category,
