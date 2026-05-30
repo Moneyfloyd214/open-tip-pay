@@ -1,6 +1,22 @@
+import { useState } from "react";
 import { Play } from "lucide-react";
 
 export default function LandingLoginSlot() {
+  const [contactMethod, setContactMethod] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  async function handleSendCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (!contactMethod.trim()) return;
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setContactMethod("");
+      setSuccessMessage("Verification code sent! Check your device.");
+    }, 1500);
+  }
+
   return (
     <div className="w-full max-w-sm flex flex-col gap-4 items-center">
 
@@ -23,7 +39,7 @@ export default function LandingLoginSlot() {
       </div>
 
       {/* Frictionless Login */}
-      <div className="w-full flex flex-col gap-3">
+      <form onSubmit={handleSendCode} className="w-full flex flex-col gap-3">
         <label className="text-white text-sm font-medium">
           Log In or Create Account
         </label>
@@ -31,22 +47,28 @@ export default function LandingLoginSlot() {
         <input
           type="text"
           placeholder="Enter Email or Phone Number"
+          value={contactMethod}
+          onChange={(e) => setContactMethod(e.target.value)}
           className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-600 outline-none focus:border-[#00e5a0] focus:ring-1 focus:ring-[#00e5a0] transition-colors"
         />
 
         <button
-          className="w-full py-3 rounded-xl font-bold text-white text-sm tracking-wide"
-          style={{
-            background: "linear-gradient(135deg, #00e5a0 0%, #00c87a 100%)",
-          }}
+          type="submit"
+          disabled={isLoading}
+          className="w-full py-3 rounded-xl font-bold text-white text-sm tracking-wide transition-opacity disabled:opacity-60"
+          style={{ background: "linear-gradient(135deg, #00e5a0 0%, #00c87a 100%)" }}
         >
-          Send Code
+          {isLoading ? "Sending..." : "Send Code"}
         </button>
+
+        {successMessage && (
+          <p className="text-[#00e5a0] text-xs font-bold text-center">{successMessage}</p>
+        )}
 
         <p className="text-xs text-gray-500 text-center leading-relaxed">
           Secured by Internet Identity · No password required
         </p>
-      </div>
+      </form>
 
     </div>
   );
