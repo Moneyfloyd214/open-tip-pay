@@ -5,7 +5,7 @@ import { supabase } from "./lib/supabase";
 import { useEffect } from "react";
 
 // Pages
-import LoginPage from "./pages/LoginPage";
+import LandingPageNew from "./components/LandingPageNew";
 import OnboardingPage from "./pages/OnboardingPage";
 import GuestPaymentPage from "./pages/GuestPaymentPage";
 import KitchenDisplayPage from "./pages/KitchenDisplayPage";
@@ -93,7 +93,7 @@ function Router() {
   if (path === "/onboarding" && isDemo) return <OnboardingPage demoMode />;
 
   // ── Unauthenticated → login ────────────────────────────────────────────────
-  if (!clerkUserId) return <LoginPage />;
+  if (!clerkUserId) return <LandingPageNew />;
 
   // ── Role-gated portals ─────────────────────────────────────────────────────
   if (path === "/admin") {
